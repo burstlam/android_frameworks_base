@@ -188,7 +188,7 @@ public final class ActivityThread {
     Profiler mProfiler;
     int mCurDefaultDisplayDpi;
     boolean mDensityCompatMode;
-    Configuration mConfiguration;
+    Configuration mConfiguration = new Configuration();
     Configuration mCompatConfiguration;
     Configuration mResConfiguration;
     CompatibilityInfo mResCompatibilityInfo;
@@ -4090,9 +4090,6 @@ public final class ActivityThread {
         
             diff = applyConfigurationToResourcesLocked(config, compat);
             
-            if (mConfiguration == null) {
-                mConfiguration = new Configuration();
-            }
             if (!mConfiguration.isOtherSeqNewer(config) && compat == null) {
                 return;
             }
