@@ -1051,4 +1051,9 @@
     <!-- Set to true for Tegra3 devices -->
     <bool name="config_isTegra3">false</bool>
 
+    <!-- LUN file to be used by legacy USB manager.
+         The existence of this file will be used to determine in the
+         legacy USB manager should be started. -->
+    <string name="config_legacyUmsLunFile">/sys/devices/platform/usb_mass_storage/lun0/file</string>
+
 </resources>
