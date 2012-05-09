@@ -1871,6 +1871,9 @@
   <java-symbol type="string" name="config_legacyUmsLunFile" />
   <java-symbol type="bool" name="config_show_cmIMESwitcher"/>
 
+  <!-- IME Picker showing upon pressing Sym Key -->
+  <java-symbol type="bool" name="config_symKeyShowsImePicker" />
+
  <!-- Navigation Ring -->
   <java-symbol type="drawable" name="ic_navbar_blank" />
   <java-symbol type="drawable" name="ic_navbar_blank_activated" />
