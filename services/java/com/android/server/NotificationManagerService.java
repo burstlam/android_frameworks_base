@@ -598,6 +598,9 @@ public class NotificationManagerService extends INotificationManager.Stub
                 // until user passes through the lock screen or views the
                 // notification.
                 mScreenOn = true;
+                // the lock screen may not be present, so make sure the LED gets turned off
+                // when the screen comes on.
+                updateNotificationPulse();
             } else if (action.equals(Intent.ACTION_SCREEN_OFF)) {
                 mScreenOn = false;
                 updateNotificationPulse();
