@@ -154,6 +154,12 @@ class HTML5VideoViewProxy extends Handler
                     // If we are playing the same video, then it is better to
                     // save the current position.
                     if (layerId == mHTML5VideoView.getVideoLayerId()) {
+                        //if we double tapped the full screen button, we must release
+                        //some variable and set flag to default.
+                        WebChromeClient client = webView.getWebChromeClient();
+                        if (client != null) {
+                            client.onHideCustomView();
+                        }
                         savePosition = mHTML5VideoView.getCurrentPosition();
                         canSkipPrepare = (playerState == HTML5VideoView.STATE_PREPARING
                                 || playerState == HTML5VideoView.STATE_PREPARED
