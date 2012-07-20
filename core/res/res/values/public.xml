@@ -2034,6 +2034,8 @@
   <java-symbol type="layout" name="vibration_picker_dialog"/>
 
   <java-symbol type="bool" name="config_forceDisableHardwareKeyboard" />
+  <!-- SENSOR_DELAY_NOPOLL -->
+  <java-symbol type="bool" name="config_nonPollingWindowOrientation" />    
 
   <!-- Chinese Lunar Calendar Start -->
   <java-symbol type="id" name="lunar_date" />
