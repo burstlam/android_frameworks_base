@@ -2034,6 +2034,7 @@
   <java-symbol type="layout" name="vibration_picker_dialog"/>
 
   <java-symbol type="bool" name="config_forceDisableHardwareKeyboard" />
+
   <!-- SENSOR_DELAY_NOPOLL -->
   <java-symbol type="bool" name="config_nonPollingWindowOrientation" />    
 
@@ -2062,4 +2063,8 @@
   <public type="string" name="color_picker_hint" />
   <public type="string" name="color_picker_hex" />
   <public type="string" name="color_picker_arrow_right" />
+
+  <!-- Kill App -->
+  <java-symbol type="string" name="app_killed_message" />
+  <java-symbol type="integer" name="config_backKillTimeout" />
 </resources>
