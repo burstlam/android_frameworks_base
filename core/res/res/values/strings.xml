@@ -3774,4 +3774,9 @@
     <!-- Hardware Rotation lock string -->
     <string name="toast_rotation_unlocked">Display Rotation Unlocked</string>
     <string name="toast_rotation_locked">Display Rotation Locked</string>
+
+    <!-- Burst Mod-->
+    <!-- Button to hot reboot the device, within the Reboot Options dialog -->
+    <string name="reboot_hot">Hot Reboot</string>
+
 </resources>
