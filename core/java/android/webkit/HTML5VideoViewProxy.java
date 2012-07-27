@@ -161,6 +161,9 @@ class HTML5VideoViewProxy extends Handler
                             client.onHideCustomView();
                         }
                         savePosition = mHTML5VideoView.getCurrentPosition();
+                        if (savePosition == 0) {
+                            savePosition = mHTML5VideoView.getLastSaveTime();
+                        }
                         canSkipPrepare = (playerState == HTML5VideoView.STATE_PREPARING
                                 || playerState == HTML5VideoView.STATE_PREPARED
                                 || playerState == HTML5VideoView.STATE_PLAYING)
@@ -297,12 +300,21 @@ class HTML5VideoViewProxy extends Handler
         public static void end() {
             mHTML5VideoView.showControllerInFullScreen();
             if (mCurrentProxy != null) {
-                if (isVideoSelfEnded)
+                if (isVideoSelfEnded) {
                     mCurrentProxy.dispatchOnEnded();
+                    if (mHTML5VideoView != null)
+                        mHTML5VideoView.setLastSaveTime(0);
+                }
                 else
                     mCurrentProxy.dispatchOnPaused();
             }
             isVideoSelfEnded = false;
+        }
+
+        public static void setLastSaveTime (int time) {
+            if (mHTML5VideoView != null) {
+                mHTML5VideoView.setLastSaveTime(time);
+            }
         }
     }
 
@@ -669,6 +681,7 @@ class HTML5VideoViewProxy extends Handler
     private void sendTimeupdate() {
         Message msg = Message.obtain(mWebCoreHandler, TIMEUPDATE);
         msg.arg1 = VideoPlayer.getCurrentPosition();
+        VideoPlayer.setLastSaveTime(msg.arg1);
         mWebCoreHandler.sendMessage(msg);
     }
 

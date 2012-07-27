@@ -55,6 +55,10 @@ public class HTML5VideoView implements MediaPlayer.OnPreparedListener {
     // video besides initial load.
     protected int mSaveSeekTime;
 
+    // Save the last save time. When from InLine model to FullScreen model after unlocking screen,
+    // make it continue.
+    protected int mLastSaveTime;
+
     // This is used to find the VideoLayer on the native side.
     protected int mVideoLayerId;
 
@@ -167,6 +171,14 @@ public class HTML5VideoView implements MediaPlayer.OnPreparedListener {
         return mPauseDuringPreparing;
     }
 
+    public void setLastSaveTime (int position) {
+        mLastSaveTime = position;
+    }
+
+    public int getLastSaveTime () {
+        return mLastSaveTime;
+    }
+
     // Every time we start a new Video, we create a VideoView and a MediaPlayer
     public void init(int videoLayerId, int position, boolean skipPrepare) {
         if (mPlayer == null) {
@@ -183,6 +195,7 @@ public class HTML5VideoView implements MediaPlayer.OnPreparedListener {
         mSaveSeekTime = position;
         mTimer = null;
         mPauseDuringPreparing = false;
+        mLastSaveTime = 0;
     }
 
     protected HTML5VideoView() {
