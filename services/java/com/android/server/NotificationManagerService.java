@@ -1312,6 +1312,8 @@ public class NotificationManagerService extends INotificationManager.Stub
             boolean queryRemove = false;
             boolean packageChanged = false;
             boolean cancelNotifications = true;
+            boolean ledScreenOn = Settings.Secure.getInt(
+                mContext.getContentResolver(), Settings.Secure.LED_SCREEN_ON, 0) == 1;
             
             if (action.equals(Intent.ACTION_PACKAGE_ADDED)
                     || (queryRemove=action.equals(Intent.ACTION_PACKAGE_REMOVED))
@@ -1394,7 +1396,7 @@ public class NotificationManagerService extends INotificationManager.Stub
                 if (userHandle >= 0) {
                     cancelAllNotificationsInt(null, 0, 0, true, userHandle);
                 }
-            } else if (action.equals(Intent.ACTION_USER_PRESENT)) {
+            } else if (action.equals(Intent.ACTION_USER_PRESENT) && !ledScreenOn) {
                 // turn off LED when user passes through lock screen
                 if (!mDreaming) {
                     mNotificationLight.turnOff();
@@ -2512,6 +2514,9 @@ public class NotificationManagerService extends INotificationManager.Stub
 
     // lock on mNotificationList
     private void updateLightsLocked() {
+        // Get ROMControl "flash when screen ON" flag
+        boolean ledScreenOn = Settings.Secure.getInt(
+            mContext.getContentResolver(), Settings.Secure.LED_SCREEN_ON, 0) == 1;
         // handle notification lights
         if (mLedNotification == null) {
             // use most recent light with highest score
@@ -2526,7 +2531,7 @@ public class NotificationManagerService extends INotificationManager.Stub
 
         // Don't flash while we are in a call, screen is on or we are
         // in quiet hours with light dimmed
-        if (mLedNotification == null || mInCall
+        if (mLedNotification == null || mInCall || (mScreenOn && !ledScreenOn)
                 || (mScreenOn && !mDreaming) || (inQuietHours() && mQuietHoursDim)) {
             mNotificationLight.turnOff();
         } else if (mNotificationPulseEnabled) {
