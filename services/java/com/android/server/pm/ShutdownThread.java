@@ -32,6 +32,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
+import android.os.IBinder;
+import android.os.IPowerManager;
 import android.os.PowerManager;
 import android.os.RemoteException;
 import android.os.ServiceManager;
@@ -67,6 +69,7 @@ public final class ShutdownThread extends Thread {
     private static boolean mReboot;
     private static boolean mRebootSafeMode;
     private static String mRebootReason;
+    private static boolean mRebootHot = false;
 
     // Provides shutdown assurance in case the system_server is killed
     public static final String SHUTDOWN_ACTION_PROPERTY = "sys.shutdown.requested";
@@ -141,6 +144,9 @@ public final class ShutdownThread extends Thread {
             dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG);
             dialog.show();
         } else {
+            if (mRebootReason != null && mRebootReason.equals("hot")) {
+                mRebootHot = true;    
+            }
             beginShutdownSequence(context);
         }
     }
@@ -274,15 +280,16 @@ public final class ShutdownThread extends Thread {
             }
         };
 
-        /*
-         * Write a system property in case the system_server reboots before we
-         * get to the actual hardware restart. If that happens, we'll retry at
-         * the beginning of the SystemServer startup.
-         */
-        {
-            String reason = (mReboot ? "1" : "0") + (mRebootReason != null ? mRebootReason : "");
-            SystemProperties.set(SHUTDOWN_ACTION_PROPERTY, reason);
-        }
+        if (!mRebootHot) {
+            /*
+             * Write a system property in case the system_server reboots before we
+             * get to the actual hardware restart. If that happens, we'll retry at
+             * the beginning of the SystemServer startup.
+             */
+            {
+                String reason = (mReboot ? "1" : "0") + (mRebootReason != null ? mRebootReason : "");
+                SystemProperties.set(SHUTDOWN_ACTION_PROPERTY, reason);
+            }
 
         /*
          * If we are rebooting into safe mode, write a system property
@@ -311,7 +318,8 @@ public final class ShutdownThread extends Thread {
                     mActionDoneSync.wait(delay);
                 } catch (InterruptedException e) {
                 }
-            }
+              }
+           }  
         }
         
         Log.i(TAG, "Shutting down activity manager...");
@@ -491,6 +499,19 @@ public final class ShutdownThread extends Thread {
     public static void rebootOrShutdown(boolean reboot, String reason) {
         if (reboot) {
             Log.i(TAG, "Rebooting, reason: " + reason);
+            // check if hot reboot requested
+            if (mRebootHot) {
+                // crash system server to restart Android framework
+                try {
+                    IBinder b = ServiceManager.getService(Context.POWER_SERVICE);
+                    IPowerManager pm = IPowerManager.Stub.asInterface(b);
+                    pm.crash("Crashed by Hot Reboot");
+                } catch (RemoteException e) {
+                    Log.e(TAG, "Hot reboot failed, will attempt normal reboot instead", e);
+                    reason = null;
+                }
+            }
+            // normal reboot
             try {
                 PowerManagerService.lowLevelReboot(reason);
             } catch (Exception e) {
