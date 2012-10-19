@@ -390,7 +390,10 @@ public class BitmapDrawable extends Drawable {
                             getBounds(), mDstRect, layoutDirection);
                     mApplyGravity = false;
                 }
-                canvas.drawBitmap(bitmap, null, mDstRect, state.mPaint);
+                if (!bitmap.isRecycled())
+                {
+                    canvas.drawBitmap(bitmap, null, mDstRect, state.mPaint);
+                }
             } else {
                 if (mApplyGravity) {
                     copyBounds(mDstRect);
