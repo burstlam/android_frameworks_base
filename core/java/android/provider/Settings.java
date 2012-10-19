@@ -2630,6 +2630,11 @@ public final class Settings {
         public static final String POWER_DIALOG_SHOW_AIRPLANE_TOGGLE = "power_dialog_show_airplane_toggle";
 
          /**
+         * @hide
+         */
+        public static final String POWER_DIALOG_SHOW_EXPANDED_DESKTOP_TOGGLE = "power_menu_expanded_desktop";
+
+         /**
           * Used to determine if the NavBar should be enabled on devices that do not
           * otherwise have a NavBar
          * @hide
@@ -3105,6 +3110,11 @@ public final class Settings {
          */
         public static final String SHOW_STATUSBAR_IME_SWITCHER = "show_statusbar_ime_switcher";
 
+        /**
+         * Statusbar State
+         * @hide
+         */
+        public static final String EXPANDED_DESKTOP_STATE = "expanded_desktop_state";
 
         /**
          * Number of custom navbar buttons
