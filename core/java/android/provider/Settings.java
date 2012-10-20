@@ -2264,6 +2264,12 @@ public final class Settings {
         public static final String POINTER_SPEED = "pointer_speed";
 
         /**
+         * Toggle to use a transparent background on the lockscreen.
+         * @hide
+         */
+        public static final String LOCKSCREEN_TRANSPARENT = "lockscreen_transparent";
+
+        /**
          * Whether national data roaming should be used.
          * @hide
          */
