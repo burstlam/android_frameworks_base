@@ -31,6 +31,11 @@
     <drawable name="notification_header_bg">#FF000000</drawable>
     <drawable name="nav_bar_bg">#ff000000</drawable>
 
+    <!-- Notification Shortcuts -->
+    <drawable name="notification_shortcut_background_color">#00000000</drawable>
+    <drawable name="notification_item_background_color">#ff111111</drawable>
+    <drawable name="notification_item_background_color_pressed">#ff257390</drawable>
+
     <!-- ==================== system bar only ==================== -->
     <drawable name="system_bar_background">#ff000000</drawable>
     <!-- the darkening filter applied to notifications -->
