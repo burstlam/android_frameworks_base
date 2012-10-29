@@ -1145,6 +1145,11 @@ public final class Settings {
             Uri.parse("content://" + AUTHORITY + "/system");
 
         /**
+	 * Whether flipping down mutes ringer or not
+	 */
+        public static final String FLIPPING_DOWN_MUTES_RINGER = "flipping_down_mutes_ringer";
+
+        /**
          * Whether we keep the device on while the device is plugged in.
          * Supported values are:
          * <ul>
