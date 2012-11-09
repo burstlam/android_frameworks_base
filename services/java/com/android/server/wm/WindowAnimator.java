@@ -220,6 +220,9 @@ public class WindowAnimator {
 
         ArrayList<WindowStateAnimator> unForceHiding = null;
         boolean wallpaperInUnForceHiding = false;
+        boolean mCirclesLock = Settings.System.getBoolean(
+                mContext.getContentResolver(),
+                Settings.System.USE_CIRCLES_LOCKSCREEN, false);
 
         for (int i = mService.mWindows.size() - 1; i >= 0; i--) {
             WindowState win = mService.mWindows.get(i);
@@ -304,7 +307,7 @@ public class WindowAnimator {
                     if (win.isReadyForDisplay()) {
                         if (mTransparentLock) {
                             mForceHiding = KEYGUARD_NOT_SHOWN;
-                        } else {
+                        } else if (!mCirclesLock) {
                             if (nowAnimating) {
                                 if (winAnimator.mAnimationIsEntrance) {
                                     mForceHiding = KEYGUARD_ANIMATING_IN;
@@ -314,6 +317,8 @@ public class WindowAnimator {
                             } else {
                                 mForceHiding = KEYGUARD_SHOWN;
                             }
+                        } else {
+                            mForceHiding = KEYGUARD_NOT_SHOWN;
                         }
                     }
                     if (WindowManagerService.DEBUG_VISIBILITY) Slog.v(TAG,
