@@ -24,6 +24,9 @@ import android.animation.LayoutTransition;
 import android.app.KeyguardManager;
 import android.app.StatusBarManager;
 import android.content.ContentResolver;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.TransitionDrawable;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.ContentObserver;
@@ -38,6 +41,7 @@ import android.os.Message;
 import android.os.ServiceManager;
 import android.provider.Settings;
 import android.util.AttributeSet;
+import android.util.ExtendedPropertiesUtils;
 import android.util.Slog;
 import android.view.Display;
 import android.view.KeyEvent;
@@ -47,9 +51,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import java.math.BigIntegergit;
 
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.systemui.R;
@@ -263,6 +270,40 @@ public class NavigationBarView extends LinearLayout {
         mBackLandIcon = res.getDrawable(R.drawable.ic_sysbar_back_land);
         mBackAltIcon = ((KeyButtonView)generateKey(false, KEY_BACK_ALT)).getDrawable(); //res.getDrawable(R.drawable.ic_sysbar_back_ime);
         mBackAltLandIcon = ((KeyButtonView)generateKey(true, KEY_BACK_ALT)).getDrawable(); // res.getDrawable(R.drawable.ic_sysbar_back_ime);
+
+        mContext.getContentResolver().registerContentObserver(
+            Settings.System.getUriFor(Settings.System.NAV_BAR_COLOR), false, new ContentObserver(new Handler()) {
+                @Override
+                public void onChange(boolean selfChange) {
+                    updateColor(false);
+                }});
+    }
+
+    private void updateColor(boolean defaults) {
+        Bitmap bm = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+        Canvas cnv = new Canvas(bm);
+
+        if (defaults) {
+            cnv.drawColor(0xFF000000);
+            setBackground(new BitmapDrawable(bm));
+            return;
+        }
+
+        String setting = Settings.System.getString(mContext.getContentResolver(),
+                Settings.System.NAV_BAR_COLOR);
+        String[] colors = (setting == null || setting.equals("") ?
+                ExtendedPropertiesUtils.PARANOID_COLORS_DEFAULTS[
+                ExtendedPropertiesUtils.PARANOID_COLORS_NAVBAR] : setting).split(
+                ExtendedPropertiesUtils.PARANOID_STRING_DELIMITER);
+        String currentColor = colors[Integer.parseInt(colors[2])];
+        
+        cnv.drawColor(new BigInteger(currentColor, 16).intValue());
+
+        TransitionDrawable transition = new TransitionDrawable(new Drawable[]{
+                getBackground(), new BitmapDrawable(bm)});
+        transition.setCrossFadeEnabled(true);
+        setBackground(transition);
+        transition.startTransition(1000);
     }
 
     public void setTransparencyManager(TransparencyManager tm) {
@@ -796,6 +837,7 @@ public class NavigationBarView extends LinearLayout {
              ViewGroup group = (ViewGroup) v.findViewById(R.id.nav_buttons);
              group.setMotionEventSplittingEnabled(false);
          }
+         updateColor(true);
          mCurrentView = mRotatedViews[Surface.ROTATION_0];
 
          // this takes care of making the buttons
