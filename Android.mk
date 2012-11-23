@@ -83,6 +83,7 @@ LOCAL_SRC_FILES += \
 	core/java/android/app/IBackupAgent.aidl \
 	core/java/android/app/IInstrumentationWatcher.aidl \
 	core/java/android/app/INotificationManager.aidl \
+	core/java/android/app/IProfileManager.aidl \
 	core/java/android/app/IProcessObserver.aidl \
 	core/java/android/app/ISearchManager.aidl \
 	core/java/android/app/ISearchManagerCallback.aidl \
@@ -320,6 +321,7 @@ aidl_files := \
 	frameworks/base/core/java/android/accounts/IAccountAuthenticator.aidl \
 	frameworks/base/core/java/android/accounts/IAccountAuthenticatorResponse.aidl \
 	frameworks/base/core/java/android/app/Notification.aidl \
+	frameworks/base/core/java/android/app/Profile.aidl \
 	frameworks/base/core/java/android/app/PendingIntent.aidl \
 	frameworks/base/core/java/android/appwidget/AppWidgetProviderInfo.aidl \
 	frameworks/base/core/java/android/bluetooth/BluetoothDevice.aidl \

@@ -4225,6 +4225,21 @@
     <string name="toast_rotation_unlocked">Display rotation unlocked</string>
     <string name="toast_rotation_locked">Display rotation locked</string>
 
+    <!--CM Profiles -->
+    <!-- Names of default profiles. -->
+    <string name="profileNameDefault">Default</string>
+    <string name="profileNameWork">Work</string>
+    <string name="profileNameHome">Home</string>
+    <string name="profileNameSilent">Silent</string>
+    <string name="profileNameNight">Night</string>
+
+    <!-- Names of application groups. -->
+    <string name="profileGroupPhone">Phone</string>
+    <string name="profileGroupCalendar">Calendar</string>
+    <string name="profileGroupGmail">Gmail</string>
+    <string name="profileGroupEmail">Email</string>
+    <string name="profileGroupSMS">SMS</string>
+
     <!-- Animation Strings -->
     <string name="animation_fade">Fade</string>
     <string name="animation_slide_right">Slide in right</string>
