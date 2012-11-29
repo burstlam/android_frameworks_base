@@ -3839,6 +3839,10 @@
     <!-- Reboot -->
     <string name="reboot">Reboot</string>
 
+    <!-- Burst Mod-->
+    <!-- Button to hot reboot the device, within the Reboot Options dialog -->
+    <string name="reboot_hot">Hot Reboot</string>
+
     <!-- Reboot recovery option -->
     <string name="reboot_recovery">Recovery</string>
 
