@@ -65,6 +65,9 @@ import android.net.wifi.WifiManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
+import android.os.SystemClock;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.os.UserManager;
@@ -134,7 +137,8 @@ class QuickSettings {
     private static final int LTE_TILE = 22;
     private static final int FAV_CONTACT_TILE = 23;
     private static final int RAM_TILE = 24;
-   // private static final int BT_TETHER_TILE = 25;
+    private static final int SCREEN_TILE = 25;
+   // private static final int BT_TETHER_TILE = 26;
 
     public static final String USER_TOGGLE = "USER";
     public static final String BRIGHTNESS_TOGGLE = "BRIGHTNESS";
@@ -162,6 +166,7 @@ class QuickSettings {
     public static final String LTE_TOGGLE = "LTE";
     public static final String FAV_CONTACT_TOGGLE = "FAVCONTACT";
     public static final String RAM_TOGGLE = "RAM";
+    public static final String SCREEN_TOGGLE = "SCREEN";
 
     private static final String DEFAULT_TOGGLES = "default";
 
@@ -245,6 +250,7 @@ class QuickSettings {
             toggleMap.put(LTE_TOGGLE, LTE_TILE);
             toggleMap.put(FAV_CONTACT_TOGGLE, FAV_CONTACT_TILE);
             toggleMap.put(RAM_TOGGLE, RAM_TILE);
+            toggleMap.put(SCREEN_TOGGLE, SCREEN_TILE);
             //toggleMap.put(BT_TETHER_TOGGLE, BT_TETHER_TILE);
         }
         return toggleMap;
@@ -821,6 +827,35 @@ class QuickSettings {
                         TextView tv = (TextView) view.findViewById(R.id.silent_textview);
                         tv.setCompoundDrawablesWithIntrinsicBounds(0, state.iconId, 0, 0);
                         tv.setText(state.label);
+                        tv.setTextSize(1, mTileTextSize);
+                    }
+                });
+                break;
+            case SCREEN_TILE:
+                quick = (QuickSettingsTileView)
+                        inflater.inflate(R.layout.quick_settings_tile, parent, false);
+                quick.setContent(R.layout.quick_settings_tile_screen, inflater);
+                quick.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+                        pm.goToSleep(SystemClock.uptimeMillis());
+                   }
+                });
+                quick.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        // maybe something here?
+                        return true;
+                    }
+                });
+                mModel.addScreenTile(quick, new QuickSettingsModel.RefreshCallback() {
+                    @Override
+                    public void refreshView(QuickSettingsTileView view, State state) {
+                        TextView tv = (TextView) view.findViewById(R.id.screen_tileview);
+                        tv.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_lock_power_off, 0, 0);
+                        String screenlabel=mContext.getString(R.string.quick_settings_screen_off_label);    
+                        tv.setText(screenlabel);
                         tv.setTextSize(1, mTileTextSize);
                     }
                 });

@@ -341,6 +341,10 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
     private RefreshCallback mRamCallback;
     private State mRamState = new State();
 
+    private QuickSettingsTileView mScreenTile;
+    private RefreshCallback mScreenCallback;
+    private State mScreenState = new State();
+
     public QuickSettingsModel(Context context) {
         mContext = context;
         mState = RunningState.getInstance(mContext);
@@ -473,6 +477,13 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
         mTimeTile = view;
         mTimeCallback = cb;
         mTimeCallback.refreshView(view, mTimeState);
+    }
+
+    // Screen
+    void addScreenTile(QuickSettingsTileView view, RefreshCallback cb) {
+        mScreenTile = view;
+        mScreenCallback = cb;
+        mScreenCallback.refreshView(mScreenTile, mScreenState);
     }
 
     // Alarm
