@@ -23,6 +23,8 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
+import android.app.Profile;
+import android.app.ProfileManager;
 import android.app.SearchManager;
 import android.app.admin.DevicePolicyManager;
 import android.appwidget.AppWidgetHost;
@@ -140,6 +142,15 @@ public class KeyguardHostView extends KeyguardViewBase {
 
     protected int mClientGeneration;
 
+     // We can use the profile manager to override security
+     private ProfileManager mProfileManager;
+
+     /*package*/ interface TransportCallback {
+        void onListenerDetached();
+        void onListenerAttached();
+        void onPlayStateChanged();
+    }
+
     /*package*/ interface UserSwitcherCallback {
         void hideSecurityView(int duration);
         void showSecurityView();
@@ -168,6 +179,8 @@ public class KeyguardHostView extends KeyguardViewBase {
         // Once created, keyguard should *never* re-use this instance with another user.
         // In other words, mUserId should never change - hence it's marked final.
         mUserId = mLockPatternUtils.getCurrentUser();
+
+        mProfileManager = (ProfileManager) context.getSystemService(Context.PROFILE_SERVICE);
 
         DevicePolicyManager dpm =
                 (DevicePolicyManager) mContext.getSystemService(Context.DEVICE_POLICY_SERVICE);
@@ -1145,10 +1158,12 @@ public class KeyguardHostView extends KeyguardViewBase {
         SecurityMode mode = mSecurityModel.getSecurityMode();
         switch (mode) {
             case Pattern:
-                return mLockPatternUtils.isLockPatternEnabled();
+                return mLockPatternUtils.isLockPatternEnabled()
+                        && mProfileManager.getActiveProfile().getScreenLockMode()!= Profile.LockMode.INSECURE;
             case Password:
             case PIN:
-                return mLockPatternUtils.isLockPasswordEnabled();
+                return mLockPatternUtils.isLockPasswordEnabled()
+                        && mProfileManager.getActiveProfile().getScreenLockMode() != Profile.LockMode.INSECURE;
             case SimPin:
             case SimPuk:
             case Account:
