@@ -122,6 +122,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private Action mSilentModeAction;
     private ToggleAction mAirplaneModeOn;
     private NavBarAction mNavBarHideToggle;
+	private ToggleAction mExpandDesktopModeOn;
 
     private MyAdapter mAdapter;
 
@@ -135,6 +136,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private boolean mEnableScreenshotToggle = false;
     private boolean mEnableTorchToggle = false;
     private boolean mEnableAirplaneToggle = true;
+	private boolean mExpandDesktopToggle = false;
     private static int rebootIndex = 0;
 
     /**
@@ -240,6 +242,30 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         mEnableNavBarHideToggle= Settings.System.getBoolean(mContext.getContentResolver(),
                 Settings.System.POWER_DIALOG_SHOW_NAVBAR_HIDE, false);
         mNavBarHideToggle = new NavBarAction(mHandler);
+
+        mExpandDesktopToggle = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.POWER_DIALOG_SHOW_EXPANDED_DESKTOP_TOGGLE, 0) == 1;
+
+        mExpandDesktopModeOn = new ToggleAction(
+                R.drawable.ic_lock_expanded_desktop,
+                R.drawable.ic_lock_expanded_desktop,
+                R.string.global_actions_toggle_expanded_desktop_mode,
+                R.string.global_actions_expanded_desktop_mode_on_status,
+                R.string.global_actions_expanded_desktop_mode_off_status) {
+
+            void onToggle(boolean on) {
+                changeExpandDesktopModeSystemSetting(on);
+            }
+
+            public boolean showDuringKeyguard() {
+                return false;
+            }
+
+            public boolean showBeforeProvisioning() {
+                return false;
+            }
+        };
+        onExpandDesktopModeChanged();
 
         mEnableAirplaneToggle = Settings.System.getBoolean(mContext.getContentResolver(),
                 Settings.System.POWER_DIALOG_SHOW_AIRPLANE_TOGGLE, true);
@@ -387,6 +413,12 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             });
         } else {
             Slog.e(TAG, "Not adding torch");
+        }
+
+        // next: expanded desktop toggle
+		// only shown if enabled, disabled by default
+        if(mExpandDesktopToggle){
+            mItems.add(mExpandDesktopModeOn);
         }
 
         // Next NavBar Hide
@@ -1251,6 +1283,24 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         if (!mHasTelephony) {
             mAirplaneState = on ? ToggleAction.State.On : ToggleAction.State.Off;
         }
+    }
+
+    private void onExpandDesktopModeChanged() {
+        boolean expandDesktopModeOn = Settings.System.getInt(
+                mContext.getContentResolver(),
+                Settings.System.EXPANDED_DESKTOP_STATE,
+                0) == 1;
+        mExpandDesktopModeOn.updateState(expandDesktopModeOn ? ToggleAction.State.On : ToggleAction.State.Off);
+    }
+
+    /**
+	 * Change the expand desktop mode system setting
+	 */
+    private void changeExpandDesktopModeSystemSetting(boolean on) {
+        Settings.System.putInt(
+                mContext.getContentResolver(),
+                Settings.System.EXPANDED_DESKTOP_STATE,
+                on ? 1 : 0);
     }
 
     private static final class GlobalActionsDialog extends Dialog implements DialogInterface {

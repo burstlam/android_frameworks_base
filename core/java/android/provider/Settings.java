@@ -2661,6 +2661,17 @@ public final class Settings {
         public static final String POWER_DIALOG_SHOW_TORCH_TOGGLE = "power_dialog_show_torch_toggle";
 
         /**
+	 * @hide
+	 */
+        public static final String POWER_DIALOG_SHOW_EXPANDED_DESKTOP_TOGGLE = "power_menu_expanded_desktop";
+
+        /**
+	 * Statusbar State
+	 * @hide
+	 */
+        public static final String EXPANDED_DESKTOP_STATE = "expanded_desktop_state";
+
+        /**
          * @hide
          */
         public static final String NAVIGATION_BAR_HEIGHT = "navigation_bar_height";
