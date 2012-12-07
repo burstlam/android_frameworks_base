@@ -28,6 +28,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.IPackageManager;
 import android.content.res.Configuration;
+import android.database.ContentObserver;
+import android.database.Cursor;
 import android.media.AudioService;
 import android.net.wifi.p2p.WifiP2pService;
 import android.os.Handler;
@@ -40,6 +42,7 @@ import android.os.StrictMode;
 import android.os.SystemClock;
 import android.os.SystemProperties;
 import android.os.UserHandle;
+import android.provider.Settings;
 import android.server.search.SearchManagerService;
 import android.service.dreams.DreamService;
 import android.util.DisplayMetrics;
@@ -84,6 +87,32 @@ class ServerThread extends Thread {
     void reportWtf(String msg, Throwable e) {
         Slog.w(TAG, "***********************************************");
         Log.wtf(TAG, "BOOT FAILURE " + msg, e);
+    }
+
+    private class AdbSettingsObserver extends ContentObserver {
+        public AdbSettingsObserver() {
+            super(null);
+        }
+        @Override
+        public void onChange(boolean selfChange) {
+            boolean enableAdb = (Settings.Global.getInt(mContentResolver,
+                Settings.Global.ADB_ENABLED, 0) > 0);
+            // setting this secure property will start or stop adbd
+            SystemProperties.set("persist.service.adb.enable", enableAdb ? "1" : "0");
+        }
+    }
+
+    private class AdbPortObserver extends ContentObserver {
+        public AdbPortObserver() {
+            super(null);
+        }
+        @Override
+        public void onChange(boolean selfChange) {
+            int adbPort = Settings.Secure.getInt(mContentResolver,
+                Settings.Secure.ADB_PORT, 0);
+            // setting this will control whether ADB runs on TCP/IP or USB
+            SystemProperties.set("service.adb.tcp.port", Integer.toString(adbPort));
+        }
     }
 
     @Override
@@ -758,6 +787,22 @@ class ServerThread extends Thread {
                 Slog.e(TAG, "Failure starting AssetRedirectionManager Service", e);
             }
         }
+
+        // make sure the ADB_ENABLED setting value matches the secure property value
+        Settings.Secure.putInt(mContentResolver, Settings.Secure.ADB_PORT,
+                Integer.parseInt(SystemProperties.get("service.adb.tcp.port", "-1")));
+
+        Settings.Global.putInt(mContentResolver, Settings.Global.ADB_ENABLED,
+                "1".equals(SystemProperties.get("persist.service.adb.enable")) ? 1 : 0);
+
+        // register observer to listen for settings changes
+        mContentResolver.registerContentObserver(
+            Settings.Secure.getUriFor(Settings.Secure.ADB_PORT),
+            false, new AdbPortObserver());
+
+        mContentResolver.registerContentObserver(
+            Settings.Global.getUriFor(Settings.Global.ADB_ENABLED),
+            false, new AdbSettingsObserver());
 
         // Before things start rolling, be sure we have decided whether
         // we are in safe mode.
