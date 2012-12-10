@@ -348,7 +348,10 @@ public final class Profile implements Parcelable, Comparable {
         dest.writeParcelable(mSilentMode, flags);
         dest.writeParcelable(mAirplaneMode, flags);
         dest.writeInt(mScreenLockMode);
+<<<<<<< HEAD
         dest.writeMap(mTriggers);
+=======
+>>>>>>> 0406837... Profiles: Airplanmode Settings with Checkbox (1/2)
     }
 
     /** @hide */
@@ -385,7 +388,10 @@ public final class Profile implements Parcelable, Comparable {
         mSilentMode = (SilentModeSettings) in.readParcelable(null);
         mAirplaneMode = (AirplaneModeSettings) in.readParcelable(null);
         mScreenLockMode = in.readInt();
+<<<<<<< HEAD
         in.readMap(mTriggers, null);
+=======
+>>>>>>> 0406837... Profiles: Airplanmode Settings with Checkbox (1/2)
     }
 
     public String getName() {
@@ -506,6 +512,11 @@ public final class Profile implements Parcelable, Comparable {
             if (vibrator.isDirty()) {
                 return true;
             }
+        if (mSilentMode.isDirty()) {
+            return true;
+        }
+        if (mAirplaneMode.isDirty()) {
+            return true;
         }
         if (mSilentMode.isDirty()) {
             return true;
