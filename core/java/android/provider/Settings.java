@@ -2717,6 +2717,12 @@ public final class Settings {
          */
         public static final String UI_FORCE_OVERFLOW_BUTTON = "ui_force_overflow_button";
 
+		/**
+         * User interface mode. This is used to change from singlepane mode forcing it to
+         * Change into multipane mode. Default is disabled. 
+         */
+        public static final String FORCE_DUAL_PANEL = "force_dualpanel";
+
         /**
          * User configurable flag for determining if NavBar is enabled
          *
