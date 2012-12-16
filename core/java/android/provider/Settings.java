@@ -3841,6 +3841,14 @@ public final class Settings {
             Secure.WIFI_WATCHDOG_PING_TIMEOUT_MS;
 
         /**
+         * @hide
+         * Show Wifi network name in notification shade
+         * 0 - don't show
+         * 1 - show
+         */
+        public static final String NOTIFICATION_SHOW_WIFI_SSID = "notification_show_wifi_ssid";
+
+        /**
          * toggle to "fix" the following: (found in NotificationManagerService)
          *  new in 4.2: if there was supposed to be a sound and we're in vibrate mode,
          *  we always vibrate, even if no vibration was specified
