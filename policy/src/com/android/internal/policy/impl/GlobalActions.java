@@ -329,11 +329,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                     mWindowManagerFuncs.shutdown(true);
                 }
 
-                public boolean onLongPress() {
-                    mWindowManagerFuncs.rebootSafeMode(true);
-                    return true;
-                }
-
                 public boolean showDuringKeyguard() {
                     return true;
                 }
@@ -348,6 +343,12 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 new SinglePressAction(
                         com.android.internal.R.drawable.ic_lock_reboot,
                         com.android.internal.R.string.reboot) {
+
+                    @Override
+                    public boolean onLongPress() {
+                        mWindowManagerFuncs.rebootSafeMode(true);
+                        return true;
+                    }
 
                     @Override
                     public boolean showDuringKeyguard() {
