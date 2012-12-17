@@ -160,6 +160,7 @@ class ServerThread extends Thread {
         WindowManagerService wm = null;
         BluetoothManagerService bluetooth = null;
         DockObserver dock = null;
+        RotationSwitchObserver rotateSwitch = null;
         UsbService usb = null;
         SerialService serial = null;
         TwilightService twilight = null;
@@ -359,6 +360,9 @@ class ServerThread extends Thread {
             Slog.e("System", "******************************************");
             Slog.e("System", "************ Failure starting core service", e);
         }
+
+        boolean hasRotationLock = context.getResources().getBoolean(com.android
+                .internal.R.bool.config_hasRotationLockSwitch);
 
         DevicePolicyManagerService devicePolicy = null;
         StatusBarManagerService statusBar = null;
@@ -650,7 +654,17 @@ class ServerThread extends Thread {
             }
 
             try {
-                Slog.i(TAG, "Wired Accessory Manager");
+                if (hasRotationLock) {
+                    Slog.i(TAG, "Rotation Switch Observer");
+                    // Listen for switch changes
+                    rotateSwitch = new RotationSwitchObserver(context);
+                }
+            } catch (Throwable e) {
+                reportWtf("starting RotationSwitchObserver", e);
+            }
+
+            try {
+                Slog.i(TAG, "Wired Accessory Observer");
                 // Listen for wired headset changes
                 inputManager.setWiredAccessoryCallbacks(
                         new WiredAccessoryManager(context, inputManager));
@@ -883,6 +897,7 @@ class ServerThread extends Thread {
         final NetworkPolicyManagerService networkPolicyF = networkPolicy;
         final ConnectivityService connectivityF = connectivity;
         final DockObserver dockF = dock;
+        final RotationSwitchObserver rotateSwitchF = rotateSwitch;
         final UsbService usbF = usb;
         final ThrottleService throttleF = throttle;
         final TwilightService twilightF = twilight;
@@ -945,6 +960,11 @@ class ServerThread extends Thread {
                     if (dockF != null) dockF.systemReady();
                 } catch (Throwable e) {
                     reportWtf("making Dock Service ready", e);
+                }
+                try {
+                    if (rotateSwitchF != null) rotateSwitchF.systemReady();
+                } catch (Throwable e) {
+                    reportWtf("making Rotation Switch Service ready", e);
                 }
                 try {
                     if (usbF != null) usbF.systemReady();
