@@ -3520,6 +3520,12 @@ public final class Settings {
         public static final String NOTIFICATION_SHADE_DIM = "notification_shade_dim";
 
         /**
+         * Override and forcefully disable the fullscreen keyboard
+         * @hide
+         */
+        public static final String DISABLE_FULLSCREEN_KEYBOARD = "disable_fullscreen_keyboard";
+
+        /**
          * Show the pending notification counts as overlays on the status bar
          * @hide
          */
