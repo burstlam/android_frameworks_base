@@ -2421,6 +2421,21 @@ public final class Settings {
         public static final String STATUSBAR_BATTERY_BAR_ANIMATE = "statusbar_battery_bar_animate";
 
         /**
+         * Statusbar background style
+         * 0 - Color/alpha only
+         * 1 - Default drawable with color/alpha
+         * 2 - Default drawable only
+         * @hide
+         */
+        public static final String STATUSBAR_BACKGROUND_STYLE = "statusbar_background_style";
+
+        /**
+         * Statusbar background color/alpha chooser
+         * @hide
+         */
+        public static final String STATUSBAR_BACKGROUND_COLOR = "statusbar_background_color";
+
+        /**
          * Holds the text for the Carrier label. An empty string
          * will bring the default text back.
          * @hide
@@ -2784,6 +2799,21 @@ public final class Settings {
          * @hide
          */
         public static final String NAVIGATION_BAR_GLOW_TINT = "navigation_bar_glow_tint";
+
+        /**
+         * Sets the navbar background style
+         * 1 - Color/alpha
+         * 2 - Default drawable plus color/alpha
+         * 3 - Default drawable
+         * @hide
+         */
+        public static final String NAVIGATION_BAR_BACKGROUND_STYLE = "navigation_bar_background_style";
+
+        /**
+         * Sets navbar background color/alpha
+         * @hide
+         */
+        public static final String NAVIGATION_BAR_BACKGROUND_COLOR = "navigation_bar_background_color";
 
         /**
          * @hide
