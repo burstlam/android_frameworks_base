@@ -2658,7 +2658,9 @@ public final class Settings {
          * 2 - Icon Text
          * 3 - Icon Centered Text
          * 4 - Icon Circle
-         * 5 - Hide
+         * 5 - CMCircle
++        * 6 - CMCircle %
++        * 7 - Hide
          */
         public static final String STATUSBAR_BATTERY_ICON = "statusbar_battery_icon";
 
