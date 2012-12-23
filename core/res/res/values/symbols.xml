@@ -1855,4 +1855,7 @@
   <!-- Lockscreen -->
   <java-symbol type="bool" name="config_disableHomeUnlockSetting" />
 
+  <!-- Audio Service fix A2dp support on Samsung's Audio Policy HAL-->
+  <java-symbol type="bool" name="config_noDelayInATwoDP" />
+
 </resources>
