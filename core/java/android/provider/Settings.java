@@ -2742,36 +2742,42 @@ public final class Settings {
          */
         public static final String NAVIGATION_BAR_SHOW_NOW = "navigation_bar_show_now";
 
-	/**
+        /**
+         * Option to hide power off in power menu.
+         * @hide
+         */
+        public static final String POWER_DIALOG_SHOW_POWER_OFF = "power_dialog_show_power_off";
+
+    	/**
          * Show the NavBar dialog in Power menu
          * @hide
          */
         public static final String POWER_DIALOG_SHOW_NAVBAR_HIDE = "power_dialog_show_navbar_hide";
 
-         /**
+        /**
          * @hide
          */
         public static final String POWER_DIALOG_SHOW_SCREENSHOT = "power_dialog_show_screenshot";
 
-         /**
+        /**
          * @hide
          */
         public static final String POWER_DIALOG_SHOW_AIRPLANE_TOGGLE = "power_dialog_show_airplane_toggle";
 
-         /**
+        /**
          * @hide
          */
         public static final String POWER_DIALOG_SHOW_TORCH_TOGGLE = "power_dialog_show_torch_toggle";
 
         /**
-	 * @hide
-	 */
+    	 * @hide
+    	 */
         public static final String POWER_DIALOG_SHOW_EXPANDED_DESKTOP_TOGGLE = "power_menu_expanded_desktop";
 
         /**
-	 * Statusbar State
-	 * @hide
-	 */
+    	 * Statusbar State
+    	 * @hide
+         */
         public static final String EXPANDED_DESKTOP_STATE = "expanded_desktop_state";
 
         /**
