@@ -3883,6 +3883,14 @@ public final class Settings {
         public static final String ADB_NOTIFY = "adb_notify";
 
         /**
+         * use the lock screen timeout settings when the user turns the power off manually?
+         * Boolean value
+         *
+         * @hide
+         */
+        public static final String LOCK_SCREEN_LOCK_USER_OVERRIDE = "lock_screen_lock_user_override";
+
+        /**
          * The hostname for this device
          * @hide
          */
