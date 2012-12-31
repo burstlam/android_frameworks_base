@@ -38,7 +38,6 @@ import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
-import android.graphics.ColorFilterMaker;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
@@ -438,7 +437,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         }
 
         // figure out which pixel-format to use for the status bar.
-        mPixelFormat = PixelFormat.TRANSLUCENT;
+        mPixelFormat = PixelFormat.OPAQUE;
 
         mSystemIconArea = (LinearLayout) mStatusBarView.findViewById(R.id.system_icon_area);
         mStatusIcons = (LinearLayout)mStatusBarView.findViewById(R.id.statusIcons);
@@ -641,10 +640,6 @@ public class PhoneStatusBar extends BaseStatusBar {
         // listen for USER_SETUP_COMPLETE setting (per-user)
         resetUserSetupObserver();
 
-        // update everything here
-        updateSettings();
-        updateNavigationBarBackground();
-
         return mStatusBarView;
     }
 
@@ -839,7 +834,7 @@ public class PhoneStatusBar extends BaseStatusBar {
                     | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
                     | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
                     | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
-                PixelFormat.TRANSLUCENT);
+                PixelFormat.OPAQUE);
         // this will allow the navbar to run in an overlay on devices that support this
         if (ActivityManager.isHighEndGfx()) {
             lp.flags |= WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
@@ -2526,20 +2521,15 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.NOTIFICATION_CLOCK[doubleClick]), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.CURRENT_UI_MODE), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NAVIGATION_BAR_BACKGROUND_STYLE), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NAVIGATION_BAR_BACKGROUND_COLOR), false, this);
         }
 
-        @Override
+         @Override
         public void onChange(boolean selfChange) {
             updateSettings();
-            updateNavigationBarBackground();
         }
     }
 
-    protected void updateSettings() {
+   protected void updateSettings() {
         ContentResolver cr = mContext.getContentResolver();
 
         mClockActions[shortClick] = Settings.System.getString(cr,
@@ -2565,34 +2555,6 @@ public class PhoneStatusBar extends BaseStatusBar {
         }
         mCurrentUIMode = Settings.System.getInt(cr,
                 Settings.System.CURRENT_UI_MODE, 0);
-
-        updateNavigationBarBackground();
-    }
-
-    protected void updateNavigationBarBackground() {
-        try {
-            boolean showNav = mWindowManagerService.hasNavigationBar();
-            if (showNav) {
-                // NavigationBar background color
-                int defaultBg = Settings.System.getInt(mContext.getContentResolver(),
-                        Settings.System.NAVIGATION_BAR_BACKGROUND_STYLE, 2);
-                int navbarBackgroundColor = Settings.System.getInt(mContext.getContentResolver(),
-                        Settings.System.NAVIGATION_BAR_BACKGROUND_COLOR, 0xFF000000);
-
-                if (defaultBg == 0) {
-                    mNavigationBarView.setBackgroundColor(navbarBackgroundColor);
-                } else if (defaultBg == 1) {
-                    mNavigationBarView.setBackgroundResource(R.drawable.nav_bar_bg);
-                    mNavigationBarView.getBackground().setColorFilter(ColorFilterMaker.
-                            changeColorAlpha(navbarBackgroundColor, .32f, 0f));
-                } else {
-                    mNavigationBarView.setBackground(mContext.getResources().getDrawable(
-                            R.drawable.nav_bar_bg));
-                }
-            }
-        } catch (RemoteException ex) {
-            // no window manager? good luck with that
-        }
     }
 
     public boolean skipToSettingsPanel() {
