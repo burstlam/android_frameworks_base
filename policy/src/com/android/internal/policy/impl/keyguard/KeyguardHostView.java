@@ -251,6 +251,7 @@ public class KeyguardHostView extends KeyguardViewBase {
 
         showPrimarySecurityScreen(false);
         updateSecurityViews();
+        minimizeChallengeIfDesired();
     }
 
     private int getDisabledFeatures(DevicePolicyManager dpm) {
@@ -845,6 +846,7 @@ public class KeyguardHostView extends KeyguardViewBase {
         if (mViewStateManager != null) {
             mViewStateManager.showUsabilityHints();
         }
+        minimizeChallengeIfDesired();
     }
 
     @Override
@@ -927,6 +929,19 @@ public class KeyguardHostView extends KeyguardViewBase {
             // otherwise, go to the unlock screen, see if they can verify it
             mIsVerifyUnlockOnly = true;
             showSecurityScreen(securityMode);
+        }
+    }
+
+    private void minimizeChallengeIfDesired() {
+        if (mSlidingChallengeLayout == null) {
+            return;
+        }
+
+        int setting = Settings.System.getIntForUser(getContext().getContentResolver(),
+                Settings.System.LOCKSCREEN_MAXIMIZE_WIDGETS, 0, UserHandle.USER_CURRENT);
+
+        if (setting == 1) {
+            mSlidingChallengeLayout.showChallenge(false);
         }
     }
 
