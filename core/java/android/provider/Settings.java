@@ -2818,6 +2818,12 @@ public final class Settings {
         public static final String MENU_VISIBILITY = "menu_visibility";
 
         /**
+         * Whether or not to launch default music player when headset is connected
+         * @hide
+         */
+        public static final String HEADSET_CONNECT_PLAYER = "headset_connect_player";
+
+        /**
          * @hide
          */
         public static final String NAVIGATION_BAR_BUTTONS_QTY = "navigation_bar_buttons_qty";
