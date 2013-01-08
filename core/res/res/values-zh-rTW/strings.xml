@@ -1444,4 +1444,13 @@
     <string name="enable_accessibility_canceled" msgid="3833923257966635673">"協助工具已取消。"</string>
     <string name="user_switched" msgid="3768006783166984410">"目前的使用者是 <xliff:g id="NAME">%1$s</xliff:g>。"</string>
     <string name="owner_name" msgid="2716755460376028154">"擁有者"</string>
+
+    <!-- Chinese Lunar Calendar Start -->
+    <string name="status_year"  translatable="false">年</string>	
+    <string name="status_month"  translatable="false">月</string>
+    <string name="status_day"  translatable="false">日</string>
+    <string name="status_leap"  translatable="false">閏</string>
+    <string name="status_chushi"  translatable="false">初十</string>	
+    <string name="status_format1"  translatable="false">yyyy年MM月dd日</string>
+    <string name="status_format2"  translatable="false">1900年1月31日</string>
 </resources>
