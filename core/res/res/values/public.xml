@@ -2036,6 +2036,7 @@
   <java-symbol type="bool" name="config_forceDisableHardwareKeyboard" />
 
   <!-- Chinese Lunar Calendar Start -->
+  <java-symbol type="id" name="lunar_date" />
   <java-symbol type="array" name="animals" />
   <java-symbol type="array" name="chinesenumber" />
   <java-symbol type="array" name="chineseten" />
@@ -2052,5 +2053,5 @@
   <java-symbol type="string" name="status_month" />
   <java-symbol type="string" name="status_year" />
   <java-symbol type="string" name="status_day" />
-
+  <java-symbol type="string" name="abbrev_wday_month_day_year" />
 </resources>
