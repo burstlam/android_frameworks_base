@@ -435,7 +435,7 @@ class KeyguardStatusViewManager implements OnClickListener {
         if (mDateView != null) {
             Resources res = getContext().getResources();
             String strCountry = res.getConfiguration().locale.getCountry();
-            if(strCountry.equals("CN") || strCountry.equals("TW") && mLunarDateView != null){
+            if(strCountry.equals("CN") && mLunarDateView != null){
             	mDate = (DateFormat.format(mDateFormatString, new Date())).toString();
             	mDate1 = (DateFormat.format(mDateFormatString1, new Date())).toString();
                 mDateView.setText(mDate);

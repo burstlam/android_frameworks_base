@@ -138,7 +138,7 @@ public class KeyguardStatusView extends GridLayout {
         maybeSetUpperCaseText(mDateView, DateFormat.format(mDateFormatString, new Date()));
         Resources res = getContext().getResources();
         String strCountry = res.getConfiguration().locale.getCountry();
-        if(strCountry.equals("CN") || strCountry.equals("TW") && mLunarDateView != null){
+        if(strCountry.equals("CN") && mLunarDateView != null){
             mLunarDateView.setText(buildLunarDate(DateFormat.format(mDateFormatString1, new Date()).toString()));
             return;
         }
