@@ -4135,4 +4135,13 @@
     <!-- Message informing user that the requested activity could not be found [CHAR LIMIT=none] -->
     <string name="app_not_found">No application found to handle this action</string>
     <string name="revoke">Revoke</string>
+
+    <!-- Chinese Lunar Calendar Start -->
+    <string name="status_year"  translatable="false">年</string>  
+    <string name="status_month"  translatable="false">月</string>
+    <string name="status_day"  translatable="false">日</string>
+    <string name="status_leap"  translatable="false">闰</string>
+    <string name="status_chushi"  translatable="false">初十</string>  
+    <string name="status_format1"  translatable="false">yyyy年MM月dd日</string>
+    <string name="status_format2"  translatable="false">1900年1月31日</string>
 </resources>
