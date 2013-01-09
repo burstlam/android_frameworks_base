@@ -1641,7 +1641,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     @Override
     public int getWallpaperTop(int rotation) {
-        return mUnrestrictedScreenTop;
+        return mRestrictedScreenTop;
     }
 
     @Override
@@ -2664,8 +2664,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             if (DEBUG_LAYOUT) Log.i(TAG, String.format("mDock rect: (%d,%d - %d,%d)",
                     mDockLeft, mDockTop, mDockRight, mDockBottom));
 
-            mDockBottom = navVisible ? mRestrictedScreenTop + mRestrictedScreenHeight : mDockBottom;
-            mDockRight = navVisible ? mRestrictedScreenLeft + mRestrictedScreenWidth : mDockRight;
             // decide where the status bar goes ahead of time
             if (mStatusBar != null) {
                 // apply any navigation bar insets
@@ -2696,7 +2694,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     // Status bar may go away, so the screen area it occupies
                     // is available to apps but just covering them when the
                     // status bar is visible.
-                    mSystemTop = mDockTop = mUnrestrictedScreenTop + mStatusBarHeight;
+                    mDockTop = mUnrestrictedScreenTop + mStatusBarHeight;
 
                     mContentTop = mCurTop = mDockTop;
                     mContentBottom = mCurBottom = mDockBottom;
@@ -2714,11 +2712,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     // If the status bar is currently requested to be visible,
                     // and not in the process of animating on or off, then
                     // we can tell the app that it is covered by it.
-                    mSystemTop = mUnrestrictedScreenTop;
-                    mRestrictedScreenTop = mDockTop;
-                    mRestrictedScreenHeight -= mStatusBarHeight;
+                    mSystemTop = mUnrestrictedScreenTop + mStatusBarHeight;
                 }
             }
+            mDockBottom = navVisible ? mRestrictedScreenTop + mRestrictedScreenHeight : mDockBottom;
+            mDockRight = navVisible ? mRestrictedScreenLeft + mRestrictedScreenWidth : mDockRight;
         }
     }
 
@@ -3052,14 +3050,14 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         df.right = cf.right = mDockRight;
                         df.bottom = cf.bottom = mDockBottom;
                     } else {
-                        df.left = cf.left = mRestrictedScreenLeft;
-                        df.top = cf.top = mRestrictedScreenTop;
+                        df.left = cf.left = mContentLeft;
+                        df.top = cf.top = mContentTop;
                         df.right = cf.right = mRestrictedScreenLeft+mRestrictedScreenWidth;
                         df.bottom = cf.bottom = mRestrictedScreenTop+mRestrictedScreenHeight;
                     }
                     if (adjust != SOFT_INPUT_ADJUST_NOTHING) {
-                        vf.left = mRestrictedScreenLeft;
-                        vf.top = mRestrictedScreenTop;
+                        vf.left = mCurLeft;
+                        vf.top = mCurTop;
                         vf.right = mRestrictedScreenLeft+mRestrictedScreenWidth;
                         vf.bottom = mRestrictedScreenTop+mRestrictedScreenHeight;;
                     } else {
