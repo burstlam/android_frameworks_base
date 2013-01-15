@@ -1059,34 +1059,19 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         // SystemUI (status bar) layout policy
         int shortSizeDp = shortSize * DisplayMetrics.DENSITY_DEFAULT / density;
 
-        // tabletui switch
-        boolean mTabletui = Settings.System.getBoolean(mContext.getContentResolver(), Settings.System.MODE_TABLET_UI, false);
-        if (!mTabletui) {
-
-             // SystemUI (status bar) layout policy
-             if (shortSizeDp < 600) {
-                 // 0-599dp: "phone" UI with a separate status & navigation bar
-                 mHasSystemNavBar = false;
-                 mNavigationBarCanMove = true;
-                 Settings.System.putInt(mContext.getContentResolver(),
-                     Settings.System.USER_UI_MODE, 0);
-             } else if (shortSizeDp < 720) {
-                 // 600-719dp: "phone" UI with modifications for larger screens
-                 mHasSystemNavBar = false;
-                 mNavigationBarCanMove = false;
-                 Settings.System.putInt(mContext.getContentResolver(),
-                         Settings.System.USER_UI_MODE, 2);
-             } else {
-                 // 720dp: "tablet" UI with a single combined status & navigation bar
-                 mHasSystemNavBar = true;
-                 mNavigationBarCanMove = false;
-                 Settings.System.putInt(mContext.getContentResolver(),
-                         Settings.System.USER_UI_MODE, 1);
-             }
-         } else {
-          mHasSystemNavBar = true;
-          mNavigationBarCanMove = false;
-         }
+        if (shortSizeDp < 600) {
+            // 0-599dp: "phone" UI with a separate status & navigation bar
+            mHasSystemNavBar = false;
+            mNavigationBarCanMove = true;
+            Settings.System.putInt(mContext.getContentResolver(),
+                    Settings.System.CURRENT_UI_MODE, 0);
+        } else if (shortSizeDp < 720) {
+            // 600+dp: "phone" UI with modifications for larger screens
+            mHasSystemNavBar = false;
+            mNavigationBarCanMove = false;
+            Settings.System.putInt(mContext.getContentResolver(),
+                    Settings.System.CURRENT_UI_MODE, 2);
+        }
 
         if (!mHasSystemNavBar) {
              final boolean showByDefault = mContext.getResources().getBoolean(

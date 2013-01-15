@@ -2700,12 +2700,6 @@ public final class Settings {
         public static final String USER_UI_MODE = "user_ui_mode";
 
 		/**
-         * User interface mode. This is used to change the UI mode forcing it to
-         * Change into tablet mode. Default is disabled. 
-         */
-        public static final String MODE_TABLET_UI = "mode_tabletui";
-
-		/**
          * Control the display of the action overflow button within app UI.
          * 0 = use system default
          * 1 = force on
@@ -3063,7 +3057,6 @@ public final class Settings {
             VIBRATE_INPUT_DEVICES,
             MODE_RINGER,                // moved to global
             MODE_RINGER_STREAMS_AFFECTED,
-			MODE_TABLET_UI,
             MUTE_STREAMS_AFFECTED,
             VOLUME_VOICE,
             VOLUME_SYSTEM,
