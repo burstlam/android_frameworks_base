@@ -890,7 +890,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 	        if (mGlobalActions == null) {
 	            mGlobalActions = new GlobalActions(mContext, mWindowManagerFuncs);
 	        }
-	        mGlobalActions.showProfileDialog();
+	        mGlobalActions.createProfileDialog();
     }
 
     boolean isDeviceProvisioned() {
