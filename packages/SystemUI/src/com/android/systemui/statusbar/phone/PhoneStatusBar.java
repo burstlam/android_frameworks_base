@@ -453,6 +453,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         mStatusBarView = (PhoneStatusBarView) mStatusBarWindow.findViewById(R.id.status_bar);
         mStatusBarView.setBackgroundColor(Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.STATUS_BAR_COLOR, 0xFF000000)); 
+        mStatusBarView.setStatusBar(this);
         mStatusBarView.setBar(this);
 
         PanelHolder holder = (PanelHolder) mStatusBarWindow.findViewById(R.id.panel_holder);
@@ -1618,7 +1619,6 @@ public class PhoneStatusBar extends BaseStatusBar {
 
         mStatusBarWindow.cancelExpandHelper();
         mStatusBarView.collapseAllPanels(true);
-        mStatusBarView.setAlternativePanel(mPieControlPanel);
         super.animateCollapsePanels(flags);
     }
 
