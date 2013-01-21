@@ -473,7 +473,10 @@ public class TabletStatusBar extends BaseStatusBar implements
             reloadAllNotificationIcons(); // reload the tray
         }
 
-        final int numIcons = res.getInteger(R.integer.config_maxNotificationIcons);
+        int numOriginalIcons = res.getInteger(R.integer.config_maxNotificationIcons);
+        final int numIcons = numOriginalIcons == 2 ? Settings.System.getInt(mContext.getContentResolver(),
+             Settings.System.MAX_NOTIFICATION_ICONS, 2) : numOriginalIcons;
+
         if (numIcons != mMaxNotificationIcons) {
             mMaxNotificationIcons = numIcons;
             if (DEBUG) Slog.d(TAG, "max notification icons: " + mMaxNotificationIcons);
@@ -1660,6 +1663,8 @@ public class TabletStatusBar extends BaseStatusBar implements
             resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_WIDTH_PORT), false,
                     this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.MAX_NOTIFICATION_ICONS), false, this);
         }
 
          @Override

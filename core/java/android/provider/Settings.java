@@ -2457,6 +2457,12 @@ public final class Settings {
         public static final String STATUSBAR_NOTIF_COUNT = "status_bar_notif_count";
 
         /**
+         * Maximal notification count as overlays on the status bar
+         * @hide
+         */
+        public static final String MAX_NOTIFICATION_ICONS = "max_notification_icons";
+
+        /**
          * Whether to show the battery bar
          * @hide
          */
