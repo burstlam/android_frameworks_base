@@ -2391,6 +2391,7 @@ public final class Settings {
 		 * 7 - Hide
          */
         public static final String STATUSBAR_BATTERY_ICON = "statusbar_battery_icon";
+
         /**
          * AM/PM Style for clock options
          * 0 - Normal AM/PM
@@ -2721,6 +2722,14 @@ public final class Settings {
          * Change into multipane mode. Default is disabled. 
          */
         public static final String FORCE_DUAL_PANEL = "force_dualpanel";
+
+        /**
+         * Control the display of the action overflow button within app UI.
+         * 0 = use system default
+         * 1 = force on
+         * @hide
+         */
+        public static final String UI_FORCE_OVERFLOW_BUTTON = "ui_force_overflow_button";
 
         /**
          * User configurable flag for determining if NavBar is enabled
