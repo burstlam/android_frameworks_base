@@ -141,7 +141,6 @@ public class KeyguardStatusView extends GridLayout {
         String strCountry = res.getConfiguration().locale.getCountry();
         if(strCountry.equals("CN") && mLunarDateView != null){
             mLunarDateView.setText(buildLunarDate(DateFormat.format(mDateFormatString1, new Date()).toString()));
-            return;
         }
     }
 
