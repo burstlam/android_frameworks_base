@@ -126,7 +126,7 @@ public class LunarDateView extends TextView implements OnClickListener, OnLongCl
     protected void updateClock() {
         Resources res = mContext.getResources();
         String strCountry = res.getConfiguration().locale.getCountry();
-        if(strCountry.equals("CN") || strCountry.equals("TW")){
+        if(strCountry.equals("CN")){
             CharSequence mDateFormatString = res.getText(com.android.internal.R.string.abbrev_wday_month_day_year);
             setText(buildLunarDate(DateFormat.format(mDateFormatString, new Date()).toString()));
             return;
