@@ -2717,14 +2717,6 @@ public final class Settings {
         public static final String USER_UI_MODE = "user_ui_mode";
 
 		/**
-         * Control the display of the action overflow button within app UI.
-         * 0 = use system default
-         * 1 = force on
-         * @hide
-         */
-        public static final String UI_FORCE_OVERFLOW_BUTTON = "ui_force_overflow_button";
-
-		/**
          * User interface mode. This is used to change from singlepane mode forcing it to
          * Change into multipane mode. Default is disabled. 
          */
