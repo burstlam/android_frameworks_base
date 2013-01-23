@@ -55,8 +55,6 @@ import com.android.systemui.statusbar.policy.CurrentUserTracker;
 import com.android.systemui.statusbar.policy.LocationController.LocationGpsStateChangeCallback;
 import com.android.systemui.statusbar.policy.NetworkController.NetworkSignalChangedCallback;
 import com.android.systemui.statusbar.policy.Prefs;
-import com.android.systemui.recent.RunningState;
-import com.android.systemui.recent.LinearColorBar;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -69,48 +67,21 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import com.android.internal.util.MemInfoReader;
-import android.text.format.Formatter;
 
 class QuickSettingsModel implements BluetoothStateChangeCallback,
         NetworkSignalChangedCallback,
         BatteryStateChangeCallback,
         LocationGpsStateChangeCallback,
-        BrightnessStateChangeCallback,
-        RunningState.OnRefreshUiListener {
+        BrightnessStateChangeCallback {
 
     // Sett InputMethoManagerService
     private static final String TAG_TRY_SUPPRESSING_IME_SWITCHER = "TrySuppressingImeSwitcher";
 
     private String mFastChargePath;
 
-    public static final String RAM_STUFF_USED = " Used / ";
-    public static final String RAM_STUFF_FREE = " Free";
-    
     private int dataState = -1;
 
     private WifiManager wifiManager;
-
-    private LinearColorBar mRamUsageBar;
-
-    private boolean RamOn;
-
-    int mLastNumBackgroundProcesses = -1;
-    int mLastNumForegroundProcesses = -1;
-    int mLastNumServiceProcesses = -1;
-    long mLastBackgroundProcessMemory = -1;
-    long mLastForegroundProcessMemory = -1;
-    long mLastServiceProcessMemory = -1;
-    long mLastAvailMemory = -1;
-    long SECONDARY_SERVER_MEM;
-
-    TextView mFreeRamText;
-
-    RunningState mState;
-
-    ActivityManager mAm;
-
-    MemInfoReader mMemInfoReader = new MemInfoReader();
 
     /** Represents the state of a given attribute. */
     static class State {
@@ -345,17 +316,12 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
     private RefreshCallback mSettingsCallback;
     private State mSettingsState = new State();
 
-    private QuickSettingsTileView mRamTile;
-    private RefreshCallback mRamCallback;
-    private State mRamState = new State();
-
     private QuickSettingsTileView mScreenTile;
     private RefreshCallback mScreenCallback;
     private State mScreenState = new State();
 
     public QuickSettingsModel(Context context) {
         mContext = context;
-        mState = RunningState.getInstance(mContext);
         mHandler = new Handler();
         mUserTracker = new CurrentUserTracker(mContext) {
             @Override
@@ -1233,68 +1199,6 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
         }
     }
 
-    void addRamTile(QuickSettingsTileView view, RefreshCallback cb) {
-        mRamTile = view;
-        mRamCallback = cb;
-        onRamChanged();
-    }
-
-    void onRamChanged() {
-        mRamUsageBar = (LinearColorBar) mRamTile.findViewById(R.id.ram_usage_tile);
-        mFreeRamText = (TextView) mRamTile.findViewById(R.id.ram_textview);
-        ActivityManager.MemoryInfo memInfo = new ActivityManager.MemoryInfo();
-        mAm = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
-        mAm.getMemoryInfo(memInfo);
-        SECONDARY_SERVER_MEM = memInfo.secondaryServerThreshold;
-        mMemInfoReader.readMemInfo();
-        long availMem = mMemInfoReader.getFreeSize() + mMemInfoReader.getCachedSize()
-                - SECONDARY_SERVER_MEM;
-        if (availMem < 0) {
-            availMem = 0;
-        }
-
-        synchronized (mState.mLock) {
-            if (mLastNumBackgroundProcesses != mState.mNumBackgroundProcesses
-                    || mLastBackgroundProcessMemory != mState.mBackgroundProcessMemory
-                    || mLastAvailMemory != availMem) {
-                mLastNumBackgroundProcesses = mState.mNumBackgroundProcesses;
-                mLastBackgroundProcessMemory = mState.mBackgroundProcessMemory;
-                mLastAvailMemory = availMem;
-                long freeMem = mLastAvailMemory + mLastBackgroundProcessMemory;
-                String sizeStr = Formatter.formatShortFileSize(mContext, freeMem);
-                sizeStr = Formatter.formatShortFileSize(mContext,
-                        mMemInfoReader.getTotalSize() - freeMem) + RAM_STUFF_USED + sizeStr + RAM_STUFF_FREE;
-                mFreeRamText.setText(sizeStr);
-            }
-            if (mLastNumForegroundProcesses != mState.mNumForegroundProcesses
-                    || mLastForegroundProcessMemory != mState.mForegroundProcessMemory
-                    || mLastNumServiceProcesses != mState.mNumServiceProcesses
-                    || mLastServiceProcessMemory != mState.mServiceProcessMemory) {
-                mLastNumForegroundProcesses = mState.mNumForegroundProcesses;
-                mLastForegroundProcessMemory = mState.mForegroundProcessMemory;
-                mLastNumServiceProcesses = mState.mNumServiceProcesses;
-                mLastServiceProcessMemory = mState.mServiceProcessMemory;
-            }
-
-            float totalMem = mMemInfoReader.getTotalSize();
-            float totalShownMem = availMem + mLastBackgroundProcessMemory
-                    + mLastServiceProcessMemory;
-            mRamUsageBar.setRatios((totalMem-totalShownMem)/totalMem,
-                    mLastServiceProcessMemory/totalMem,
-                    mLastBackgroundProcessMemory/totalMem);
-        }
-
-        if (mRamTile != null && mRamCallback != null) {
-            mRamCallback.refreshView(mRamTile, mRamState);
-        }
-    }
-
-    void refreshRamTile() {
-        if (mRamTile != null) {
-            onRamChanged();
-        }
-    }
-
     public boolean updateUsbState() {
         ConnectivityManager connManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         String[] mUsbRegexs = connManager.getTetherableUsbRegexs();
@@ -1421,30 +1325,6 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
 
     public void setNfcAdapter(NfcAdapter adapter) {
         mNfcAdapter = adapter;
-    }
-
-    @Override
-    public void onRefreshUi(int what) {
-        switch (what) {
-            case REFRESH_TIME:
-                refreshRamTile();
-                break;
-            case REFRESH_DATA:
-                refreshRamTile();
-                break;
-            case REFRESH_STRUCTURE:
-                refreshRamTile();
-                break;
-        }
-    }
-
-    public void mSetRunState() {
-        if (!RamOn) {
-            mState.resume(this);
-        } else {
-            mState.pause();
-        }
-        RamOn = !RamOn;
     }
 
     protected boolean isFastChargeOn() {

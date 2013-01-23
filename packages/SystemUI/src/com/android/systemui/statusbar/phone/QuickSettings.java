@@ -132,10 +132,9 @@ class QuickSettings {
     private static final int TWOG_TILE = 21;
     private static final int LTE_TILE = 22;
     private static final int FAV_CONTACT_TILE = 23;
-    private static final int RAM_TILE = 24;
-    private static final int SCREEN_TILE = 25;
-   // private static final int BT_TETHER_TILE = 27;
-    private static final int SOUND_STATE_TILE = 26;
+    private static final int SCREEN_TILE = 24;
+   // private static final int BT_TETHER_TILE = 26;
+    private static final int SOUND_STATE_TILE = 25;
 
 
     public static final String USER_TOGGLE = "USER";
@@ -163,7 +162,6 @@ class QuickSettings {
     public static final String TWOG_TOGGLE = "2G";
     public static final String LTE_TOGGLE = "LTE";
     public static final String FAV_CONTACT_TOGGLE = "FAVCONTACT";
-    public static final String RAM_TOGGLE = "RAM";
     public static final String SCREEN_TOGGLE = "SCREEN";
     public static final String SOUND_STATE_TOGGLE = "SOUNDSTATE";
 
@@ -245,7 +243,6 @@ class QuickSettings {
             toggleMap.put(TWOG_TOGGLE, TWOG_TILE);
             toggleMap.put(LTE_TOGGLE, LTE_TILE);
             toggleMap.put(FAV_CONTACT_TOGGLE, FAV_CONTACT_TILE);
-            toggleMap.put(RAM_TOGGLE, RAM_TILE);
             toggleMap.put(SCREEN_TOGGLE, SCREEN_TILE);
             toggleMap.put(SOUND_STATE_TOGGLE, SOUND_STATE_TILE);
             //toggleMap.put(BT_TETHER_TOGGLE, BT_TETHER_TILE);
@@ -1260,31 +1257,6 @@ class QuickSettings {
                                 : R.string.quick_settings_gps_off_label);
                         tv.setCompoundDrawablesWithIntrinsicBounds(0, gpsEnabled ?
                                 R.drawable.ic_qs_gps_on : R.drawable.ic_qs_gps_off, 0, 0);
-                        tv.setTextSize(1, mTileTextSize);
-                    }
-                });
-                break;
-            case RAM_TILE:
-                quick = (QuickSettingsTileView)
-                        inflater.inflate(R.layout.quick_settings_tile, parent, false);
-                quick.setContent(R.layout.quick_settings_tile_ram, inflater);
-                quick.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mModel.mSetRunState();
-                    }
-                });
-                quick.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-
-                        return true;
-                    }
-                });
-                mModel.addRamTile(quick, new QuickSettingsModel.RefreshCallback() {
-                    @Override
-                    public void refreshView(QuickSettingsTileView view, State state) {
-                        TextView tv = (TextView) view.findViewById(R.id.ram_textview);
                         tv.setTextSize(1, mTileTextSize);
                     }
                 });
