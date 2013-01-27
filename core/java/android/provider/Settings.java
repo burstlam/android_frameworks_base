@@ -2526,6 +2526,12 @@ public final class Settings {
         public static final String NOTIF_BACKGROUND = "notif_background";
 
         /**
+         * Sets the alpha (transparency) of notifications
+         * @hide
+         */
+        public static final String NOTIF_ALPHA = "notif_alpha";
+
+        /**
          * Vibrate when expanding notifications
          * @hide
          */
