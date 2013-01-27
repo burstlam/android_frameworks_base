@@ -134,10 +134,11 @@ public class QuickSettings {
     private static final int LTE_TILE = 22;
     private static final int FAV_CONTACT_TILE = 23;
     private static final int SCREEN_TILE = 24;
-   // private static final int BT_TETHER_TILE = 28;
+   // private static final int BT_TETHER_TILE = 29;
     private static final int SOUND_STATE_TILE = 25;
     private static final int NAVBAR_HIDE_TILE = 26;
     private static final int POWER_MENU_TILE = 27;
+    private static final int PROFILE_TILE = 28;
 
     public static final String USER_TOGGLE = "USER";
     public static final String BRIGHTNESS_TOGGLE = "BRIGHTNESS";
@@ -168,6 +169,7 @@ public class QuickSettings {
     public static final String SOUND_STATE_TOGGLE = "SOUNDSTATE";
     public static final String NAVBAR_HIDE_TOGGLE = "NAVBARHIDE";
     public static final String POWER_MENU_TOGGLE = "POWERMENU";
+    public static final String PROFILE_TOGGLE = "PROFILE";
 
     private static final String DEFAULT_TOGGLES = "default";
 
@@ -251,6 +253,7 @@ public class QuickSettings {
             toggleMap.put(SOUND_STATE_TOGGLE, SOUND_STATE_TILE);
             toggleMap.put(NAVBAR_HIDE_TOGGLE, NAVBAR_HIDE_TILE);
             toggleMap.put(POWER_MENU_TOGGLE, POWER_MENU_TILE);
+            toggleMap.put(PROFILE_TOGGLE, PROFILE_TILE);
             //toggleMap.put(BT_TETHER_TOGGLE, BT_TETHER_TILE);
         }
         return toggleMap;
@@ -1441,7 +1444,30 @@ public class QuickSettings {
                     }
                 });
                 break;
-
+            case PROFILE_TILE:
+                quick = (QuickSettingsTileView)
+                        inflater.inflate(R.layout.quick_settings_tile, parent, false);
+                quick.setBackgroundResource(mTileBG);
+                quick.setContent(R.layout.quick_settings_tile_profile, inflater);
+                quick.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getService().animateCollapsePanels();
+                        Intent intent=new Intent(Intent.ACTION_POWERMENU_PROFILE);
+                        mContext.sendBroadcast(intent);
+                    }
+                });
+                mModel.addProfileTile(quick, new QuickSettingsModel.RefreshCallback() {
+                    @Override
+                    public void refreshView(QuickSettingsTileView view, State state) {
+		       	TextView tv = (TextView) view.findViewById(R.id.profile_textview);
+			tv.setText(state.label);
+                        tv.setTextSize(1, mTileTextSize);
+                        tv.setTextColor(mTileText);
+                        tv.setCompoundDrawablesWithIntrinsicBounds(0, state.iconId, 0, 0);
+                    }
+                });
+                break;
         }
         return quick;
     }

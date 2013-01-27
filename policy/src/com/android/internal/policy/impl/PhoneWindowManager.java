@@ -360,6 +360,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             if (action.equals(Intent.ACTION_POWERMENU_REBOOT)) {
                 mWindowManagerFuncs.rebootTile();
             }
+	    if (action.equals(Intent.ACTION_POWERMENU_PROFILE)) {
+               showGlobalActionsProfileDialog();
+            }
         }
 
         private void registerSelf() {
@@ -369,6 +372,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 IntentFilter filter = new IntentFilter();
                 filter.addAction(Intent.ACTION_POWERMENU);
                 filter.addAction(Intent.ACTION_POWERMENU_REBOOT);
+                filter.addAction(Intent.ACTION_POWERMENU_PROFILE);
                 mContext.registerReceiver(mPowerMenuReceiver, filter);
             }
         }
@@ -846,6 +850,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             // poke the wake lock so they have some time to see the dialog.
             mKeyguardMediator.userActivity();
         }
+    }
+
+    void showGlobalActionsProfileDialog() {
+	        if (mGlobalActions == null) {
+	            mGlobalActions = new GlobalActions(mContext, mWindowManagerFuncs);
+	        }
+	        mGlobalActions.showProfileDialog();
     }
 
     boolean isDeviceProvisioned() {
