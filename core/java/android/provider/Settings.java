@@ -4821,6 +4821,12 @@ public final class Settings {
         public static final String NOTIFICATION_SHORTCUTS_HIDE_CARRIER = "notification_shortcuts_hide_carrier";
 
         /**
+         * Sets the alpha (transparency) of notifications
+         * @hide
+         */
+        public static final String NOTIF_ALPHA = "notif_alpha";
+
+        /**
          * 0 == QuickSettings Tile
          * 1 == Toggle Switch (Not implemented Yet)
          * 2 == Traditional
