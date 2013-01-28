@@ -663,6 +663,8 @@ public class PhoneStatusBar extends BaseStatusBar {
 
         // listen for USER_SETUP_COMPLETE setting (per-user)
         resetUserSetupObserver();
+
+        mTransparencyManager.setStatusbar(mStatusBarView);
         return mStatusBarView;
     }
 
@@ -863,6 +865,7 @@ public class PhoneStatusBar extends BaseStatusBar {
             mWindowManager.removeView(mGesturePanel);
             mAutoHideVisible = true;
             mWindowManager.addView(mNavigationBarView, getNavigationBarLayoutParams());
+
             repositionNavigationBar();
             if (mAutoHideTimeOut > 0) {
                 mHandler.postDelayed(delayHide, mAutoHideTimeOut);
@@ -953,6 +956,9 @@ public class PhoneStatusBar extends BaseStatusBar {
         if (!mNavBarAutoHide) {
             // we don't add the NavBar if AutoHide is on.
             mWindowManager.addView(mNavigationBarView, getNavigationBarLayoutParams());
+            mNavigationBarView.setTransparencyManager(mTransparencyManager);
+            mTransparencyManager.setNavbar(mNavigationBarView);
+            mTransparencyManager.update();
         }
     }
 
@@ -1472,7 +1478,7 @@ public class PhoneStatusBar extends BaseStatusBar {
                 haltTicker();
             }
         }
-        mStatusBarView.updateBackgroundAlpha();
+        mTransparencyManager.update();
     }
 
     @Override
@@ -2132,7 +2138,7 @@ public class PhoneStatusBar extends BaseStatusBar {
     }
 
     public void topAppWindowChanged(boolean showMenu) {
-        mStatusBarView.updateBackgroundAlpha();
+        mTransparencyManager.update();
 
         if (mPieControlPanel != null)
             mPieControlPanel.setMenu(showMenu);
