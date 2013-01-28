@@ -95,6 +95,8 @@ public class PhoneStatusBarView extends PanelBar {
                 @Override
                 protected void onPostExecute(Boolean inHome) {
                     setBackgroundAlpha(inHome ? mAlpha : 1);
+                    Settings.System.putInt(getContext().getContentResolver(),
+                        Settings.System.IS_HOME, inHome ? 1 : 0);
                 }
             }.execute();
         }

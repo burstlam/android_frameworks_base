@@ -2763,6 +2763,12 @@ public final class Settings {
         public static final String UI_FORCE_OVERFLOW_BUTTON = "ui_force_overflow_button";
 
         /**
+         * Is current activity launcher or not
+         * @hide
+         */
+        public static final String IS_HOME = "is_home";
+
+        /**
          * User configurable flag for determining if NavBar is enabled
          *
          * @hide
@@ -2929,6 +2935,13 @@ public final class Settings {
          * @hide
          */
         public static final String NAVIGATION_BAR_GLOW_TINT = "navigation_bar_glow_tint";
+
+        /**
+         * Sets transparency mode of navigation bar
+         * 0 = only home, 1 = keyguard and home (default), 2 = always
+         * @hide
+         */
+        public static final String NAVBAR_ALPHA_MODE = "navbar_alpha_mode";
 
         /**
          * @hide
