@@ -2883,16 +2883,6 @@ public final class Settings {
         /**
          * @hide
          */
-        public static final String NAV_HIDE_TIMEOUT = "nav_hide_timeout";
-
-        /**
-         * @hide
-         */
-        public static final String NAV_HIDE_ENABLE = "nav_hide_enable";
-
-        /**
-         * @hide
-         */
         public static final String MENU_LOCATION = "menu_location";
 
         /**
