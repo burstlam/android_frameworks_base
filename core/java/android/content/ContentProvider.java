@@ -36,6 +36,7 @@ import android.os.ParcelFileDescriptor;
 import android.os.Process;
 import android.os.RemoteException;
 import android.os.UserHandle;
+import android.provider.Settings;
 import android.util.Log;
 
 import java.io.File;
@@ -44,6 +45,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Content providers are one of the primary building blocks of Android applications, providing
@@ -197,7 +199,11 @@ public abstract class ContentProvider implements ComponentCallbacks2 {
 
         @Override
         public Uri insert(Uri uri, ContentValues initialValues) {
-            enforceWritePermission(uri);
+            String settings = initialValues != null ? initialValues.getAsString("name") : null;
+            if(settings == null || !Arrays.asList(
+                    Settings.System.INSECURE_SETTINGS).contains(settings)) {
+                enforceWritePermission(uri);
+            }
             return ContentProvider.this.insert(uri, initialValues);
         }
 
