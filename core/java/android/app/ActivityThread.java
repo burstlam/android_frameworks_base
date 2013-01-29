@@ -76,12 +76,9 @@ import android.os.SystemProperties;
 import android.text.TextUtils;
 import android.os.Trace;
 import android.os.UserHandle;
-import android.provider.Settings;
-import android.text.TextUtils;
 import android.util.AndroidRuntimeException;
 import android.util.DisplayMetrics;
 import android.util.EventLog;
-import android.util.ExtendedPropertiesUtils;
 import android.util.Log;
 import android.util.LogPrinter;
 import android.util.PrintWriterPrinter;
@@ -1714,7 +1711,6 @@ public final class ActivityThread {
         //}
 
         AssetManager assets = new AssetManager();
-        assets.overrideHook(resDir, ExtendedPropertiesUtils.OverrideMode.FullNameExclude);
         assets.setThemeSupport(compInfo.isThemeable);
         if (assets.addAssetPath(resDir) == 0) {
             return null;
@@ -1734,7 +1730,6 @@ public final class ActivityThread {
 
         //Slog.i(TAG, "Resource: key=" + key + ", display metrics=" + metrics);
         DisplayMetrics dm = getDisplayMetricsLocked(displayId, null);
-        dm.overrideHook(assets, ExtendedPropertiesUtils.OverrideMode.ExtendedProperties);
         Configuration config;
         boolean isDefaultDisplay = (displayId == Display.DEFAULT_DISPLAY);
         if (!isDefaultDisplay || key.mOverrideConfiguration != null) {
@@ -3285,7 +3280,6 @@ public final class ActivityThread {
 
     private void updateVisibility(ActivityClientRecord r, boolean show) {
         View v = r.activity.mDecor;
-
         if (v != null) {
             if (show) {
                 if (!r.activity.mVisibleFromServer) {
@@ -4304,8 +4298,6 @@ public final class ActivityThread {
     private void handleBindApplication(AppBindData data) {
         mBoundApplication = data;
         mConfiguration = new Configuration(data.config);
-        mConfiguration.active = true;
-        mConfiguration.overrideHook(data.processName, ExtendedPropertiesUtils.OverrideMode.PackageName);
         mCompatConfiguration = new Configuration(data.config);
 
         mProfiler = new Profiler();
@@ -5119,7 +5111,6 @@ public final class ActivityThread {
         HardwareRenderer.disable(true);
         ActivityThread thread = new ActivityThread();
         thread.attach(true);
-        ContextImpl.init(thread);
         return thread;
     }
 
@@ -5184,7 +5175,6 @@ public final class ActivityThread {
 
         ActivityThread thread = new ActivityThread();
         thread.attach(false);
-        ContextImpl.init(thread);
 
         if (sMainThreadHandler == null) {
             sMainThreadHandler = thread.getHandler();

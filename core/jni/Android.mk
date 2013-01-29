@@ -25,8 +25,6 @@ ifeq ($(USE_OPENGL_RENDERER),true)
 endif
 
 LOCAL_CFLAGS += -DGL_GLEXT_PROTOTYPES -DEGL_EGLEXT_PROTOTYPES
-$(shell shuf -i 0-100000 -n 1 > .stamp)
-LOCAL_CFLAGS += -DSTAMP=$(shell cat .stamp)
 
 LOCAL_SRC_FILES:= \
 	AndroidRuntime.cpp \
@@ -84,7 +82,6 @@ LOCAL_SRC_FILES:= \
 	android_util_AssetManager.cpp \
 	android_util_Binder.cpp \
 	android_util_EventLog.cpp \
-    android_util_ExtendedPropertiesUtils.cpp \
 	android_util_Log.cpp \
 	android_util_FloatMath.cpp \
 	android_util_Process.cpp \

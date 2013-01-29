@@ -49,15 +49,12 @@ import android.os.Parcelable;
 import android.os.RemoteException;
 import android.os.StrictMode;
 import android.os.UserHandle;
-import android.provider.Settings;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.AttributeSet;
-import android.util.ColorUtils;
 import android.util.EventLog;
-import android.util.ExtendedPropertiesUtils;
 import android.util.Log;
 import android.util.Slog;
 import android.util.SparseArray;
@@ -5180,38 +5177,6 @@ public class Activity extends ContextThemeWrapper
     }
     
     final void performResume() {
-
-        // Per-App-Extras
-        if (mWindow != null && ExtendedPropertiesUtils.isInitialized() ) {
-            try {
-                // Per-App-Expand
-                if (ExtendedPropertiesUtils.mGlobalHook.expand == 1) {
-                    Settings.System.putInt(this.getContentResolver(),
-                            Settings.System.EXPANDED_DESKTOP_STATE, 1);
-                }
-                // Per-App-Color
-                else if (ExtendedPropertiesUtils.mGlobalHook.mancol != 1 && ColorUtils.getPerAppColorState(this)) {
-                    for (int i = 0; i < ExtendedPropertiesUtils.PARANOID_COLORS_COUNT; i++) {
-                        // Get color settings
-                        String setting = ExtendedPropertiesUtils.PARANOID_COLORS_SETTINGS[i];
-                        ColorUtils.ColorSettingInfo colorInfo = ColorUtils.getColorSettingInfo(this, setting);
-
-                        // Get appropriate color
-                        String appColor = ExtendedPropertiesUtils.mGlobalHook.colors[i];
-                        String nextColor = (appColor == null || appColor.equals("")) ?
-                                colorInfo.systemColorString : appColor;
-
-                        // Change only if colors actually differ
-                        if (!nextColor.toUpperCase().equals(colorInfo.lastColorString.toUpperCase())) {
-                            ColorUtils.setColor(this, setting, colorInfo.systemColorString, nextColor, 1);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                // Current application is null, or hook is not set
-            }
-        }
-
         performRestart();
         
         mFragments.execPendingActions();
@@ -5242,18 +5207,6 @@ public class Activity extends ContextThemeWrapper
     }
 
     final void performPause() {
-        // Per-App-Extras
-        if (ExtendedPropertiesUtils.isInitialized() &&
-            mParent == null && mDecor != null && mDecor.getParent() != null &&
-            ExtendedPropertiesUtils.mGlobalHook.expand == 1) {
-            try {
-                Settings.System.putInt(this.getContentResolver(),
-                    Settings.System.EXPANDED_DESKTOP_STATE, 0);
-            } catch (Exception e) {
-                    // Current application is null, or hook is not set
-            }
-        }
-
         mFragments.dispatchPause();
         mCalled = false;
         onPause();
