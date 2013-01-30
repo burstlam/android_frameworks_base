@@ -3078,6 +3078,10 @@ public final class Settings {
          */
         public static final String LOCKSCREEN_LONGPRESS_CHALLENGE = "lockscreen_longpress_challenge";
 
+        /**
+         * @hide
+         */
+        public static final String KG_CAMERA_WIDGET = "kg_camera_widget";
 
         /**
          * enabled and order of quick toggles
