@@ -663,8 +663,6 @@ public class PhoneStatusBar extends BaseStatusBar {
             });
         }
 
-        setNotificationRowHelper();
-
         // Quick Settings (where available, some restrictions apply)
         if (mHasSettingsPanel) {
             // first, figure out where quick settings should be inflated
@@ -1290,6 +1288,9 @@ public class PhoneStatusBar extends BaseStatusBar {
             mNotificationIcons.removeView(remove);
         }
 
+
+        //set alpha for notification pile before it is added
+        setNotificationRowHelper();
         for (int i=0; i<toShow.size(); i++) {
             View v = toShow.get(i);
             if (v.getParent() == null) {
