@@ -757,6 +757,7 @@ public class TabletStatusBar extends BaseStatusBar implements
     protected void setSearchLightOn(boolean on){
     }
 
+    private int mShowSearchHoldoff = 0;
     private Runnable mShowSearchPanel = new Runnable() {
         public void run() {
             showSearchPanel();
