@@ -314,6 +314,9 @@ public class PhoneStatusBar extends BaseStatusBar {
     CustomTheme mCurrentTheme;
     private boolean mRecreating = false;
 
+    // notification shade dimming
+    private static boolean mNotificationShadeDim;
+
     // for disabling the status bar
     int mDisabled = 0;
 
@@ -2886,6 +2889,8 @@ public class PhoneStatusBar extends BaseStatusBar {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.CURRENT_UI_MODE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
+			        Settings.System.NOTIFICATION_SHADE_DIM), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NOTIF_ALPHA), false, this);
             setNotificationRowHelper();
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -2927,6 +2932,9 @@ public class PhoneStatusBar extends BaseStatusBar {
         } else {
             mClockDoubleClicked = true;
         }
+        mNotificationShadeDim = Settings.System.getInt(cr, 
+            Settings.System.NOTIFICATION_SHADE_DIM,
+            ActivityManager.isHighEndGfx() ? 1 : 0) == 1;
         mCurrentUIMode = Settings.System.getInt(cr,Settings.System.CURRENT_UI_MODE, 0);
         mNavBarAutoHide = Settings.System.getBoolean(cr, Settings.System.NAV_HIDE_ENABLE, false);
         mAutoHideTimeOut = Settings.System.getInt(cr, Settings.System.NAV_HIDE_TIMEOUT, mAutoHideTimeOut);
@@ -2935,6 +2943,10 @@ public class PhoneStatusBar extends BaseStatusBar {
         } else if (mGesturePanel != null) {
             disableAutoHide();
         }
+    }
+
+    static public boolean shouldNotificationShadeDim() {
+        return mNotificationShadeDim;
     }
 
     public boolean skipToSettingsPanel() {
