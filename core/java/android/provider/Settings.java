@@ -3196,6 +3196,12 @@ public final class Settings {
         public static final String LOCKSCREEN_VIBRATE_ENABLED = "lockscreen.vibrate_enabled";
 
         /**
+         * Whether to dim the notification shade when pulling down the status bar
+         * @hide
+         */
+        public static final String NOTIFICATION_SHADE_DIM = "notification_shade_dim";
+
+        /**
          * Show the pending notification counts as overlays on the status bar
          * @hide
          */
