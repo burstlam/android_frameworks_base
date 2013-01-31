@@ -1050,10 +1050,9 @@ public class NavigationBarView extends LinearLayout {
 
         mMenuLocation = Settings.System.getInt(resolver,
                 Settings.System.MENU_LOCATION, SHOW_RIGHT_MENU);
-        mNavigationBarAlpha = Settings.System.getFloat(resolver,
-                Settings.System.NAVIGATION_BAR_ALPHA,
-                new Float(mContext.getResources().getInteger(
-                        R.integer.navigation_bar_transparency) / 255));
+        mNavigationBarAlpha = 1.0f - Settings.System.getFloat(resolver,
+                Settings.System.NAVIGATION_BAR_ALPHA, 
+                0.0f);
         mNavigationBarColor = Settings.System.getInt(resolver,
                 Settings.System.NAVIGATION_BAR_COLOR, -1);
         mAlphaMode = Settings.System.getInt(resolver,
