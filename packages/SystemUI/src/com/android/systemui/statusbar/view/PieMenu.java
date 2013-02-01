@@ -962,7 +962,9 @@ public class PieMenu extends FrameLayout {
                         break;
                 }
 
-                if (state == PieStatusPanel.QUICK_SETTINGS_PANEL && 
+                if (Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.PIE_NOTIFICATIONS, 0) == 1) {
+                    if (state == PieStatusPanel.QUICK_SETTINGS_PANEL && 
                             mStatusPanel.getFlipViewState() != PieStatusPanel.QUICK_SETTINGS_PANEL
                             && mStatusPanel.getCurrentViewState() != PieStatusPanel.QUICK_SETTINGS_PANEL) {
                         mGlowOffsetRight = mPanelOrientation != Gravity.TOP ? 150 : 255;;
@@ -977,7 +979,8 @@ public class PieMenu extends FrameLayout {
                         mStatusPanel.setFlipViewState(PieStatusPanel.NOTIFICATIONS_PANEL);
                         if(hapticFeedback) mVibrator.vibrate(2);
                     }
-                    deselect();
+                }
+                deselect();
             }
 
             // Take back shade trigger if user decides to abandon his gesture

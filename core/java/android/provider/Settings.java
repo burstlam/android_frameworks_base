@@ -3207,6 +3207,12 @@ public final class Settings {
         public static final String PIE_SIZE = "pie_size";
 
         /**
+         * Pie Notification Ability
+         * @hide
+         */
+        public static final String PIE_NOTIFICATIONS = "pie_notifications";
+
+        /**
          * @hide
          */
         public static final String PIE_COLOR_STYLE = "pie_color_style";
