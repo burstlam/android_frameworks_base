@@ -3213,6 +3213,18 @@ public final class Settings {
         public static final String PIE_NOTIFICATIONS = "pie_notifications";
 
         /**
+         * Pie menu, should default to 0 (no, show only when needed)
+         * @hide
+         */
+        public static final String PIE_MENU = "pie_menu";
+
+        /**
+         * Pie search, should default to 1 (yes, show)
+         * @hide
+         */
+        public static final String PIE_SEARCH = "pie_search";
+
+        /**
          * @hide
          */
         public static final String PIE_COLOR_STYLE = "pie_color_style";
