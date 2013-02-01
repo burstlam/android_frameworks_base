@@ -17,6 +17,7 @@
 package android.util;
 
 import android.os.SystemProperties;
+import android.view.Surface;
 
 
 /**
@@ -26,7 +27,7 @@ import android.os.SystemProperties;
  * <pre> DisplayMetrics metrics = new DisplayMetrics();
  * getWindowManager().getDefaultDisplay().getMetrics(metrics);</pre>
  */
-public class DisplayMetrics {
+public class DisplayMetrics extends ExtendedPropertiesUtils {
     /**
      * Standard quantized DPI for low-density screens.
      */
@@ -183,6 +184,22 @@ public class DisplayMetrics {
      */
     public float noncompatYdpi;
 
+    /**
+     * Process DPI for current hook.
+     */
+    public void paranoidHook() {
+        if (getActive()) {
+
+            density = getDensity() == 0 ? density : getDensity();
+            scaledDensity = getScaledDensity() == 0 ? scaledDensity : getScaledDensity();
+            densityDpi = getDpi() == 0 ? densityDpi : getDpi();
+            noncompatDensity = densityDpi;
+            noncompatDensityDpi = densityDpi;
+            noncompatScaledDensity = scaledDensity;
+
+        }
+    }
+
     public DisplayMetrics() {
     }
     
@@ -201,6 +218,7 @@ public class DisplayMetrics {
         noncompatScaledDensity = o.noncompatScaledDensity;
         noncompatXdpi = o.noncompatXdpi;
         noncompatYdpi = o.noncompatYdpi;
+        paranoidHook();
     }
     
     public void setToDefaults() {
@@ -266,7 +284,10 @@ public class DisplayMetrics {
         // when running in the emulator, allowing for dynamic configurations.
         // The reason for this is that ro.sf.lcd_density is write-once and is
         // set by the init process when it parses build.prop before anything else.
-        return SystemProperties.getInt("qemu.sf.lcd_density",
-                SystemProperties.getInt("ro.sf.lcd_density", DENSITY_DEFAULT));
+        if (mGlobalHook.dpi == 0) {
+            return SystemProperties.getInt("qemu.sf.lcd_density",
+                    SystemProperties.getInt("ro.sf.lcd_density", DENSITY_DEFAULT));
+        }
+        return mGlobalHook.dpi;
     }
 }
