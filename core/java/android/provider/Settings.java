@@ -2815,10 +2815,16 @@ public final class Settings {
         public static final String POWER_DIALOG_SHOW_EXPANDED_DESKTOP_TOGGLE = "power_menu_expanded_desktop";
 
         /**
-    	 * Statusbar State
+    	 * Expanded desktop on/off state
     	 * @hide
          */
         public static final String EXPANDED_DESKTOP_STATE = "expanded_desktop_state";
+
+        /**
+         * Expanded desktop style (with status bar or without status bar)
+         * 
+         */
+        public static final String EXPANDED_DESKTOP_STYLE = "expanded_desktop_style";
 
         /**
          * Whether to use a separate delay for "slide to unlock" and security
