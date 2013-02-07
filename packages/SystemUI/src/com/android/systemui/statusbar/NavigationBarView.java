@@ -641,7 +641,6 @@ public class NavigationBarView extends LinearLayout {
 
             }
         }
-        getSearchLight().setVisibility(isKeyguardEnabled() ? View.VISIBLE : View.GONE);
         if (mNavBarAutoHide && !isRotating) {
             if (isKeyguardEnabled())
                 mBar.setSearchLightOn(true);
