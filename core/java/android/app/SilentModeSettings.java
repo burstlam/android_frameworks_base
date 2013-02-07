@@ -87,19 +87,19 @@ public final class SilentModeSettings implements Parcelable {
     public static SilentModeSettings fromXml(XmlPullParser xpp, Context context)
             throws XmlPullParserException, IOException {
         int event = xpp.next();
-        SilentModeSettings connectionDescriptor = new SilentModeSettings();
-        while (event != XmlPullParser.END_TAG) {
+        SilentModeSettings silentModeDescriptor = new SilentModeSettings();
+        while (event != XmlPullParser.END_TAG || !xpp.getName().equals("silentModeDescriptor")) {
             if (event == XmlPullParser.START_TAG) {
                 String name = xpp.getName();
                 if (name.equals("value")) {
-                    connectionDescriptor.mValue = xpp.nextText();
+                    silentModeDescriptor.mValue = xpp.nextText();
                 } else if (name.equals("override")) {
-                    connectionDescriptor.mOverride = Boolean.parseBoolean(xpp.nextText());
+                    silentModeDescriptor.mOverride = Boolean.parseBoolean(xpp.nextText());
                 }
             }
             event = xpp.next();
         }
-        return connectionDescriptor;
+        return silentModeDescriptor;
     }
 
     /** @hide */
