@@ -773,7 +773,7 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
     void refreshPowerMenuTile() {
         Resources r = mContext.getResources();
         mPowerMenuState.label = r.getString(R.string.quick_settings_powermenu);
-        mPowerMenuState.iconId = (mUseDefaultTheme ? R.drawable.ic_qs_powermenu : R.drawable.ic_qs_powermenu_light);
+        mPowerMenuState.iconId = R.drawable.ic_qs_powermenu;
         mPowerMenuCallback.refreshView(mPowerMenuTile, mPowerMenuState);
     }
 
@@ -787,7 +787,7 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
     void refreshProfileTile() {
         Resources r = mContext.getResources();
         mProfileState.label = mProfileManager.getActiveProfile().getName();
-        mProfileState.iconId = (mUseDefaultTheme ? R.drawable.ic_qs_profiles : R.drawable.ic_qs_profiles);
+        mProfileState.iconId = R.drawable.ic_qs_profiles;
         mProfileCallback.refreshView(mProfileTile, mProfileState);
     }
 
