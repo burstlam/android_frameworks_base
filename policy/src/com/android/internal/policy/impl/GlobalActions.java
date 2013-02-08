@@ -140,6 +140,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private boolean mEnableAirplaneToggle = true;
 	private boolean mExpandDesktopToggle = false;
     private boolean mEnablePowerOff = true;
+	private boolean mShowRebootOnLock = true;
     private static int rebootIndex = 0;
     private Profile mChosenProfile;
 
@@ -253,6 +254,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 Settings.System.POWER_DIALOG_SHOW_NAVBAR_HIDE, false);
         mNavBarHideToggle = new NavBarAction(mHandler);
 
+		mShowRebootOnLock = Settings.System.getBoolean(mContext.getContentResolver(),
+                Settings.System.POWER_DIALOG_SHOW_REBOOT_KEYGUARD, true);
+
         mEnablePowerOff = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.POWER_DIALOG_SHOW_POWER_OFF, 1) == 1;
 
@@ -364,7 +368,11 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
                     @Override
                     public boolean showDuringKeyguard() {
-                        return true;
+						if (mShowRebootOnLock) {
+                            return true;
+                        } else {
+                            return false;
+                        }
                     }
 
                     @Override
