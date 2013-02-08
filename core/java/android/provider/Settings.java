@@ -1845,7 +1845,7 @@ public final class Settings {
         /**
          * Whether to prevent loud volume levels when headset is first plugged in.
          */
-        public static final String SAFE_HEADSET_VOLUME_RESTORE = "safe_headset_volume_restore";
+        public static final String SAFE_HEADSET_VOLUME = "safe_headset_volume";
 
         /**
          * Whether the phone ringtone should be played in an increasing manner
