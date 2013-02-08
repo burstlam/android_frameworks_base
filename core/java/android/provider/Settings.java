@@ -3230,6 +3230,12 @@ public final class Settings {
         public static final String PIE_SEARCH = "pie_search";
 
         /**
+         * Pie last app, should default to 0 (no, show only when needed)
+         * @hide
+         */
+        public static final String PIE_LAST_APP = "pie_last_app";
+
+        /**
          * @hide
          */
         public static final String PIE_COLOR_STYLE = "pie_color_style";

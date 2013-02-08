@@ -124,6 +124,7 @@ public class PieMenu extends FrameLayout {
     private Resources mResources;
     private PiePolicy mPolicy;
     private Vibrator mVibrator;
+   
 
     // Pie handlers
     private PieItem mCurrentItem;
@@ -220,6 +221,7 @@ public class PieMenu extends FrameLayout {
     private boolean mNavbarOff;
     private boolean mUseMenuAlways;
     private boolean mUseSearch;
+    private boolean mUseLastApp;
 
     // Animations
     private int mGlowOffsetLeft = 150;
@@ -274,6 +276,8 @@ public class PieMenu extends FrameLayout {
                 Settings.System.EXPANDED_DESKTOP_STYLE, 0) == 2;
         mUseMenuAlways = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PIE_MENU, 1) == 1;
+        mUseLastApp = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PIE_LAST_APP, 0) == 1;
         mUseSearch = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PIE_SEARCH, 1) == 1;
         mStatusMode = Settings.System.getInt(mContext.getContentResolver(),
@@ -599,7 +603,8 @@ public class PieMenu extends FrameLayout {
     }
 
     private boolean canItemDisplay(PieItem item) {
-        return !(item.getName().equals(PieControl.MENU_BUTTON) && !mPanel.currentAppUsesMenu() && !mUseMenuAlways) &&
+        return !(item.getName().equals(PieControl.LAST_APP_BUTTON) && !mUseLastApp) &&
+                !(item.getName().equals(PieControl.MENU_BUTTON) && !mPanel.currentAppUsesMenu() && !mUseMenuAlways) &&
                 !(item.getName().equals(PieControl.SEARCH_BUTTON) && !mUseSearch);
     }
 
