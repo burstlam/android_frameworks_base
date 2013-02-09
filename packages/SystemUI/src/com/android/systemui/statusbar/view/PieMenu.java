@@ -217,6 +217,7 @@ public class PieMenu extends FrameLayout {
     private int mStatusMode;
     private float mPieSize = SIZE_BASE;
     private boolean mOpen;
+    private boolean mNavbarOff;
     private boolean mUseMenuAlways;
     private boolean mUseSearch;
 
@@ -269,14 +270,16 @@ public class PieMenu extends FrameLayout {
         mPanelOrientation = mPanel.getOrientation();
 
         // Fetch modes
-        boolean expanded = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
+        boolean SbarExpanded = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.EXPANDED_DESKTOP_STYLE, 0) == 2;
         mUseMenuAlways = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PIE_MENU, 1) == 1;
         mUseSearch = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PIE_SEARCH, 1) == 1;
         mStatusMode = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PIE_MODE, 2);
+        mNavbarOff = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1  && !SbarExpanded;
         mPieSize = Settings.System.getFloat(mContext.getContentResolver(),
                 Settings.System.PIE_SIZE, 1f);
         mPieGap = Settings.System.getInt(mContext.getContentResolver(),
@@ -715,7 +718,7 @@ public class PieMenu extends FrameLayout {
             int state;
 
             // Draw background
-            if (mStatusMode != -1) {
+            if (mStatusMode != -1 && !mNavbarOff) {
                 canvas.drawARGB((int)(mAnimators[ANIMATOR_DEC_SPEED15].fraction * 0xcc), 0, 0, 0);
             }
 
@@ -741,7 +744,7 @@ public class PieMenu extends FrameLayout {
             }
 
             // Paint status report only if settings allow
-            if (mStatusMode != -1) {
+            if (mStatusMode != -1 && !mNavbarOff) {
 
                 // Draw chevron rings
                 mChevronBackgroundLeft.setAlpha((int)(mAnimators[ANIMATOR_DEC_SPEED30].fraction * mGlowOffsetLeft * (mPanelOrientation == Gravity.TOP ? 0.2 : 1)));
@@ -976,8 +979,7 @@ public class PieMenu extends FrameLayout {
                         break;
                 }
 
-                if (Settings.System.getInt(mContext.getContentResolver(),
-                        Settings.System.PIE_NOTIFICATIONS, 0) == 1) {
+                if (!mNavbarOff) {
                     if (state == PieStatusPanel.QUICK_SETTINGS_PANEL && 
                             mStatusPanel.getFlipViewState() != PieStatusPanel.QUICK_SETTINGS_PANEL
                             && mStatusPanel.getCurrentViewState() != PieStatusPanel.QUICK_SETTINGS_PANEL) {
