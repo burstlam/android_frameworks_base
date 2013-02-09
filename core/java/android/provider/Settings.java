@@ -2380,25 +2380,6 @@ public final class Settings {
         public static final String POINTER_SPEED = "pointer_speed";
 
         /**
-         * Sets transparency of statusbar
-         * @hide
-         */
-        public static final String STATUS_BAR_ALPHA = "status_bar_alpha";
-
-        /**
-         * Sets transparency mode of statusbar
-         * 0 = only home, 1 = keyguard and home (default), 2 = always
-         * @hide
-         */
-        public static final String STATUS_BAR_ALPHA_MODE = "status_bar_alpha_mode";
-
-        /**
-         * Sets color of statusbar
-         * @hide
-         */
-        public static final String STATUS_BAR_COLOR = "status_bar_color";
-
-        /**
          * Style of Battery
          * 0 - Icon Only
          * 1 - Text Only
