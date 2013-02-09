@@ -134,12 +134,13 @@ public class QuickSettings {
     private static final int LTE_TILE = 22;
     private static final int FAV_CONTACT_TILE = 23;
     private static final int SCREEN_TILE = 24;
-   // private static final int BT_TETHER_TILE = 30;
+   // private static final int BT_TETHER_TILE = 31;
     private static final int SOUND_STATE_TILE = 25;
     private static final int NAVBAR_HIDE_TILE = 26;
     private static final int POWER_MENU_TILE = 27;
     private static final int PROFILE_TILE = 28;
     private static final int STATUSBAR_TILE = 29;
+    private static final int QUIETHOURS_TILE = 30;
 
     public static final String USER_TOGGLE = "USER";
     public static final String BRIGHTNESS_TOGGLE = "BRIGHTNESS";
@@ -172,6 +173,7 @@ public class QuickSettings {
     public static final String POWER_MENU_TOGGLE = "POWERMENU";
     public static final String PROFILE_TOGGLE = "PROFILE";
     public static final String STATUSBAR_TOGGLE = "STATUSBAR";
+    public static final String QUIETHOURS_TOGGLE = "QUIETHOURS";
 
     private static final String DEFAULT_TOGGLES = "default";
 
@@ -181,6 +183,7 @@ public class QuickSettings {
     private int mDataState = -1;
 
     private boolean usbTethered;
+    private boolean mEnabled;
 
     private Context mContext;
     private PanelBar mBar;
@@ -257,6 +260,7 @@ public class QuickSettings {
             toggleMap.put(POWER_MENU_TOGGLE, POWER_MENU_TILE);
             toggleMap.put(PROFILE_TOGGLE, PROFILE_TILE);
             toggleMap.put(STATUSBAR_TOGGLE, STATUSBAR_TILE);
+            toggleMap.put(QUIETHOURS_TOGGLE, QUIETHOURS_TILE);
             //toggleMap.put(BT_TETHER_TOGGLE, BT_TETHER_TILE);
         }
         return toggleMap;
@@ -1462,6 +1466,38 @@ public class QuickSettings {
                     public void refreshView(QuickSettingsTileView view, State state) {
                         TextView tv = (TextView) view.findViewById(R.id.profile_textview);
                         tv.setText(state.label);
+                        tv.setTextSize(1, mTileTextSize);
+                        tv.setCompoundDrawablesWithIntrinsicBounds(0, state.iconId, 0, 0);
+                    }
+                });
+                break;
+            case QUIETHOURS_TILE:
+                quick = (QuickSettingsTileView)
+                        inflater.inflate(R.layout.quick_settings_tile, parent, false);
+                quick.setContent(R.layout.quick_settings_tile_quiethours, inflater);
+                quick.setOnClickListener(new View.OnClickListener() {
+                   @Override
+                    public void onClick(View v) {
+                        Settings.System.putIntForUser(mContext.getContentResolver(), Settings.System.QUIET_HOURS_ENABLED,
+                        mEnabled ? 0 : 1, UserHandle.USER_CURRENT);
+                    }
+                });
+
+                quick.setOnLongClickListener(new View.OnLongClickListener() {
+                   @Override
+                   public boolean onLongClick(View v) {
+                        Intent intent = new Intent("android.intent.action.MAIN");
+                        intent.setClassName("com.android.settings", "com.android.settings.Settings$QuietHoursSettingsActivity");
+                        intent.addCategory("android.intent.category.LAUNCHER");
+                       startSettingsActivity(intent);
+                       return true;
+                    }
+                });
+                mModel.addQuietHoursTile(quick, new QuickSettingsModel.RefreshCallback() {
+                    @Override
+                    public void refreshView(QuickSettingsTileView view, State state) {
+		       	TextView tv = (TextView) view.findViewById(R.id.quiethours_textview);
+			tv.setText(state.label);
                         tv.setTextSize(1, mTileTextSize);
                         tv.setCompoundDrawablesWithIntrinsicBounds(0, state.iconId, 0, 0);
                     }

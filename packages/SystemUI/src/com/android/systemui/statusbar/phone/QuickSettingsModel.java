@@ -309,6 +309,10 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
     private RefreshCallback mPowerMenuCallback;
     private State mPowerMenuState = new State();
 
+    private QuickSettingsTileView mQuietHoursTile;
+    private RefreshCallback mQuietHoursCallback;
+    private State mQuietHoursState = new State();
+
     private QuickSettingsTileView mProfileTile;
     private RefreshCallback mProfileCallback;
     private State mProfileState = new State();
@@ -422,6 +426,8 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
                 refreshNavBarHideTile();
             if (toggle.equals(QuickSettings.POWER_MENU_TOGGLE))
                 refreshPowerMenuTile();
+            if (toggle.equals(QuickSettings.QUIETHOURS_TOGGLE))
+                refreshQuietHoursTile();
             if (toggle.equals(QuickSettings.PROFILE_TOGGLE))
                 refreshPowerMenuTile();
             if (toggle.equals(QuickSettings.STATUSBAR_TOGGLE))
@@ -782,6 +788,35 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
         mPowerMenuState.iconId = R.drawable.ic_qs_powermenu;
         mPowerMenuCallback.refreshView(mPowerMenuTile, mPowerMenuState);
     }
+
+    // Quiet Hours
+    void addQuietHoursTile(QuickSettingsTileView view, RefreshCallback cb) {
+        mQuietHoursTile = view;
+        mQuietHoursCallback = cb;
+        refreshQuietHoursTile();
+    }
+
+    void onQuietHoursChanged() {
+        boolean enabled = Settings.System.getIntForUser(mContext.getContentResolver(), Settings.System.QUIET_HOURS_ENABLED, 0, UserHandle.USER_CURRENT) == 1;
+        mQuietHoursState.enabled = enabled;
+        mQuietHoursState.iconId = enabled
+                ? R.drawable.ic_qs_quiet_hours_on
+                :  R.drawable.ic_qs_quiet_hours_off;
+        mQuietHoursState.label = enabled
+                ? mContext.getString(R.string.quick_settings_quiet_hours_on_label)
+                : mContext.getString(R.string.quick_settings_quiet_hours_off_label);
+
+        if (mQuietHoursTile != null && mQuietHoursCallback != null) {
+            mQuietHoursCallback.refreshView(mQuietHoursTile, mQuietHoursState);
+        }
+    }
+
+    void refreshQuietHoursTile() {
+        if (mQuietHoursTile != null) {
+            onQuietHoursChanged();
+        }
+    }
+
 
     // Profile
     void addProfileTile(QuickSettingsTileView view, RefreshCallback cb) {
