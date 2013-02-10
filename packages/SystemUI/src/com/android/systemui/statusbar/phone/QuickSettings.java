@@ -1476,10 +1476,12 @@ public class QuickSettings {
                         inflater.inflate(R.layout.quick_settings_tile, parent, false);
                 quick.setContent(R.layout.quick_settings_tile_quiethours, inflater);
                 quick.setOnClickListener(new View.OnClickListener() {
-                   @Override
-                    public void onClick(View v) {
-                        Settings.System.putIntForUser(mContext.getContentResolver(), Settings.System.QUIET_HOURS_ENABLED,
-                        mEnabled ? 0 : 1, UserHandle.USER_CURRENT);
+                  @Override
+                  public void onClick(View v) {
+                        boolean QuiethoursState = Settings.System.getBoolean(mContext.getContentResolver(),
+                                 Settings.System.QUIET_HOURS_ENABLED, false);
+                        Settings.System.putBoolean(mContext.getContentResolver(),
+                                 Settings.System.QUIET_HOURS_ENABLED, !QuiethoursState);
                     }
                 });
 
