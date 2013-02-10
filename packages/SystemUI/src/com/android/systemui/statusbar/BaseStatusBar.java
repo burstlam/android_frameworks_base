@@ -457,14 +457,17 @@ public abstract class BaseStatusBar extends SystemUI implements
     }
 
     private boolean showPie() {
+        boolean pie = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PIE_CONTROLS, 0) == 1;
         boolean navbarOff = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
         boolean sbexpanded = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.EXPANDED_DESKTOP_STYLE, 0) == 2;
-        boolean pie = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.PIE_CONTROLS, 0) == 1;
+        boolean navbarZero = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.NAVIGATION_BAR_SHOW, 0) == 0;
 
-        return (pie && (navbarOff || sbexpanded));
+
+        return (pie || navbarOff || sbexpanded || navbarZero);
     }
 
     public void updatePieControls() {
