@@ -858,6 +858,9 @@ public class PhoneStatusBar extends BaseStatusBar {
             mWindowManager.removeView(mGesturePanel);
             mAutoHideVisible = true;
             mWindowManager.addView(mNavigationBarView, getNavigationBarLayoutParams());
+            mNavigationBarView.setTransparencyManager(mTransparencyManager);
+            mTransparencyManager.setNavbar(mNavigationBarView);
+            mTransparencyManager.update();
 
             repositionNavigationBar();
             if (mAutoHideTimeOut > 0) {
