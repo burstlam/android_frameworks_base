@@ -226,6 +226,7 @@ public class PieMenu extends FrameLayout {
     private boolean mUseLastApp;
     private boolean mHapticFeedback;
     private boolean mNavbarOff;
+    private boolean mSbarHide;
 
     // Animations
     private int mGlowOffsetLeft = 150;
@@ -280,7 +281,9 @@ public class PieMenu extends FrameLayout {
 
         // Fetch modes
         boolean SbarExpanded = Settings.System.getInt(mContext.getContentResolver(),
-+                Settings.System.EXPANDED_DESKTOP_STYLE, 0) == 2;
+                Settings.System.EXPANDED_DESKTOP_STYLE, 0) == 2;
+        mSbarHide = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUSBAR_HIDDEN, 0) == 1;
         mUseMenuAlways = Settings.System.getInt(mContext.getContentResolver(), Settings.System.PIE_MENU, 1) == 1;
         mUseLastApp = Settings.System.getInt(mContext.getContentResolver(), Settings.System.PIE_LAST_APP, 0) == 1;
         mUseSearch = Settings.System.getInt(mContext.getContentResolver(), Settings.System.PIE_SEARCH, 1) == 1;
@@ -775,7 +778,7 @@ public class PieMenu extends FrameLayout {
             int state;
 
             // Draw background
-            if (mStatusMode != -1 && !mNavbarOff) {
+            if (mStatusMode != -1 && (!mNavbarOff || mSbarHide)) {
                 canvas.drawARGB((int)(mAnimators[ANIMATOR_DEC_SPEED15].fraction * 0xcc), 0, 0, 0);
             }
 
@@ -811,7 +814,7 @@ public class PieMenu extends FrameLayout {
             }
 
             // Paint status report only if settings allow
-            if (mStatusMode != -1 && !mNavbarOff) {
+            if (mStatusMode != -1 && (!mNavbarOff || mSbarHide)) {
 
                 // Draw chevron rings
                 mChevronBackgroundLeft.setAlpha((int)(mAnimators[ANIMATOR_DEC_SPEED15].fraction * mGlowOffsetLeft / 2 * (mPanelOrientation == Gravity.TOP ? 0.2 : 1)));
