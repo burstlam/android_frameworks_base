@@ -529,7 +529,6 @@ public class PhoneStatusBar extends BaseStatusBar {
 
         mScrollView = (ScrollView)mStatusBarWindow.findViewById(R.id.scroll);
         mScrollView.setVerticalScrollBarEnabled(false); // less drawing during pulldowns
-        mSettingsButton.setOnLongClickListener(mSettingsLongClickListener);
         if (!mNotificationPanelIsFullScreenWidth) {
             mScrollView.setSystemUiVisibility(
                     View.STATUS_BAR_DISABLE_NOTIFICATION_TICKER |
@@ -688,7 +687,8 @@ public class PhoneStatusBar extends BaseStatusBar {
         resetUserSetupObserver();
 
         mPowerWidget.setupWidget();
-        mPowerWidget.updateVisibility();
+        if (mPowerWidget.powerWidgetEnabled())
+             mPowerWidget.setVisibility(View.VISIBLE);
 
         mTransparencyManager.setStatusbar(mStatusBarView);
         return mStatusBarView;
@@ -1622,6 +1622,7 @@ public class PhoneStatusBar extends BaseStatusBar {
             @Override
             public void onAnimationEnd(Animator animation) {
                 v.setVisibility(vis);
+                v2.setVisibility(vis2);
             }
         });
         return a;
@@ -1648,7 +1649,7 @@ public class PhoneStatusBar extends BaseStatusBar {
     final int FLIP_DURATION_IN = 225;
     final int FLIP_DURATION = (FLIP_DURATION_IN + FLIP_DURATION_OUT);
 
-    Animator mScrollViewAnim, mFlipSettingsViewAnim, mNotificationButtonAnim,
+    Animator mScrollViewAnim, mFlipSettingsViewAnim, mPowerWidgetAnim, mNotificationButtonAnim,
         mSettingsButtonAnim, mClearButtonAnim;
 
     @Override
@@ -1668,13 +1669,11 @@ public class PhoneStatusBar extends BaseStatusBar {
 
     public void flipToNotifications() {
         if (mFlipSettingsViewAnim != null) mFlipSettingsViewAnim.cancel();
+        if (mPowerWidgetAnim != null) mPowerWidgetAnim.cancel();
         if (mScrollViewAnim != null) mScrollViewAnim.cancel();
         if (mSettingsButtonAnim != null) mSettingsButtonAnim.cancel();
         if (mNotificationButtonAnim != null) mNotificationButtonAnim.cancel();
         if (mClearButtonAnim != null) mClearButtonAnim.cancel();
-
-        // Only show the Power widget if it should be shown
-        mPowerWidget.updateVisibility();
 
         final boolean halfWayDone = mScrollView.getVisibility() == View.VISIBLE;
         final int zeroOutDelays = halfWayDone ? 0 : 1;
@@ -1691,13 +1690,31 @@ public class PhoneStatusBar extends BaseStatusBar {
                     ObjectAnimator.ofFloat(mScrollView, View.SCALE_X, 1f)
                         .setDuration(FLIP_DURATION_IN)
                     )));
-        mFlipSettingsViewAnim = start(
-            setVisibilityWhenDone(
-                interpolator(mAccelerateInterpolator,
-                        ObjectAnimator.ofFloat(mFlipSettingsView, View.SCALE_X, 0f)
-                        )
-                    .setDuration(FLIP_DURATION_OUT),
-                mFlipSettingsView, View.INVISIBLE));
+        mPowerWidgetAnim = start(
+            startDelay(FLIP_DURATION_OUT,
+                interpolator(mDecelerateInterpolator,
+                    ObjectAnimator.ofFloat(mPowerWidget, View.SCALE_X, 1f)
+                        .setDuration(FLIP_DURATION_IN)
+                    )));
+        if (mPowerWidget.powerWidgetEnabled()) {
+            mFlipSettingsViewAnim = start(
+                setVisibilityWhenDone(
+                    interpolator(mAccelerateInterpolator,
+                            ObjectAnimator.ofFloat(mFlipSettingsView, View.SCALE_X, 0f)
+                            )
+                        .setDuration(FLIP_DURATION_OUT),
+                    mFlipSettingsView, View.INVISIBLE,
+                    mPowerWidget, View.VISIBLE));
+        } else {
+            mFlipSettingsViewAnim = start(
+                setVisibilityWhenDone(
+                    interpolator(mAccelerateInterpolator,
+                            ObjectAnimator.ofFloat(mFlipSettingsView, View.SCALE_X, 0f)
+                            )
+                        .setDuration(FLIP_DURATION_OUT),
+                    mFlipSettingsView, View.INVISIBLE));
+        }
+
         mNotificationButtonAnim = start(
             setVisibilityWhenDone(
                 ObjectAnimator.ofFloat(mNotificationButton, View.ALPHA, 0f)
@@ -1802,6 +1819,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         if (!mUserSetup) return;
 
         if (mFlipSettingsViewAnim != null) mFlipSettingsViewAnim.cancel();
+        if (mPowerWidgetAnim != null) mPowerWidgetAnim.cancel();
         if (mScrollViewAnim != null) mScrollViewAnim.cancel();
         if (mSettingsButtonAnim != null) mSettingsButtonAnim.cancel();
         if (mNotificationButtonAnim != null) mNotificationButtonAnim.cancel();
@@ -1822,6 +1840,14 @@ public class PhoneStatusBar extends BaseStatusBar {
                     ObjectAnimator.ofFloat(mFlipSettingsView, View.SCALE_X, 1f)
                         .setDuration(FLIP_DURATION_IN)
                     )));
+        mPowerWidgetAnim = start(
+            setVisibilityWhenDone(
+                interpolator(mAccelerateInterpolator,
+                        ObjectAnimator.ofFloat(mPowerWidget, View.SCALE_X, 0f)
+                        )
+                    .setDuration(FLIP_DURATION_OUT),
+                    mPowerWidget, View.GONE,
+                    mFlipSettingsView, View.VISIBLE));
         mScrollViewAnim = start(
             setVisibilityWhenDone(
                 interpolator(mAccelerateInterpolator,
@@ -1890,13 +1916,19 @@ public class PhoneStatusBar extends BaseStatusBar {
 
             mScrollView.setScaleX(1f);
             mScrollView.setVisibility(View.VISIBLE);
-            mPowerWidget.updateVisibility();
             mSettingsButton.setAlpha(1f);
             mSettingsButton.setVisibility(View.VISIBLE);
             mNotificationPanel.setVisibility(View.GONE);
             mFlipSettingsView.setVisibility(View.GONE);
             mNotificationButton.setVisibility(View.GONE);
             setAreThereNotifications(); // show the clear button
+
+            if (mPowerWidget.powerWidgetEnabled()) {
+                mPowerWidget.setScaleX(1f);
+                mPowerWidget.setVisibility(View.VISIBLE);
+            } else {
+                mPowerWidget.setVisibility(View.GONE);
+            }
         }
 
         mExpandedVisible = false;
@@ -2462,56 +2494,6 @@ public class PhoneStatusBar extends BaseStatusBar {
                 startActivityDismissingKeyguard(
                         new Intent(android.provider.Settings.ACTION_SETTINGS), true);
             }
-        }
-    };
-
-    private View.OnLongClickListener mSettingsLongClickListener = new View.OnLongClickListener() {
-        @Override
-        public boolean onLongClick(View v) {
-                if (mPowerWidget.getVisibility() == View.GONE) {
-                        int height = mPowerWidget.getHeight();
-                        Animation anim = AnimationUtils.makeInAnimation(mContext, true);
-                        anim.setDuration(500);
-                        anim.setAnimationListener(new AnimationListener() {
-                                @Override
-                                public void onAnimationStart(Animation animation) {
-                                        mPowerWidget.setVisibility(View.VISIBLE);
-                                        Settings.System.putInt(mContext.getContentResolver(), Settings.System.EXPANDED_VIEW_WIDGET, 1);
-                                }
-                                //stupid android wont compile empty methods so I have to override them to work.... better make them public too!
-                                @Override
-                                public void onAnimationEnd(Animation animation) {
-
-                                }
-                                @Override
-                                public void onAnimationRepeat(Animation animation) {
-
-                                }
-                        });
-                        mPowerWidget.startAnimation(anim);
-                } else {
-                        int height = mPowerWidget.getHeight();
-                        Animation anim = AnimationUtils.makeOutAnimation(mContext, false);
-                        anim.setDuration(500);
-                        anim.setAnimationListener(new AnimationListener() {
-                                @Override
-                                public void onAnimationEnd(Animation animation) {
-                                        mPowerWidget.setVisibility(View.GONE);
-                                        Settings.System.putInt(mContext.getContentResolver(), Settings.System.EXPANDED_VIEW_WIDGET, 0);
-                                }
-                                //stupid android wont compile empty methods so I have to override them to work....
-                                @Override
-                                public void onAnimationStart(Animation animation) {
-
-                                }
-                                @Override
-                                public void onAnimationRepeat(Animation animation) {
-
-                                }
-                        });
-                        mPowerWidget.startAnimation(anim);
-                }
-                return true;
         }
     };
 
