@@ -429,7 +429,7 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
             if (toggle.equals(QuickSettings.QUIETHOURS_TOGGLE))
                 refreshQuietHoursTile();
             if (toggle.equals(QuickSettings.PROFILE_TOGGLE))
-                refreshPowerMenuTile();
+                refreshProfileTile();
             if (toggle.equals(QuickSettings.STATUSBAR_TOGGLE))
                 refreshStatusBarTile();
         }
