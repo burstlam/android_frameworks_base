@@ -1455,10 +1455,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 mContext.getContentResolver(),
                 Settings.System.EXPANDED_DESKTOP_STATE,
                 on ? 1 : 0);
-        Settings.System.putInt(
-                mContext.getContentResolver(),
-                Settings.System.NAV_HIDE_ENABLE,
-                on ? 1 : 0);
     }
 
     private static final class GlobalActionsDialog extends Dialog implements DialogInterface {
