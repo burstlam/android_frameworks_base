@@ -135,8 +135,6 @@ final class ElectronBeam {
         // This is not expected to change while the electron beam surface is showing.
         DisplayInfo displayInfo = mDisplayManager.getDisplayInfo(Display.DEFAULT_DISPLAY);
         mDisplayLayerStack = displayInfo.layerStack;
-        mDisplayRotation = (mDisplayInfo.rotation +
-                android.os.SystemProperties.getInt("ro.sf.hwrotation", 0) / 90) % 4;
         mDisplayWidth = displayInfo.getNaturalWidth();
         mDisplayHeight = displayInfo.getNaturalHeight();
 
