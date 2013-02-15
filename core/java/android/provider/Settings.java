@@ -2558,6 +2558,12 @@ public final class Settings {
         public static final String NOTIF_ALPHA = "notif_alpha";
 
         /**
+         * Whether fcharge is enabled or not if kernel supports it
+         * @hide
+         */
+        public static final String FCHARGE_ENABLED = "fcharge_enabled";
+
+        /**
          * Vibrate when expanding notifications
          * @hide
          */
