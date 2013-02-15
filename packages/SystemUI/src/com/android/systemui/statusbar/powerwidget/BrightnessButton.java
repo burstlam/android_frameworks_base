@@ -1,18 +1,3 @@
-/*
- * Copyright (C) 2012 The CyanogenMod Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 package com.android.systemui.statusbar.powerwidget;
 
@@ -66,8 +51,6 @@ public class BrightnessButton extends PowerButton {
     static {
         OBSERVED_URIS.add(BRIGHTNESS_URI);
         OBSERVED_URIS.add(BRIGHTNESS_MODE_URI);
-        OBSERVED_URIS.add(Settings.System.getUriFor(Settings.System.LIGHT_SENSOR_CUSTOM));
-        OBSERVED_URIS.add(Settings.System.getUriFor(Settings.System.LIGHT_SCREEN_DIM));
         OBSERVED_URIS.add(Settings.System.getUriFor(Settings.System.EXPANDED_BRIGHTNESS_MODE));
     }
 
@@ -171,15 +154,6 @@ public class BrightnessButton extends PowerButton {
     }
 
     private void updateSettings(ContentResolver resolver) {
-        boolean lightSensorCustom = (Settings.System.getInt(resolver,
-                Settings.System.LIGHT_SENSOR_CUSTOM, 0) != 0);
-        if (lightSensorCustom) {
-            BACKLIGHTS[1] = Settings.System.getInt(resolver, Settings.System.LIGHT_SCREEN_DIM,
-                    MIN_BACKLIGHT);
-        } else {
-            BACKLIGHTS[1] = MIN_BACKLIGHT;
-        }
-
         String[] modes = parseStoredValue(Settings.System.getString(
                 resolver, Settings.System.EXPANDED_BRIGHTNESS_MODE));
         if (modes == null || modes.length == 0) {
