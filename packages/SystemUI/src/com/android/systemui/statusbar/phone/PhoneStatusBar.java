@@ -1664,6 +1664,17 @@ public class PhoneStatusBar extends BaseStatusBar {
             @Override
             public void onAnimationEnd(Animator animation) {
                 v.setVisibility(vis);
+            }
+        });
+        return a;
+    }
+
+    public Animator setVisibilityWhenDone(
+            final Animator a, final View v, final int vis, final View v2, final int vis2) {
+        a.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                v.setVisibility(vis);
                 v2.setVisibility(vis2);
             }
         });
