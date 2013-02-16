@@ -51,7 +51,7 @@ public class FlashlightButton extends PowerButton {
     protected void toggleState(Context context) {
         boolean bright = Settings.System.getInt(context.getContentResolver(),
                 Settings.System.EXPANDED_FLASH_MODE, 0) == 1;
-        Intent i = new Intent("net.cactii.flash2.TOGGLE_FLASHLIGHT");
+        Intent i = new Intent("com.aokp.torch.INTENT_TORCH_TOGGLE");
         i.putExtra("bright", bright);
         context.sendBroadcast(i);
     }
@@ -61,7 +61,7 @@ public class FlashlightButton extends PowerButton {
         // it may be better to make an Intent action for the Torch
         // we may want to look at that option later
         Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClassName("net.cactii.flash2", "net.cactii.flash2.MainActivity");
+        intent.setClassName("com.aokp.Torch", "com.aokp.Torch.TorchActivity");
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
         return true;
