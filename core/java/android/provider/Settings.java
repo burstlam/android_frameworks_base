@@ -2564,6 +2564,13 @@ public final class Settings {
         public static final String FCHARGE_ENABLED = "fcharge_enabled";
 
         /**
+         * Whether to control brightness from status bar
+         *
+         * @hide
+         */
+        public static final String STATUS_BAR_BRIGHTNESS_CONTROL = "status_bar_brightness_control";
+
+        /**
          * @hide
          */
         public static final String STATUS_BAR_BRIGHTNESS_SLIDER = "statusbar_brightness_slider";
