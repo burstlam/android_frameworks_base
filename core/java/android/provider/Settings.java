@@ -4583,6 +4583,18 @@ public final class Settings {
          */
         public static final String NOTIFICATION_SHORTCUTS_HIDE_CARRIER = "notification_shortcuts_hide_carrier";
 
+        /**
+         * Custom background for lockscreen
+         * @hide
+         */
+        public static final String LOCKSCREEN_BACKGROUND = "lockscreen_background";
+
+        /**
+         * Sets alpha transparency of custom lockscreen background
+         * @hide
+         */
+        public static final String LOCKSCREEN_BACKGROUND_ALPHA = "lockscreen_background_alpha";
+
     }
 
     /**
