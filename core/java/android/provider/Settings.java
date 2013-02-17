@@ -2396,12 +2396,6 @@ public final class Settings {
         public static final String UNLOCK_SOUND = Global.UNLOCK_SOUND;
 
         /**
-         * Toggle to use a transparent background on the lockscreen.
-         * @hide
-         */
-        public static final String LOCKSCREEN_TRANSPARENT = "lockscreen_transparent";
-
-        /**
          * Receive incoming SIP calls?
          * 0 = no
          * 1 = yes
