@@ -13,12 +13,8 @@ import static com.android.server.wm.WindowManagerService.LayoutFields.SET_ORIENT
 import static com.android.server.wm.WindowManagerService.H.UPDATE_ANIM_PARAMETERS;
 
 import android.content.Context;
-import android.database.ContentObserver;
-import android.os.Handler;
 import android.os.Debug;
 import android.os.SystemClock;
-import android.provider.Settings;
-import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
 import android.util.Slog;
 import android.util.SparseArray;
@@ -124,23 +120,11 @@ public class WindowAnimator {
             default: return "KEYGUARD STATE UNKNOWN " + mForceHiding;
         }
     }
-    boolean mTransparentLock;
-    SettingsObserver mObserver = null;
 
     WindowAnimator(final WindowManagerService service) {
         mService = service;
         mContext = service.mContext;
         mPolicy = service.mPolicy;
-
-        try {
-            mTransparentLock = (Settings.System.getInt(mContext
-                    .getContentResolver(), Settings.System
-                    .LOCKSCREEN_TRANSPARENT) == 1);
-        } catch (SettingNotFoundException e) {
-            Log.e(TAG, "SettingNotFoundException:\n" + e.getStackTrace());
-        }
-        mObserver = new SettingsObserver(new Handler());
-        mObserver.observe();
 
         mAnimationRunnable = new Runnable() {
             @Override
@@ -403,18 +387,14 @@ public class WindowAnimator {
                         mService.mFocusMayChange = true;
                     }
                     if (win.isReadyForDisplay()) {
-                        if (mTransparentLock) {
-                            mForceHiding = KEYGUARD_NOT_SHOWN;
-                        } else {
-                            if (nowAnimating) {
-                                if (winAnimator.mAnimationIsEntrance) {
-                                    mForceHiding = KEYGUARD_ANIMATING_IN;
-                                } else {
-                                    mForceHiding = KEYGUARD_ANIMATING_OUT;
-                                }
+                        if (nowAnimating) {
+                            if (winAnimator.mAnimationIsEntrance) {
+                                mForceHiding = KEYGUARD_ANIMATING_IN;
                             } else {
-                                mForceHiding = KEYGUARD_SHOWN;
+                                mForceHiding = KEYGUARD_ANIMATING_OUT;
                             }
+                        } else {
+                            mForceHiding = KEYGUARD_SHOWN;
                         }
                     }
                     if (WindowManagerService.DEBUG_VISIBILITY) Slog.v(TAG,
@@ -983,28 +963,6 @@ public class WindowAnimator {
             mDimAnimator = new DimAnimator(mService.mFxSession, displayId);
             mWindowAnimationBackgroundSurface =
                     new DimSurface(mService.mFxSession, displayId);
-        }
-    }
-
-    private class SettingsObserver extends ContentObserver {
-        public SettingsObserver(Handler handler) {
-            super(handler);
-        }
-
-        public void observe() {
-            mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_TRANSPARENT), false, this);
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            try {
-                mTransparentLock = (Settings.System.getInt(mContext
-                        .getContentResolver(), Settings.System
-                        .LOCKSCREEN_TRANSPARENT) == 1);
-            } catch (SettingNotFoundException e) {
-                Log.e(TAG, "SettingNotFoundException:\n" + e.getStackTrace());
-            }
         }
     }
 }
