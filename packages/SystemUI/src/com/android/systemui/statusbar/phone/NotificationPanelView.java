@@ -17,6 +17,7 @@
 package com.android.systemui.statusbar.phone;
 
 import android.content.Context;
+import android.content.ContentResolver;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
@@ -25,6 +26,9 @@ import android.util.AttributeSet;
 import android.util.Slog;
 import android.view.MotionEvent;
 import android.view.View;
+import android.database.ContentObserver;
+import android.net.Uri;
+import android.os.Handler;
 
 import com.android.systemui.R;
 import com.android.systemui.statusbar.GestureRecorder;
@@ -50,7 +54,9 @@ public class NotificationPanelView extends PanelView {
     int mFingers;
     PhoneStatusBar mStatusBar;
     boolean mOkToFlip;
-
+    int mToggleStyle;
+    ContentObserver mEnableObserver;
+    Handler mHandler = new Handler();
 
     public NotificationPanelView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -70,17 +76,23 @@ public class NotificationPanelView extends PanelView {
         mHandleView = findViewById(R.id.handle);
 
         setContentDescription(resources.getString(R.string.accessibility_desc_notification_shade));
-    }
 
-    @Override
-    public void fling(float vel, boolean always) {
-        GestureRecorder gr = ((PhoneStatusBarView) mBar).mBar.getGestureRecorder();
-        if (gr != null) {
-            gr.tag(
-                "fling " + ((vel > 0) ? "open" : "closed"),
-                "notifications,v=" + vel);
-        }
-        super.fling(vel, always);
+
+        final ContentResolver resolver = getContext().getContentResolver();
+        mEnableObserver = new ContentObserver(mHandler) {
+            @Override
+            public void onChange(boolean selfChange) {
+                mToggleStyle = Settings.System.getInt(resolver,
+                        Settings.System.TOGGLES_STYLE, 0);
+            }
+        };
+
+        mToggleStyle = Settings.System.getInt(resolver,
+                Settings.System.TOGGLES_STYLE, 0);
+
+        resolver.registerContentObserver(
+                Settings.System.getUriFor(Settings.System.TOGGLES_STYLE),
+                true, mEnableObserver);
     }
 
     // We draw the handle ourselves so that it's always glued to the bottom of the window.
@@ -92,6 +104,23 @@ public class NotificationPanelView extends PanelView {
             final int pr = getPaddingRight();
             mHandleBar.setBounds(pl, 0, getWidth() - pr, (int) mHandleBarHeight);
         }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        getContext().getContentResolver().unregisterContentObserver(mEnableObserver);
+        super.onDetachedFromWindow();
+    }
+
+    @Override
+    public void fling(float vel, boolean always) {
+        GestureRecorder gr = ((PhoneStatusBarView) mBar).mBar.getGestureRecorder();
+        if (gr != null) {
+            gr.tag(
+                "fling " + ((vel > 0) ? "open" : "closed"),
+                "notifications,v=" + vel);
+        }
+        super.fling(vel, always);
     }
 
     @Override
@@ -120,6 +149,11 @@ public class NotificationPanelView extends PanelView {
                     //    mGestureStartY > getHeight() - mHandleBarHeight - getPaddingBottom();
                     mTrackingSwipe = isFullyExpanded();
                     mOkToFlip = getExpandedHeight() == 0;
+                    if(mToggleStyle != 0) {
+                        // don't allow settings panel with non-tile toggles
+                        flip = false;
+                        break;
+                    }
                     if (event.getX(0) > getWidth() * (1.0f - STATUS_BAR_SETTINGS_RIGHT_PERCENTAGE) &&
                             Settings.System.getInt(getContext().getContentResolver(),
                                     Settings.System.FAST_TOGGLE, 0) == 1) {
