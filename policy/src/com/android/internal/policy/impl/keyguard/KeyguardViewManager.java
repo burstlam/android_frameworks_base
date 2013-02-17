@@ -23,16 +23,13 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.database.ContentObserver;
 import android.graphics.PixelFormat;
-import android.os.Handler;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.os.SystemProperties;
 import android.provider.Settings;
-import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
 import android.util.Slog;
 import android.util.SparseArray;
@@ -42,7 +39,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewManager;
 import android.view.WindowManager;
-import android.view.WindowManager.LayoutParams;
 import android.widget.FrameLayout;
 
 import com.android.internal.R;
@@ -74,10 +70,6 @@ public class KeyguardViewManager {
 
     private boolean mScreenOn = false;
     private LockPatternUtils mLockPatternUtils;
-    private boolean mTransparentLock;
-    private boolean mDisableToolbox;
-    private boolean mUpdateKeyguardHost;
-    private SettingsObserver mObserver = null;
 
     public interface ShowListener {
         void onShown(IBinder windowToken);
@@ -96,10 +88,6 @@ public class KeyguardViewManager {
         mViewManager = viewManager;
         mViewMediatorCallback = callback;
         mLockPatternUtils = lockPatternUtils;
-
-        mUpdateKeyguardHost = true;
-        mObserver = new SettingsObserver(new Handler());
-        mObserver.observe();
     }
 
     /**
@@ -205,6 +193,7 @@ public class KeyguardViewManager {
             int flags = WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                     | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR
                     | WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN
+                    | WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER
                     | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
 
             if (!mNeedsInput) {
@@ -228,28 +217,6 @@ public class KeyguardViewManager {
             lp.setTitle(isActivity ? "KeyguardMock" : "Keyguard");
             mWindowLayoutParams = lp;
             mViewManager.addView(mKeyguardHost, lp);
-        }
-
-        if (mUpdateKeyguardHost) {
-            try {
-                mTransparentLock = (Settings.System.getInt(mContext
-                        .getContentResolver(), Settings.System
-                        .LOCKSCREEN_TRANSPARENT) == 1);
-            } catch (SettingNotFoundException e) {
-                Log.e(TAG, "SettingNotFoundException:\n" + e.getStackTrace());
-            }
-            WindowManager.LayoutParams lp = (LayoutParams) mKeyguardHost
-                    .getLayoutParams();
-            if (!mTransparentLock) {
-                lp.flags |= WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
-            } else {
-                if ((lp.flags & WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER)
-                        == WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER) {
-                    lp.flags ^= WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
-                }
-            }
-            mViewManager.updateViewLayout(mKeyguardHost, lp);
-            mUpdateKeyguardHost = false;
         }
 
         if (force || mKeyguardView == null) {
@@ -471,22 +438,6 @@ public class KeyguardViewManager {
      */
     public synchronized boolean isShowing() {
         return (mKeyguardHost != null && mKeyguardHost.getVisibility() == View.VISIBLE);
-    }
-
-    private class SettingsObserver extends ContentObserver {
-        public SettingsObserver(Handler handler) {
-            super(handler);
-        }
-
-        public void observe() {
-            mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_TRANSPARENT), false, this);
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            mUpdateKeyguardHost = true;
-        }
     }
 
     public void showAssistant() {
