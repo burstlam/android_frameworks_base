@@ -3926,6 +3926,11 @@ public final class Settings {
         public static final String STATUS_BAR_ALPHA_CONFIG = "status_bar_alpha_config";
 
         /**
+         * @hide
+         */
+        public static final String TOGGLES_STYLE = "toggls_style";
+
+        /**
          * Whether to enable notification shortcuts (toggle)
          *
          * @hide
