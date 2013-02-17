@@ -1586,7 +1586,7 @@ public class KeyguardHostView extends KeyguardViewBase {
 
     @Override
     public void cleanUp() {
-        super.cleanUp();
+
     }
 
     /**
