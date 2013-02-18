@@ -1923,6 +1923,9 @@
   <java-symbol type="string" name="toast_rotation_unlocked" />
   <java-symbol type="string" name="toast_rotation_locked" />
 
+  <!-- Expanded desktop default set -->
+  <java-symbol type="string" name="expanded_mode_default_set" />
+
   <!-- Lockscreen -->
   <java-symbol type="bool" name="config_disableHomeUnlockSetting" />
 
