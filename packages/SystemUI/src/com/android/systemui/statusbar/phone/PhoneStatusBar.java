@@ -439,7 +439,7 @@ public class PhoneStatusBar extends BaseStatusBar {
             if (MULTIUSER_DEBUG) Slog.d(TAG, String.format("User setup changed: " +
                     "selfChange=%s userSetup=%s mUserSetup=%s",
                     selfChange, userSetup, mUserSetup));
-            if (mSettingsButton != null && mHasFlipSettings) {
+            if (mSettingsButton != null && !mHasSettingsPanel) {
                 mSettingsButton.setVisibility(userSetup ? View.VISIBLE : View.INVISIBLE);
             }
             if (mSettingsPanel != null) {
@@ -2002,9 +2002,6 @@ public class PhoneStatusBar extends BaseStatusBar {
             return;
         }
 
-        // Settings are not available in setup
-        if (!mUserSetup) return;
-
         if (mHasFlipSettings) {
             mNotificationPanel.expand();
             if (mFlipSettingsView.getVisibility() != View.VISIBLE) {
@@ -2018,8 +2015,6 @@ public class PhoneStatusBar extends BaseStatusBar {
     }
 
     public void switchToSettings() {
-        // Settings are not available in setup
-        if (!mUserSetup) return;
 
         mFlipSettingsView.setScaleX(1f);
         mFlipSettingsView.setVisibility(View.VISIBLE);
@@ -2076,8 +2071,6 @@ public class PhoneStatusBar extends BaseStatusBar {
     }
 
     public void flipToSettings() {
-        // Settings are not available in setup
-        if (!mUserSetup) return;
 
         if (mFlipSettingsViewAnim != null) mFlipSettingsViewAnim.cancel();
         if (mPowerWidgetAnim != null) mPowerWidgetAnim.cancel();
