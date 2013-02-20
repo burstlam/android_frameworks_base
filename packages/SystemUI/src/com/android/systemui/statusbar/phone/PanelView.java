@@ -316,8 +316,6 @@ public class PanelView extends FrameLayout {
             + getPaddingBottom() // our window might have a dropshadow
             - (mHandleView == null ? 0 : mHandleView.getPaddingTop()); // the handle might have a topshadow
 
-        SettingsObserver sb = new SettingsObserver(mHandler);
-        sb.observe();
     }
 
     private void trackMovement(MotionEvent event) {
