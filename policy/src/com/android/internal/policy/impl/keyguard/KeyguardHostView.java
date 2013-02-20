@@ -334,7 +334,7 @@ public class KeyguardHostView extends KeyguardViewBase {
         } else {
             MAX_WIDGETS = 5;
         }
-        return numWidgets() < MAX_WIDGETS && mUserSetupCompleted;
+        return numWidgets() < MAX_WIDGETS;//return numWidgets() < MAX_WIDGETS && mUserSetupCompleted;
     }
 
     private final OnLongClickListener mFastUnlockClickListener = new OnLongClickListener() {
@@ -429,14 +429,14 @@ public class KeyguardHostView extends KeyguardViewBase {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mAppWidgetHost.startListeningAsUser(mUserId);
+        mAppWidgetHost.startListening();//mAppWidgetHost.startListeningAsUser(mUserId);
         KeyguardUpdateMonitor.getInstance(mContext).registerCallback(mUpdateMonitorCallbacks);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mAppWidgetHost.stopListeningAsUser(mUserId);
+        mAppWidgetHost.stopListening();//mAppWidgetHost.stopListeningAsUser(mUserId);
         KeyguardUpdateMonitor.getInstance(mContext).removeCallback(mUpdateMonitorCallbacks);
     }
 
@@ -1217,7 +1217,7 @@ public class KeyguardHostView extends KeyguardViewBase {
         // We currently disable cameras in safe mode because we support loading 3rd party
         // cameras we can't trust.  TODO: plumb safe mode into camera creation code and only
         // inflate system-provided camera?
-        if (!mSafeModeEnabled && !cameraDisabledByDpm() && mUserSetupCompleted
+        if (!mSafeModeEnabled && !cameraDisabledByDpm()
                 && Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.KG_CAMERA_WIDGET, 0) == 1) {
             View cameraWidget =
