@@ -3256,7 +3256,6 @@ public final class Settings {
         public static final String LOCKSCREEN_VIBRATE_ENABLED = "lockscreen.vibrate_enabled";
 
         /**
-         * Whether to dim the notification shade when pulling down the status bar
          * @hide
          */
         public static final String NOTIFICATION_SHADE_DIM = "notification_shade_dim";
@@ -3312,6 +3311,13 @@ public final class Settings {
          * @hide
          */
         public static final String PIE_MENU = "pie_menu";
+
+        /**
+         * Whether to dim the notification shade when pulling down the status bar
+         * Pie will not rotate. Should default to 0 (no, rotate)
+         * @hide
+         */
+        public static final String PIE_STICK = "pie_stick";
 
         /**
          * Center Pie? Should default to 1 (yes, center)
