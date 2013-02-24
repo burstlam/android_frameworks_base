@@ -35,8 +35,6 @@ public class WifiText extends TextView {
     /* Anything better than or equal to this will show the max bars. */
     private static final int MAX_RSSI = -55;
 
-    private SettingsObserver mSettingsObserver;
-
     public WifiText(Context context) {
         this(context, null);
     }
@@ -68,8 +66,8 @@ public class WifiText extends TextView {
             mAttached = true;
             mSignalColor = getTextColors().getDefaultColor();
             mHandler = new Handler();
-            mSettingsObserver = new SettingsObserver(mHandler);
-            mSettingsObserver.observe();
+            SettingsObserver settingsObserver = new SettingsObserver(mHandler);
+            settingsObserver.observe();
             mWifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
             mContext.registerReceiver(rssiReceiver, new IntentFilter(WifiManager.RSSI_CHANGED_ACTION));
             updateSettings();
@@ -81,8 +79,7 @@ public class WifiText extends TextView {
         super.onDetachedFromWindow();
         if (mAttached) {
             mAttached = false;
-            mContext.unregisterReceiver(rssiReceiver);
-            mContext.getContentResolver().unregisterContentObserver(mSettingsObserver);
+           mContext.unregisterReceiver(rssiReceiver);
         }
     }
 

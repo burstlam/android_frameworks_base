@@ -67,8 +67,6 @@ public class SignalClusterView
 
     Handler mHandler;
 
-    private SettingsObserver mSettingsObserver;
-
     public SignalClusterView(Context context) {
         this(context, null);
     }
@@ -79,7 +77,6 @@ public class SignalClusterView
 
     public SignalClusterView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mSettingsObserver = new SettingsObserver(mHandler);
     }
 
     public void setNetworkController(NetworkController nc) {
@@ -105,7 +102,8 @@ public class SignalClusterView
 
         mHandler = new Handler();
 
-        mSettingsObserver.observe();
+        SettingsObserver settingsObserver = new SettingsObserver(mHandler);
+        settingsObserver.observe();
 
         apply();
     }
@@ -123,8 +121,6 @@ public class SignalClusterView
         mWiFiText       = null;
         mSpacer         = null;
         mAirplane       = null;
-
-        mContext.getContentResolver().unregisterContentObserver(mSettingsObserver);
 
         super.onDetachedFromWindow();
     }

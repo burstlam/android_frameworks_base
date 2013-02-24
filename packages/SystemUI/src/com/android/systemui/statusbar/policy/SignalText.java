@@ -46,8 +46,6 @@ public class SignalText extends TextView {
 
     private SignalText mSignalText;
 
-    private SettingsObserver mSettingsObserver;
-
     private static class MyHandler extends Handler {
         private WeakReference<SignalText> mSignalText;
 
@@ -88,8 +86,8 @@ public class SignalText extends TextView {
             mAttached = true;
             mSignalColor = getTextColors().getDefaultColor();
             mHandler = new MyHandler(this);
-            mSettingsObserver = new SettingsObserver(mHandler);
-            mSettingsObserver.observe();
+            SettingsObserver settingsObserver = new SettingsObserver(mHandler);
+            settingsObserver.observe();
             mPhoneStateReceiver = new PhoneStateIntentReceiver(mContext, mHandler);
             mPhoneStateReceiver.notifySignalStrength(EVENT_SIGNAL_STRENGTH_CHANGED);
             mPhoneStateReceiver.registerIntent();
@@ -103,7 +101,6 @@ public class SignalText extends TextView {
         if (mAttached) {
             mAttached = false;
             mPhoneStateReceiver.unregisterIntent();
-            mContext.getContentResolver().unregisterContentObserver(mSettingsObserver);
         }
     }
 
