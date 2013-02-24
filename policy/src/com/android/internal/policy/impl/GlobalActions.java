@@ -669,8 +669,13 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
     }
 
-    private void createProfileDialog(){
-        final ProfileManager profileManager = (ProfileManager)mContext.getSystemService(Context.PROFILE_SERVICE);
+    public void showProfileDialog() {
+        // pre-create GlobalActions dialog if necessary
+        if(mDialog == null)
+            mDialog = createDialog();
+
+        final ProfileManager profileManager = (ProfileManager) mContext
+                .getSystemService(Context.PROFILE_SERVICE);
 
         final Profile[] profiles = profileManager.getProfiles();
         UUID activeProfile = profileManager.getActiveProfile().getUuid();
