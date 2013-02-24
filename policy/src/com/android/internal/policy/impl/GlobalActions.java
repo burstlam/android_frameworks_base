@@ -383,7 +383,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             mItems.add(
                 new ProfileChooseAction() {
                     public void onPress() {
-                        createProfileDialog();
+                        showProfileDialog();
                     }
 
                     public boolean onLongPress() {
@@ -672,7 +672,11 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
     }
 
-    public void createProfileDialog() {
+    public void showProfileDialog() {
+        // pre-create GlobalActions dialog if necessary
+        if(mDialog == null)
+            mDialog = createDialog();
+
         final ProfileManager profileManager = (ProfileManager) mContext
                 .getSystemService(Context.PROFILE_SERVICE);
 
