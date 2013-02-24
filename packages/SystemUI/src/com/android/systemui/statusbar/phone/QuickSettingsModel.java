@@ -826,14 +826,23 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
     void addProfileTile(QuickSettingsTileView view, RefreshCallback cb) {
         mProfileTile = view;
         mProfileCallback = cb;
-        refreshProfileTile();
+        onProfileChanged();
     }
 
-    void refreshProfileTile() {
-        Resources r = mContext.getResources();
+    public void onProfileChanged() {
         mProfileState.label = mProfileManager.getActiveProfile().getName();
         mProfileState.iconId = R.drawable.ic_qs_profiles;
         mProfileCallback.refreshView(mProfileTile, mProfileState);
+
+        if (mProfileTile != null && mProfileCallback != null) {
+            mProfileCallback.refreshView(mProfileTile, mProfileState);
+        }
+    }
+
+    void refreshProfileTile() {
+        if (mProfileTile != null) {
+            onProfileChanged();
+        }
     }
 
     // Bug report

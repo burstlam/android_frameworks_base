@@ -2181,6 +2181,7 @@ public class QuickSettings {
         mModel.refreshNavBarHideTile();
         mModel.refreshTorchTile();
         mModel.refreshQuietHoursTile();
+        mModel.refreshProfileTile();
     }
 
     class SettingsObserver extends ContentObserver {
