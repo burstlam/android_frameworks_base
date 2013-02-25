@@ -3272,7 +3272,7 @@ public final class Settings {
         public static final String PIE_CONTROLS = "pie_controls";
 
         /**
-         * Pie gap angle, should default to 1
+         * Pie gap angle, should default to 3
          * @hide
          */
         public static final String PIE_GAP = "pie_gap";
@@ -3310,14 +3310,14 @@ public final class Settings {
         public static final String PIE_SIZE = "pie_size";
 
         /**
-         * Pie menu, should default to 0 (no, show only when needed)
+         * Pie menu, should default to 1 (yes, show)
          * @hide
          */
         public static final String PIE_MENU = "pie_menu";
 
         /**
          * Whether to dim the notification shade when pulling down the status bar
-         * Pie will not rotate. Should default to 0 (no, rotate)
+         * Pie will not rotate. Should default to 1 (yes, do not rotate)
          * @hide
          */
         public static final String PIE_STICK = "pie_stick";

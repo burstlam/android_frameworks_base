@@ -297,7 +297,7 @@ public class PieMenu extends FrameLayout {
         mPieSize = Settings.System.getFloat(mContext.getContentResolver(),
                 Settings.System.PIE_SIZE, 1f);
         mPieGap = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.PIE_GAP, 1);
+                Settings.System.PIE_GAP, 3);
         mHapticFeedback = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.HAPTIC_FEEDBACK_ENABLED, 1) != 0;
 
@@ -791,7 +791,7 @@ public class PieMenu extends FrameLayout {
                     mSnapBackground.setAlpha((int)(snap.alpha + (snap.active ? mAnimators[ANIMATOR_SNAP_GROW].fraction * 80 : 0)));
 
                     canvas.drawCircle (snap.x, snap.y, (snap.active ? mAnimators[ANIMATOR_SNAP_GROW].fraction *
-                            Math.max(getWidth(), getHeight()) : 0), mSnapBackground);
+                            Math.max(getWidth(), getHeight()) * 1.5f : 0), mSnapBackground);
 
                     float snapDistanceX = snap.x-mX;
                     float snapDistanceY = snap.y-mY;
@@ -876,11 +876,12 @@ public class PieMenu extends FrameLayout {
                     state = canvas.save();
                     canvas.rotate(mPanel.getDegree() + 180 + (1-mAnimators[ANIMATOR_DEC_SPEED15].fraction) * 90, mCenter.x, mCenter.y);
                     if (mPolicy.supportsTelephony()) {
-                        canvas.drawTextOnPath(mPolicy.getNetworkProvider(), mStatusPath, 0, mStatusOffset * 3, mStatusPaint);
+                        canvas.drawTextOnPath(mPolicy.getNetworkProvider(), mStatusPath, 0, mStatusOffset * 4, mStatusPaint);
                     }
-                    canvas.drawTextOnPath(mPolicy.getSimpleDate(), mStatusPath, 0, mStatusOffset * 2, mStatusPaint);
-                    canvas.drawTextOnPath(mPolicy.getBatteryLevelReadable(), mStatusPath, 0, mStatusOffset * 1, mStatusPaint);
-                    canvas.drawTextOnPath(mPolicy.getWifiSsid(), mStatusPath, 0, mStatusOffset * 0, mStatusPaint);
+                    canvas.drawTextOnPath(mPolicy.getSimpleDate(), mStatusPath, 0, mStatusOffset * 3, mStatusPaint);
+                    canvas.drawTextOnPath(mPanel.getBar().getNotificationData().size() + " ONGOING EVENTS", mStatusPath, 0, mStatusOffset * 2, mStatusPaint);
+                    canvas.drawTextOnPath("CONNECTION: " + mPolicy.getWifiSsid(), mStatusPath, 0, mStatusOffset * 1, mStatusPaint);
+                    canvas.drawTextOnPath(mPolicy.getBatteryLevelReadable(), mStatusPath, 0, mStatusOffset * 0, mStatusPaint);
                     canvas.restoreToCount(state);
 
                     state = canvas.save();
