@@ -17,16 +17,18 @@
 
 package android.content.res;
 
-import java.util.Locale;
-
 import android.content.pm.ActivityInfo;
 import android.graphics.Point;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.SystemProperties;
 import android.text.TextUtils;
 import android.util.ExtendedPropertiesUtils;
-
+import android.util.Log;
+import android.view.Surface;
 import android.view.View;
+
+import java.util.Locale;
 
 /**
  * This class describes all device configuration information that can
@@ -569,20 +571,24 @@ public final class Configuration extends ExtendedPropertiesUtils implements Parc
      * Process layout changes for current hook
      */
     public void paranoidHook() {
-        if (mDisplay != null && !"com.android.systemui".equals(getName()) && active) {
-            int dpi = getDpi(),
-                layout = 600;
-            if (dpi <= 213) {
+        if (getLayout() != 0 && active) {
+
+            /*int dpi = getDpi(), layout = 600;
+             if (dpi <= 213) {
                 layout = 720;
-            } else if (dpi > 213) {
+             } else if (dpi > 213) {
                 layout = 360;
-            }
+            }*/
+            if (mDisplay == null) return;
             Point size = new Point();
             mDisplay.getSize(size);
             float factor = (float)Math.max(size.x, size.y) / (float)Math.min(size.x, size.y);
-            screenWidthDp = layout;
+            screenWidthDp = getLayout();
             screenHeightDp = (int)(screenWidthDp * factor);
-            smallestScreenWidthDp = layout;           
+            smallestScreenWidthDp = getLayout();
+            /*if (getLarge()) {
+                screenLayout |= SCREENLAYOUT_SIZE_XLARGE;
+            }*/
             compatScreenWidthDp = screenWidthDp;
             compatScreenHeightDp = screenHeightDp;
             compatSmallestScreenWidthDp = smallestScreenWidthDp;
