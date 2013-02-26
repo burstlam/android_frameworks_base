@@ -794,38 +794,42 @@ public class PhoneStatusBar extends BaseStatusBar {
             }
         }
 
+
         mWifiLabel = (TextView)mStatusBarWindow.findViewById(R.id.wifi_text);
-        mNetworkController.addWifiLabelView(mWifiLabel);
 
-        mWifiLabel.addTextChangedListener(new TextWatcher() {
+        if (mWifiLabel != null) {
+            mNetworkController.addWifiLabelView(mWifiLabel);
 
-            public void afterTextChanged(Editable s) {
-            }
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                    int after) {
-            }
-            public void onTextChanged(CharSequence s, int start, int before,
-                    int count) {
-                 if (Settings.System.getInt(mContext.getContentResolver(),
-                        Settings.System.NOTIFICATION_SHOW_WIFI_SSID, 0) == 1 &&
-                        count > 0) {
-                    mWifiView.setVisibility(View.VISIBLE);
+            mWifiLabel.addTextChangedListener(new TextWatcher() {
+
+                public void afterTextChanged(Editable s) {
                 }
-                else
-                {
-                    mWifiView.setVisibility(View.GONE);
+                public void beforeTextChanged(CharSequence s, int start, int count,
+                        int after) {
                 }
-            }
+                public void onTextChanged(CharSequence s, int start, int before,
+                        int count) {
+                     if (Settings.System.getInt(mContext.getContentResolver(),
+                            Settings.System.NOTIFICATION_SHOW_WIFI_SSID, 0) == 1 &&
+                            count > 0) {
+                        mWifiView.setVisibility(View.VISIBLE);
+                    }
+                    else
+                    {
+                        mWifiView.setVisibility(View.GONE);
+                    }
+                }
 
-        });
+            });
 
-        // set up the dynamic hide/show of the labels
-        mPile.setOnSizeChangedListener(new OnSizeChangedListener() {
-            @Override
-            public void onSizeChanged(View view, int w, int h, int oldw, int oldh) {
-                updateCarrierAndWifiLabelVisibility(false);
-            }
-        });
+            // set up the dynamic hide/show of the labels
+            mPile.setOnSizeChangedListener(new OnSizeChangedListener() {
+                @Override
+                public void onSizeChanged(View view, int w, int h, int oldw, int oldh) {
+                    updateCarrierAndWifiLabelVisibility(false);
+                }
+            });
+        }
 
         // Quick Settings (where available, some restrictions apply)
         if (mHasSettingsPanel) {
