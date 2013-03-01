@@ -517,7 +517,7 @@
     <string name="quick_settings_swagger">Swagger</string>
     <string name="quick_settings_fbgt">FBGT</string>
     <string name="quick_settings_powermenu">Power Menu</string>
-    <string name="quick_settings_profile_label">Profile</string>
+    <string name="quick_settings_profile">Profile</string>
     <string name="quick_settings_recording">Recording...</string>
     <string name="quick_settings_recordingcap">Recording Captured</string>
     <string name="quick_settings_playing">Playing...</string>
@@ -583,7 +583,7 @@
     <string name="quick_settings_gps_off_label">GPS Off</string>
     <string name="quick_settings_data_on_label">Data On</string>
     <string name="quick_settings_data_off_label">Data Off</string>
-    <string name="quick_settings_screen_off_label">Screen Off</string>
+    <string name="quick_settings_sleep">Sleep</string>
     <string name="quick_settings_navbar_hide_on_label">NavBar Hide On</string>
     <string name="quick_settings_navbar_hide_off_label">NavBAr Hide Off</string>
     <string name="quick_settings_sound_on">Sound on</string>
