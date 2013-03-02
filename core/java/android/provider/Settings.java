@@ -2368,6 +2368,12 @@ public final class Settings {
         public static final String LOCKSCREEN_DISABLED = "lockscreen.disabled";
 
         /**
+         * Stores values for custom lockscreen targets
+         * @hide
+         */
+        public static final String LOCKSCREEN_TARGETS = "lockscreen_targets";
+
+        /**
          * @deprecated Use {@link android.provider.Settings.Global#LOW_BATTERY_SOUND}
          * instead
          * @hide
@@ -3393,6 +3399,54 @@ public final class Settings {
         public static final String STATUSBAR_WIFI_SIGNAL_TEXT_COLOR = "statusbar_wifi_signal_text_color";
 
         /**
+         *
+         * @hide
+         */
+        public static final String LOCKSCREEN_TARGETS_LONGPRESS = "lockscreen_targets_longpress";
+
+        /**
+         * @hide
+         */
+        public static final String[] LOCKSCREEN_TARGETS_SHORT = new String[] {
+            "lockscreen_targets_short_0",
+            "lockscreen_targets_short_1",
+            "lockscreen_targets_short_2",
+            "lockscreen_targets_short_3",
+            "lockscreen_targets_short_4",
+            "lockscreen_targets_short_5",
+            "lockscreen_targets_short_6",
+            "lockscreen_targets_short_7",
+        };
+
+        /**
+         * @hide
+         */
+        public static final String[] LOCKSCREEN_TARGETS_LONG = new String[] {
+            "lockscreen_targets_long_0",
+            "lockscreen_targets_long_1",
+            "lockscreen_targets_long_2",
+            "lockscreen_targets_long_3",
+            "lockscreen_targets_long_4",
+            "lockscreen_targets_long_5",
+            "lockscreen_targets_long_6",
+            "lockscreen_targets_long_7",
+        };
+
+        /**
+         * @hide
+         */
+        public static final String[] LOCKSCREEN_TARGETS_ICON = new String[] {
+            "lockscreen_targets_icon_0",
+            "lockscreen_targets_icon_1",
+            "lockscreen_targets_icon_2",
+            "lockscreen_targets_icon_3",
+            "lockscreen_targets_icon_4",
+            "lockscreen_targets_icon_5",
+            "lockscreen_targets_icon_6",
+            "lockscreen_targets_icon_7",
+        };
+
+        /**
          * Whether to use the custom quick unlock screen control
          * @hide
          */
@@ -3670,15 +3724,12 @@ public final class Settings {
          */
         public static final String NOTIFICATION_SHADE_DIM = "notification_shade_dim";
 
-<<<<<<< HEAD
         /**
          * Override and forcefully disable the fullscreen keyboard
          * @hide
          */
         public static final String DISABLE_FULLSCREEN_KEYBOARD = "disable_fullscreen_keyboard";
 
-=======
->>>>>>> parent of 9f86b0f... Implement PA's Lockscreen Target (1/2)
         /**
          * Automatic keyboard rotation timeout.  0 to disable completely.
          * @hide
