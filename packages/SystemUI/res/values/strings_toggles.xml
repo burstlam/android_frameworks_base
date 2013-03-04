@@ -47,4 +47,5 @@
     <string name="toggle_STATUSBAR">StatusBar</string>
     <string name="toggle_QUIETHOURS">Quiet Hours</string>
     <string name="toggle_SLEEP">Sleep</string>
+    <string name="toggle_PIE">Pie</string>
 </resources>
