@@ -3677,6 +3677,12 @@ public final class Settings {
         public static final String TOGGLE_NOTIFICATION_SHADE = "toggle_notification_shade";
 
         /**
+         * Restart Launcher
+         * @hide
+         */
+        public static final String EXPANDED_DESKTOP_RESTART_LAUNCHER = "expanded_desktop_restart_launcher";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
