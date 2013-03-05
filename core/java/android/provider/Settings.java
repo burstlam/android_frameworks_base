@@ -3449,6 +3449,12 @@ public final class Settings {
          */
         public static final String PIE_CHEVRON_RIGHT = "pie_chevron_right";
 
+        /**
+         * Restart Launcher
+         * @hide
+         */
+        public static final String EXPANDED_DESKTOP_RESTART_LAUNCHER = "expanded_desktop_restart_launcher";
+
        // PIE //
 
         /**
