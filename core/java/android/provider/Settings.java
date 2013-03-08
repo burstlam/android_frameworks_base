@@ -3441,6 +3441,12 @@ public final class Settings {
          */
         public static final String POWER_UI_LOW_BATTERY_WARNING_POLICY = "power_ui_low_battery_warning_policy";
 
+        /**	
+         * Give MMS Notifications a breathing effect
+         * @hide
+         */
+        public static final String MMS_BREATH = "mms_breath";
+
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
