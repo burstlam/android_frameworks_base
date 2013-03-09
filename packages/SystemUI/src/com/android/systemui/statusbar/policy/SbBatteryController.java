@@ -145,11 +145,20 @@ public class SbBatteryController extends LinearLayout {
         if (mBatteryStyle == STYLE_ICON_CIRCLEMOD) {
             icon = plugged ? R.drawable.stat_sys_battery_charge_circle
                     : R.drawable.stat_sys_battery_circle;
-		} else if (mBatteryStyle == STYLE_ICON_CIRCLE || mBatteryStyle == STYLE_ICON_CIRCLE_PERCENT) {
-			icon = 0;
-        } else {
-            icon = plugged ? R.drawable.stat_sys_battery_charge
-                    : R.drawable.stat_sys_battery;
+		switch (mBatteryStyle) {
+            case STYLE_ICON_CIRCLE: 
+            case STYLE_ICON_CIRCLE_PERCENT:
+                 icon = 0;
+                 break;
+            case STYLE_ICON_SPEED:
+                 icon = plugged ? R.drawable.stat_sys_battery_charge_altcircle
+                 : R.drawable.stat_sys_battery_altcircle;
+                 break;
+            default:
+                 icon = plugged ? R.drawable.stat_sys_battery_charge
+                 : R.drawable.stat_sys_battery;
+                 break;
+        }
         }
         int N = mIconViews.size();
         for (int i = 0; i < N; i++) {
