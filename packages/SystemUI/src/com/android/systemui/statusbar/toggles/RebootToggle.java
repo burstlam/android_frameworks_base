@@ -35,9 +35,10 @@ public class RebootToggle extends BaseToggle {
 
     @Override
     public boolean onLongClick(View v) {
-        // Turn screen off so doesn't appear as lockup and go bye-bye
-        pm.goToSleep(SystemClock.uptimeMillis());
-        pm.reboot(null);
+        collapseStatusBar();
+        dismissKeyguard();
+        Intent intent=new Intent(Intent.ACTION_POWERMENU_REBOOT);
+        mContext.sendBroadcast(intent);
 
         return super.onLongClick(v);
     }
