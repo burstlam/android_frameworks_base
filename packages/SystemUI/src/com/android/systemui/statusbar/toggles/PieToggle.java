@@ -43,8 +43,8 @@ public class PieToggle extends StatefulToggle {
     @Override
     public boolean onLongClick(View v) {
         Intent intent = new Intent("android.intent.action.MAIN");
-        intent.setClassName("com.aokp.romcontrol", "com.aokp.romcontrol.Settings$PieActivity");
-        intent.addCategory("android.intent.category.LAUNCHER");
+        intent.setClassName("com.aokp.romcontrol", "com.aokp.romcontrol.fragements.PieControl");
+        intent.addCategory("android.intent.category.DEFAULT");
         startActivity(intent);
         return super.onLongClick(v);
     }
