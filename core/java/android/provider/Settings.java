@@ -368,6 +368,13 @@ public final class Settings {
             "android.settings.USER_DICTIONARY_SETTINGS";
 
     /**
+     * Activity Action: Piecontrol.
+     */
+    @SdkConstant(SdkConstantType.ACTIVITY_INTENT_ACTION)
+    public static final String ACTION_PIECONTROL =
+            "com.aokp.romcontrol.fragments.PieControl";
+
+    /**
      * Activity Action: Adds a word to the user dictionary.
      * <p>
      * In some cases, a matching Activity may not exist, so ensure you
