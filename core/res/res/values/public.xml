@@ -2067,4 +2067,8 @@
   <!-- Kill App -->
   <java-symbol type="string" name="app_killed_message" />
   <java-symbol type="integer" name="config_backKillTimeout" />
+
+  <!-- QuickMessage, for editbox background overrides -->
+  <public type="drawable" name="edit_text_holo_light" />
+  <public type="drawable" name="edit_text_holo_dark" />
 </resources>
