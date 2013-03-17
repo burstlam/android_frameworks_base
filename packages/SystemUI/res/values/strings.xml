@@ -610,6 +610,8 @@
     <string name="quick_settings_pie_on_label">Pie On</string>
     <string name="quick_settings_pie_off_label">Pie Off</string>
 	<string name="quick_settings_screenshot">Screenshot</string>
+    <string name="quick_settings_dark_on_label">Dark AOKP On</string>
+    <string name="quick_settings_dark_off_label">Dark AOKP Off</string>
 
     <!--  RamBar -->
     <string name="memory">RAM</string>
