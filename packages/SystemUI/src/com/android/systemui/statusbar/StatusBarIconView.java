@@ -87,8 +87,8 @@ public class StatusBarIconView extends AnimatedImageView {
             setAlpha(Settings.System.getInt(mContext.getContentResolver(),
                         Settings.System.STATUS_BAR_NOTIF_ICON_OPACITY, 140));
         }
-
-        setScaleType(ImageView.ScaleType.CENTER);
+        // Disregard above note.  I want them scaled!!  - Zaphod.
+        setScaleType(ImageView.ScaleType.FIT_CENTER);
     }
 
     public StatusBarIconView(Context context, AttributeSet attrs) {
@@ -101,6 +101,7 @@ public class StatusBarIconView extends AnimatedImageView {
         setScaleY(scale);
         setAlpha(Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.STATUS_BAR_NOTIF_ICON_OPACITY, 140));
+        setScaleType(ImageView.ScaleType.FIT_CENTER);
     }
 
     private static boolean streq(String a, String b) {
