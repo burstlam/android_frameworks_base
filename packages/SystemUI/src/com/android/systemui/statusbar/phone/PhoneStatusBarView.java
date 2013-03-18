@@ -44,7 +44,6 @@ import android.util.AttributeSet;
 import android.util.Slog;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.android.systemui.R;
@@ -90,12 +89,7 @@ public class PhoneStatusBarView extends PanelBar {
     }
 
     public void setBar(PhoneStatusBar bar) {
-        mBar = bar; // as soon as we know who the bar is, update our height.
-        int barHeight = bar.getStatusBarHeight();
-        ViewGroup.LayoutParams lp = getLayoutParams();
-        lp.height = barHeight;
-        //ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, barHeight);
-        //setLayoutParams(lp);
+        mBar = bar;
     }
 
     public boolean hasFullWidthNotifications() {
