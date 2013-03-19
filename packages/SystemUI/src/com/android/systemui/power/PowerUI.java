@@ -92,6 +92,7 @@ public class PowerUI extends SystemUI {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_BATTERY_CHANGED);
         filter.addAction(Intent.ACTION_POWER_CONNECTED);
+        filter.addAction(Intent.ACTION_POWER_DISCONNECTED);
         mContext.registerReceiver(mIntentReceiver, filter, null, mHandler);
     }
 
@@ -257,6 +258,13 @@ public class PowerUI extends SystemUI {
                 } else if (mShowLowBatteryDialogWarning && mBatteryLevelTextView != null) {
                     showLowBatteryWarning();
                 }
+            } else if (action.equals(Intent.ACTION_POWER_CONNECTED)
+                    || action.equals(Intent.ACTION_POWER_DISCONNECTED)) {
+                final ContentResolver cr = mContext.getContentResolver();
+                if (Settings.Global.getInt(cr,
+                        Settings.Global.POWER_NOTIFICATIONS_ENABLED, 0) == 1) {
+                    playPowerNotificationSound();
+                }
             } else {
                 Slog.w(TAG, "unknown intent: " + intent);
             }
@@ -417,6 +425,30 @@ public class PowerUI extends SystemUI {
         d.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         d.show();
         mInvalidChargerDialog = d;
+    }
+
+    void playPowerNotificationSound() {
+        final ContentResolver cr = mContext.getContentResolver();
+        final String soundPath =
+                Settings.Global.getString(cr, Settings.Global.POWER_NOTIFICATIONS_RINGTONE);
+
+        NotificationManager notificationManager =
+                (NotificationManager)mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notificationManager == null) {
+            return;
+        }
+
+        Notification powerNotify=new Notification();
+        powerNotify.defaults = Notification.DEFAULT_ALL;
+        if (soundPath != null) {
+            powerNotify.sound = Uri.parse(soundPath);
+            if (powerNotify.sound != null) {
+                // DEFAULT_SOUND overrides so flip off
+                powerNotify.defaults &= ~Notification.DEFAULT_SOUND;
+            }
+        }
+
+        notificationManager.notify(0, powerNotify);
     }
     
     public void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
