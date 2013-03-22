@@ -78,7 +78,8 @@ public class SbBatteryController extends LinearLayout {
     public static final int STYLE_ICON_CIRCLE_PERCENT = 6;
 	public static final int STYLE_ICON_DOTTED_CIRCLE_PERCENT = 7;
 	public static final int STYLE_ICON_SQUARE = 8;
-    public static final int STYLE_HIDE = 9;
+	public static final int STYLE_ICON_SPEED = 9;
+    public static final int STYLE_HIDE = 10;
 
     public SbBatteryController(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -143,10 +144,7 @@ public class SbBatteryController extends LinearLayout {
         mBatteryStyle = Settings.System.getInt(cr,
                 Settings.System.STATUSBAR_BATTERY_ICON, 0);
         int icon;
-        if (mBatteryStyle == STYLE_ICON_CIRCLEMOD) {
-            icon = plugged ? R.drawable.stat_sys_battery_charge_circle
-                    : R.drawable.stat_sys_battery_circle;
-		switch (mBatteryStyle) {
+        switch (mBatteryStyle) {
             case STYLE_ICON_CIRCLE: 
             case STYLE_ICON_CIRCLE_PERCENT:
                  icon = 0;
@@ -155,15 +153,10 @@ public class SbBatteryController extends LinearLayout {
                  icon = plugged ? R.drawable.stat_sys_battery_charge_altcircle
                  : R.drawable.stat_sys_battery_altcircle;
                  break;
-            case STYLE_ICON_SQUARE:
-                 icon = plugged ? R.drawable.stat_sys_battery_charge_square
-                 : R.drawable.stat_sys_battery_square;
-                 break;
             default:
                  icon = plugged ? R.drawable.stat_sys_battery_charge
                  : R.drawable.stat_sys_battery;
                  break;
-        }
         }
         int N = mIconViews.size();
         for (int i = 0; i < N; i++) {
