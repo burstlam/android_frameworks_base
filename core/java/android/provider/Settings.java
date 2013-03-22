@@ -4199,6 +4199,12 @@ public final class Settings {
          * @hide
          */
         public static final String POWER_UI_LOW_BATTERY_WARNING_POLICY = "power_ui_low_battery_warning_policy";
+        
+        /**
+         * Swap volume buttons when the screen is rotated by 90 or 180 degrees
+         * @hide
+         */
+        public static final String SWAP_VOLUME_KEYS = "swap_volume_keys";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
