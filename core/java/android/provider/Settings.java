@@ -4006,6 +4006,14 @@ public final class Settings {
 
         public static final String THEME_WALLPAPER = "theme_wallpaper";
 
+        /*
+         * @hide
+         * Show Wifi network name in notification shade
+         * 0 - don't show
+         * 1 - show
+         */
+        public static final String NOTIFICATION_SHOW_WIFI_SSID = "notification_show_wifi_ssid";
+
         /**
          * Allows to disable Camera widget in locskcreen
          * 0 = hide camera
