@@ -42,10 +42,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
-import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.Environment;
@@ -62,6 +62,7 @@ import android.os.UserHandle;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.provider.Settings.System;
+import android.provider.Settings.SettingNotFoundException;
 import android.speech.RecognizerIntent;
 import android.telephony.PhoneStateListener;
 import android.telephony.ServiceState;
@@ -70,8 +71,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.VolumePanel;
-import android.provider.Settings.SettingNotFoundException;
-import android.content.res.Resources;
 
 import com.android.internal.app.ThemeUtils;
 import com.android.internal.telephony.ITelephony;
@@ -245,7 +244,7 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
      * NOTE: do not create loops in aliases!
      * Some streams alias to different streams according to device category (phone or tablet) or
      * use case (in call s off call...).See updateStreamVolumeAlias() for more details
-     *  mStreamVolumeAlias contains the default aliases for a voice capable device (phone) and
+     *  STREAM_VOLUME_ALIAS contains the default aliases for a voice capable device (phone) and
      *  STREAM_VOLUME_ALIAS_NON_VOICE for a non voice capable device (tablet).*/
     private final int[] STREAM_VOLUME_ALIAS = new int[] {
         AudioSystem.STREAM_VOICE_CALL,      // STREAM_VOICE_CALL
@@ -288,10 +287,6 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
     };
 
     private boolean mLinkNotificationWithVolume;
-
-    // Cap used for safe headset volume restore. The value directly applies
-    // to AudioSystem.STREAM_MUSIC volume and is rescaled for other streams.
-    private static final int HEADSET_VOLUME_RESTORE_CAP = 10;
 
     private final AudioSystem.ErrorCallback mAudioSystemCallback = new AudioSystem.ErrorCallback() {
         public void onError(int error) {
@@ -451,8 +446,6 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
 
     private boolean mDockAudioMediaEnabled = true;
 
-    private int mDockState = Intent.EXTRA_DOCK_STATE_UNDOCKED;
-
     ///////////////////////////////////////////////////////////////////////////
     // Construction
     ///////////////////////////////////////////////////////////////////////////
@@ -511,8 +504,6 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
 
         mMediaServerOk = true;
 
-        mSafeMediaVolumeState = new Integer(SAFE_MEDIA_VOLUME_NOT_CONFIGURED);
-
         // Call setRingerModeInt() to apply correct mute
         // state on streams affected by ringer mode.
         mRingerModeMutedStreams = 0;
@@ -523,9 +514,8 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
         // Register for device connection intent broadcasts.
         IntentFilter intentFilter =
                 new IntentFilter(BluetoothHeadset.ACTION_AUDIO_STATE_CHANGED);
-        if (noDelayInATwoDP) {
+        if (noDelayInATwoDP)
             intentFilter.addAction(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED);
-        }
         intentFilter.addAction(BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED);
         intentFilter.addAction(Intent.ACTION_DOCK_EVENT);
         intentFilter.addAction(Intent.ACTION_USB_AUDIO_ACCESSORY_PLUG);
@@ -663,6 +653,7 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
         } else {
             mStreamVolumeAlias[AudioSystem.STREAM_NOTIFICATION] = AudioSystem.STREAM_NOTIFICATION;
         }
+
         if (updateVolumes) {
             mStreamStates[AudioSystem.STREAM_DTMF].setAllIndexes(mStreamStates[dtmfStreamAlias],
                                                                  false /*lastAudible*/);
@@ -696,15 +687,6 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
                         AudioSystem.FORCE_ANALOG_DOCK : AudioSystem.FORCE_NONE,
                 null,
                 0);
-    }
-
-    private boolean safeVolumeEnabled(ContentResolver cr) {
-        boolean safeMediaVolumeEnabled = mContext.getResources().getBoolean(
-                com.android.internal.R.bool.config_safe_media_volume_enabled);
-        boolean safeHeadsetVolumeEnabled = Settings.System.getIntForUser(cr,
-                Settings.System.SAFE_HEADSET_VOLUME, safeMediaVolumeEnabled ? 1 : 0,
-                UserHandle.USER_CURRENT_OR_SELF) != 0;
-        return safeHeadsetVolumeEnabled;
     }
 
     private void readPersistedSettings() {
@@ -772,14 +754,11 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
                     UserHandle.USER_CURRENT);
 
             readDockAudioSettings(cr);
-
-            mSafeVolumeEnabled = new Boolean(safeVolumeEnabled(cr));
+            updateManualSafeMediaVolume();
         }
-        Settings.System.putInt(cr,
-                Settings.System.MODE_RINGER_STREAMS_AFFECTED, mRingerModeAffectedStreams);
 
-        mLinkNotificationWithVolume = Settings.System.getInt(cr,
-                Settings.System.VOLUME_LINK_NOTIFICATION, 1) == 1;
+        mLinkNotificationWithVolume = Settings.System.getIntForUser(cr,
+                Settings.System.VOLUME_LINK_NOTIFICATION, 1, UserHandle.USER_CURRENT) == 1;
 
         mMuteAffectedStreams = System.getIntForUser(cr,
                 System.MUTE_STREAMS_AFFECTED,
@@ -1143,7 +1122,7 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
 
     // UI update and Broadcast Intent
     private void sendMasterVolumeUpdate(int flags, int oldVolume, int newVolume) {
-        masterMuteChanged(flags);
+        masterVolumeChanged(flags);
 
         Intent intent = new Intent(AudioManager.MASTER_VOLUME_CHANGED_ACTION);
         intent.putExtra(AudioManager.EXTRA_PREV_MASTER_VOLUME_VALUE, oldVolume);
@@ -1876,8 +1855,7 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
         checkAllAliasStreamVolumes();
 
         synchronized (mSafeMediaVolumeState) {
-            if (mSafeVolumeEnabled &&
-                    mSafeMediaVolumeState == SAFE_MEDIA_VOLUME_ACTIVE) {
+            if (mSafeMediaVolumeState == SAFE_MEDIA_VOLUME_ACTIVE) {
                 enforceSafeMediaVolume();
             }
         }
@@ -1922,6 +1900,7 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
         if (!checkAudioSettingsPermission("setBluetoothA2dpOn()") && noDelayInATwoDP) {
             return;
         }
+
         synchronized (mBluetoothA2dpEnabledLock) {
             mBluetoothA2dpEnabled = on;
             sendMsg(mAudioHandler, MSG_SET_FORCE_BT_A2DP_USE, SENDMSG_QUEUE,
@@ -2229,17 +2208,17 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
                 if (deviceList.size() > 0) {
                     btDevice = deviceList.get(0);
                     if (!noDelayInATwoDP){
-                        synchronized (mConnectedDevices) {
-                            int state = a2dp.getConnectionState(btDevice);
-                            int delay = checkSendBecomingNoisyIntent(
-                                                    AudioSystem.DEVICE_OUT_BLUETOOTH_A2DP,
-                                                    (state == BluetoothA2dp.STATE_CONNECTED) ? 1 : 0);
-                            queueMsgUnderWakeLock(mAudioHandler,
-                                    MSG_SET_A2DP_CONNECTION_STATE,
-                                    state,
-                                    0,
-                                    btDevice,
-                                    delay);
+                    synchronized (mConnectedDevices) {
+                        int state = a2dp.getConnectionState(btDevice);
+                        int delay = checkSendBecomingNoisyIntent(
+                                                AudioSystem.DEVICE_OUT_BLUETOOTH_A2DP,
+                                                (state == BluetoothA2dp.STATE_CONNECTED) ? 1 : 0);
+                        queueMsgUnderWakeLock(mAudioHandler,
+                                MSG_SET_A2DP_CONNECTION_STATE,
+                                state,
+                                0,
+                                btDevice,
+                                delay);
                         }
                     } else {
                         onSetA2dpConnectionState(btDevice, a2dp.getConnectionState(btDevice));
@@ -2338,8 +2317,7 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
 
     private void onCheckMusicActive() {
         synchronized (mSafeMediaVolumeState) {
-            if (mSafeVolumeEnabled &&
-                    mSafeMediaVolumeState == SAFE_MEDIA_VOLUME_INACTIVE) {
+            if (mSafeMediaVolumeState == SAFE_MEDIA_VOLUME_INACTIVE) {
                 int device = getDeviceForStream(AudioSystem.STREAM_MUSIC);
 
                 if ((device & mSafeMediaVolumeDevices) != 0) {
@@ -2657,7 +2635,7 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
             // retain the device on the A2DP output as the other must not correspond to an active
             // selection if not the speaker.
             if ((device & AudioSystem.DEVICE_OUT_SPEAKER) != 0) {
-                device ^= AudioSystem.DEVICE_OUT_SPEAKER;
+                device = AudioSystem.DEVICE_OUT_SPEAKER;
             } else {
                 device &= AudioSystem.DEVICE_OUT_ALL_A2DP;
             }
@@ -2681,18 +2659,18 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
     {
         int delay;
         if(!noDelayInATwoDP) {
-            synchronized (mConnectedDevices) {
-                delay = checkSendBecomingNoisyIntent(AudioSystem.DEVICE_OUT_BLUETOOTH_A2DP,
-                                                (state == BluetoothA2dp.STATE_CONNECTED) ? 1 : 0);
-                queueMsgUnderWakeLock(mAudioHandler,
-                        MSG_SET_A2DP_CONNECTION_STATE,
-                        state,
-                        0,
-                        device,
-                        delay);
-            }
-        } else {
-            delay = 0;
+        synchronized (mConnectedDevices) {
+            delay = checkSendBecomingNoisyIntent(AudioSystem.DEVICE_OUT_BLUETOOTH_A2DP,
+                                            (state == BluetoothA2dp.STATE_CONNECTED) ? 1 : 0);
+            queueMsgUnderWakeLock(mAudioHandler,
+                    MSG_SET_A2DP_CONNECTION_STATE,
+                    state,
+                    0,
+                    device,
+                    delay);
+        }
+    } else {
+        delay = 0;
         }
         return delay;
     }
@@ -2781,8 +2759,10 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
                 }
                 // retrieve current volume for device
                 String name = getSettingNameForDevice(false /* lastAudible */, device);
-                // if no volume stored for current stream and device, use default volume
-                int defaultIndex = AudioManager.DEFAULT_STREAM_VOLUME[mStreamType];
+                // if no volume stored for current stream and device, use default volume if default
+                // device, continue otherwise
+                int defaultIndex = (device == AudioSystem.DEVICE_OUT_DEFAULT) ?
+                                        AudioManager.DEFAULT_STREAM_VOLUME[mStreamType] : -1;
                 int index = Settings.System.getIntForUser(
                         mContentResolver, name, defaultIndex, UserHandle.USER_CURRENT);
                 if (index == -1) {
@@ -3425,13 +3405,6 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
                                 mBluetoothA2dpEnabled ?
                                         AudioSystem.FORCE_NONE : AudioSystem.FORCE_NO_BT_A2DP);
                     }
-
-                    synchronized (mSettingsLock) {
-                        AudioSystem.setForceUse(AudioSystem.FOR_DOCK,
-                                mDockAudioMediaEnabled ?
-                                        AudioSystem.FORCE_ANALOG_DOCK : AudioSystem.FORCE_NONE);
-                    }
-
                     // indicate the end of reconfiguration phase to audio HAL
                     AudioSystem.setParameters("restarting=false");
                     break;
@@ -3554,55 +3527,49 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
         }
 
         @Override
-        public void onChange(boolean selfChange, Uri uri) {
-            super.onChange(selfChange, uri);
+        public void onChange(boolean selfChange) {
+            super.onChange(selfChange);
             // FIXME This synchronized is not necessary if mSettingsLock only protects mRingerMode.
             //       However there appear to be some missing locks around mRingerModeMutedStreams
             //       and mRingerModeAffectedStreams, so will leave this synchronized for now.
             //       mRingerModeMutedStreams and mMuteAffectedStreams are safe (only accessed once).
             synchronized (mSettingsLock) {
-                if (uri.equals(Settings.System.getUriFor(Settings.System.MODE_RINGER_STREAMS_AFFECTED))) {
-                    int ringerModeAffectedStreams = Settings.System.getIntForUser(mContentResolver,
-                           Settings.System.MODE_RINGER_STREAMS_AFFECTED,
-                           ((1 << AudioSystem.STREAM_RING)|(1 << AudioSystem.STREAM_NOTIFICATION)|
-                           (1 << AudioSystem.STREAM_SYSTEM)|(1 << AudioSystem.STREAM_SYSTEM_ENFORCED)),
-                           UserHandle.USER_CURRENT);
-                    if (mVoiceCapable) {
-                        ringerModeAffectedStreams &= ~(1 << AudioSystem.STREAM_MUSIC);
-                    } else {
-                        ringerModeAffectedStreams |= (1 << AudioSystem.STREAM_MUSIC);
-                    }
-                    synchronized (mCameraSoundForced) {
-                        if (mCameraSoundForced) {
-                            ringerModeAffectedStreams &= ~(1 << AudioSystem.STREAM_SYSTEM_ENFORCED);
-                        } else {
-                            ringerModeAffectedStreams |= (1 << AudioSystem.STREAM_SYSTEM_ENFORCED);
-                        }
-                    }
-                    if (ringerModeAffectedStreams != mRingerModeAffectedStreams) {
-                        /*
-                         * Ensure all stream types that should be affected by ringer mode
-                         * are in the proper state.
-                         */
-                        mRingerModeAffectedStreams = ringerModeAffectedStreams;
-                        setRingerModeInt(getRingerMode(), false);
-                    }
-
-                } else if (uri.equals(Settings.Global.getUriFor(Settings.Global.DOCK_AUDIO_MEDIA_ENABLED))) {
-                    readDockAudioSettings(mContentResolver);
-
-                } else if (uri.equals(Settings.System.getUriFor(Settings.System.VOLUME_LINK_NOTIFICATION))) {
-                    mLinkNotificationWithVolume = Settings.System.getInt(mContentResolver,
-                            Settings.System.VOLUME_LINK_NOTIFICATION, 1) == 1;
-                    if (mLinkNotificationWithVolume) {
-                        mStreamVolumeAlias[AudioSystem.STREAM_NOTIFICATION] = AudioSystem.STREAM_RING;
-                    } else {
-                        mStreamVolumeAlias[AudioSystem.STREAM_NOTIFICATION] = AudioSystem.STREAM_NOTIFICATION;
-                    }
-
-                } else if (uri.equals(Settings.System.getUriFor(Settings.System.SAFE_HEADSET_VOLUME))) {
-                    mSafeVolumeEnabled = safeVolumeEnabled(mContentResolver);
+                int ringerModeAffectedStreams = Settings.System.getIntForUser(mContentResolver,
+                       Settings.System.MODE_RINGER_STREAMS_AFFECTED,
+                       ((1 << AudioSystem.STREAM_RING)|(1 << AudioSystem.STREAM_NOTIFICATION)|
+                       (1 << AudioSystem.STREAM_SYSTEM)|(1 << AudioSystem.STREAM_SYSTEM_ENFORCED)),
+                       UserHandle.USER_CURRENT);
+                if (mVoiceCapable) {
+                    ringerModeAffectedStreams &= ~(1 << AudioSystem.STREAM_MUSIC);
+                } else {
+                    ringerModeAffectedStreams |= (1 << AudioSystem.STREAM_MUSIC);
                 }
+                synchronized (mCameraSoundForced) {
+                    if (mCameraSoundForced) {
+                        ringerModeAffectedStreams &= ~(1 << AudioSystem.STREAM_SYSTEM_ENFORCED);
+                    } else {
+                        ringerModeAffectedStreams |= (1 << AudioSystem.STREAM_SYSTEM_ENFORCED);
+                    }
+                }
+                if (ringerModeAffectedStreams != mRingerModeAffectedStreams) {
+                    /*
+                     * Ensure all stream types that should be affected by ringer mode
+                     * are in the proper state.
+                     */
+                    mRingerModeAffectedStreams = ringerModeAffectedStreams;
+                    setRingerModeInt(getRingerMode(), false);
+                }
+                readDockAudioSettings(mContentResolver);
+
+                mLinkNotificationWithVolume = Settings.System.getIntForUser(mContentResolver,
+                        Settings.System.VOLUME_LINK_NOTIFICATION, 1, UserHandle.USER_CURRENT) == 1;
+                if (mLinkNotificationWithVolume) {
+                    mStreamVolumeAlias[AudioSystem.STREAM_NOTIFICATION] = AudioSystem.STREAM_RING;
+                } else {
+                    mStreamVolumeAlias[AudioSystem.STREAM_NOTIFICATION] = AudioSystem.STREAM_NOTIFICATION;
+                }
+                readDockAudioSettings(mContentResolver);
+                updateManualSafeMediaVolume();
             }
         }
     }
@@ -3884,7 +3851,13 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
                         config = AudioSystem.FORCE_BT_CAR_DOCK;
                         break;
                     case Intent.EXTRA_DOCK_STATE_LE_DESK:
-                        config = AudioSystem.FORCE_ANALOG_DOCK;
+                        synchronized (mSettingsLock) {
+                            if (mDockAudioMediaEnabled) {
+                                config = AudioSystem.FORCE_ANALOG_DOCK;
+                            } else {
+                                config = AudioSystem.FORCE_NONE;
+                            }
+                        }
                         break;
                     case Intent.EXTRA_DOCK_STATE_HE_DESK:
                         config = AudioSystem.FORCE_DIGITAL_DOCK;
@@ -3893,14 +3866,7 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
                     default:
                         config = AudioSystem.FORCE_NONE;
                 }
-                // Low end docks have a menu to enable or disable audio
-                // (see mDockAudioMediaEnabled)
-                if (!((dockState == Intent.EXTRA_DOCK_STATE_LE_DESK) ||
-                      ((dockState == Intent.EXTRA_DOCK_STATE_UNDOCKED) &&
-                       (mDockState == Intent.EXTRA_DOCK_STATE_LE_DESK)))) {
-                    AudioSystem.setForceUse(AudioSystem.FOR_DOCK, config);
-                }
-                mDockState = dockState;
+
                 AudioSystem.setForceUse(AudioSystem.FOR_DOCK, config);
             } else if (action.equals(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED) && noDelayInATwoDP) {
                 state = intent.getIntExtra(BluetoothProfile.EXTRA_STATE,
@@ -3908,10 +3874,9 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
                 BluetoothDevice btDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
                 onSetA2dpConnectionState(btDevice, state);
-
             } else if (action.equals(BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED)) {
                 state = intent.getIntExtra(BluetoothProfile.EXTRA_STATE,
-                                               BluetoothProfile.STATE_DISCONNECTED);
+                                           BluetoothProfile.STATE_DISCONNECTED);
                 device = AudioSystem.DEVICE_OUT_BLUETOOTH_SCO;
                 String address = null;
 
@@ -3953,49 +3918,11 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
                 state = intent.getIntExtra("state", 0);
                 if (state == 1) {
                     // Headset plugged in
-                    // Avoid connection glitches
-                    if (noDelayInATwoDP) {
-                        setBluetoothA2dpOnInt(false);
-                    }
-
-                    // Volume restore capping
-                    final boolean capVolumeRestore = Settings.System.getInt(mContentResolver,
-                            Settings.System.SAFE_HEADSET_VOLUME, 1) == 1;
-
-                    for (int stream = 0; stream < AudioSystem.getNumStreamTypes(); stream++) {
-                        if (stream == mStreamVolumeAlias[stream]) {
-                            VolumeStreamState streamState = mStreamStates[mStreamVolumeAlias[stream]];
-                            device = getDeviceForStream(stream);
-                            // apply stored value for device
-                            streamState.applyDeviceVolume(device);
-
-                            // now reduce volume if required
-                            if (capVolumeRestore) {
-                                final int volume = getStreamVolume(stream);
-                                final int restoreCap = rescaleIndex(HEADSET_VOLUME_RESTORE_CAP,
-                                        AudioSystem.STREAM_MUSIC, stream);
-                                if (volume > restoreCap) {
-                                    setStreamVolume(stream, restoreCap, 0);
-                                }
-                            }
-                        }
-                    }
+                    adjustCurrentStreamVolume();
+                    // TODO: Cap volume at safe levels
                 } else {
                     // Headset disconnected
-                    // Avoid disconnection glitches
-                    if (noDelayInATwoDP) {
-                        setBluetoothA2dpOnInt(true);
-                    }
-
-                    // Restore volumes
-                    for (int stream = 0; stream < AudioSystem.getNumStreamTypes(); stream++) {
-                        if (stream == mStreamVolumeAlias[stream]) {
-                            VolumeStreamState streamState = mStreamStates[mStreamVolumeAlias[stream]];
-                            device = getDeviceForStream(stream);
-                            // apply stored value for device
-                            streamState.applyDeviceVolume(device);
-                        }
-                    }
+                    adjustCurrentStreamVolume();
                 }
             } else if (action.equals(Intent.ACTION_USB_AUDIO_ACCESSORY_PLUG) ||
                            action.equals(Intent.ACTION_USB_AUDIO_DEVICE_PLUG)) {
@@ -4087,6 +4014,8 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
                         0,
                         null,
                         SAFE_VOLUME_CONFIGURE_TIMEOUT_MS);
+
+                adjustCurrentStreamVolume();
             } else if (action.equals(Intent.ACTION_PACKAGE_REMOVED)) {
                 if (!intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)) {
                     // a package is being removed, not replaced
@@ -4140,8 +4069,21 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
                 }
             }
         }
-    }
 
+        private void adjustCurrentStreamVolume() {
+            VolumeStreamState streamState;
+            int device;
+
+            for (int stream = 0; stream < AudioSystem.getNumStreamTypes(); stream++) {
+                if (stream == mStreamVolumeAlias[stream]) {
+                    streamState = mStreamStates[mStreamVolumeAlias[stream]];
+                    device = getDeviceForStream(stream);
+                    // apply stored value for device
+                    streamState.applyDeviceVolume(device);
+                }
+            }
+        }
+    }
 
     private void masterVolumeChanged(final int flags) {
         if (mUiContext != null && mVolumePanel != null) {
@@ -4199,7 +4141,6 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
             });
         }
     }
-
 
     private void showVolumeChangeUi(final int streamType, final int flags) {
         if (mUiContext != null && mVolumePanel != null) {
@@ -4260,7 +4201,7 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
 
     private void hasNewRemotePlaybackInfo() {
         if (mUiContext != null && mVolumePanel != null) {
-            hasNewRemotePlaybackInfo();
+            mVolumePanel.postHasNewRemotePlaybackInfo();
         } else {
             mHandler.post(new Runnable() {
                 @Override
@@ -4271,7 +4212,7 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
 
                     final Context context = mUiContext != null ? mUiContext : mContext;
                     mVolumePanel = new VolumePanel(context, AudioService.this);
-                    hasNewRemotePlaybackInfo();
+                    mVolumePanel.postHasNewRemotePlaybackInfo();
                 }
             });
         }
@@ -6193,13 +6134,13 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
     private Integer mSafeMediaVolumeState;
 
     private int mMcc = 0;
-    // mSafeVolumeEnabled indicates whether to check the volume of media play via headset
-    private boolean mSafeVolumeEnabled;
     // mSafeMediaVolumeIndex is the cached value of config_safe_media_volume_index property
     private int mSafeMediaVolumeIndex;
     // mSafeMediaVolumeDevices lists the devices for which safe media volume is enforced,
     private final int mSafeMediaVolumeDevices = AudioSystem.DEVICE_OUT_WIRED_HEADSET |
                                                 AudioSystem.DEVICE_OUT_WIRED_HEADPHONE;
+    // mManualSafeMediaVolume overrides the built-in safe media volume
+    boolean mManualSafeMediaVolume;
     // mMusicActiveMs is the cumulative time of music activity since safe volume was disabled.
     // When this time reaches UNSAFE_VOLUME_MUSIC_ACTIVE_MS_MAX, the safe media volume is re-enabled
     // automatically. mMusicActiveMs is rounded to a multiple of MUSIC_ACTIVE_POLL_PERIOD_MS.
@@ -6210,8 +6151,7 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
 
     private void setSafeMediaVolumeEnabled(boolean on) {
         synchronized (mSafeMediaVolumeState) {
-            if (mSafeVolumeEnabled &&
-                    (mSafeMediaVolumeState != SAFE_MEDIA_VOLUME_NOT_CONFIGURED) &&
+            if ((mSafeMediaVolumeState != SAFE_MEDIA_VOLUME_NOT_CONFIGURED) &&
                     (mSafeMediaVolumeState != SAFE_MEDIA_VOLUME_DISABLED)) {
                 if (on && (mSafeMediaVolumeState == SAFE_MEDIA_VOLUME_INACTIVE)) {
                     mSafeMediaVolumeState = SAFE_MEDIA_VOLUME_ACTIVE;
@@ -6232,6 +6172,9 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
     }
 
     private void enforceSafeMediaVolume() {
+        // return if safe volume has been manually turned off
+        if (!mManualSafeMediaVolume) return;
+
         VolumeStreamState streamState = mStreamStates[AudioSystem.STREAM_MUSIC];
         boolean lastAudible = (streamState.muteCount() != 0);
         int devices = mSafeMediaVolumeDevices;
@@ -6270,11 +6213,10 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
 
     private boolean checkSafeMediaVolume(int streamType, int index, int device) {
         synchronized (mSafeMediaVolumeState) {
-            if (mSafeVolumeEnabled &&
-                    (mSafeMediaVolumeState == SAFE_MEDIA_VOLUME_ACTIVE) &&
+            if ((mSafeMediaVolumeState == SAFE_MEDIA_VOLUME_ACTIVE) &&
                     (mStreamVolumeAlias[streamType] == AudioSystem.STREAM_MUSIC) &&
                     ((device & mSafeMediaVolumeDevices) != 0) &&
-                    (index > mSafeMediaVolumeIndex)) {
+                    (index > mSafeMediaVolumeIndex) && mManualSafeMediaVolume) {
                 displaySafeVolumeWarning();
                 return false;
             }
@@ -6333,5 +6275,11 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
         pw.println("\nAudio routes:");
         pw.print("  mMainType=0x"); pw.println(Integer.toHexString(mCurAudioRoutes.mMainType));
         pw.print("  mBluetoothName="); pw.println(mCurAudioRoutes.mBluetoothName);
+    }
+
+    protected void updateManualSafeMediaVolume() {
+        mManualSafeMediaVolume = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.SAFE_HEADSET_VOLUME, 1) == 1;
+        setSafeMediaVolumeEnabled(mManualSafeMediaVolume);
     }
 }
