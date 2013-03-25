@@ -1630,8 +1630,14 @@ public class InputMethodManagerService extends IInputMethodManager.Stub
             unbindCurrentMethodLocked(true, false);
         }
 
-        mShowOngoingImeSwitcherForPhones = Settings.System.getBoolean(mContext.getContentResolver(),
-                Settings.System.SHOW_STATUSBAR_IME_SWITCHER, true);
+        // code to disable the CM Phone IME switcher with config_show_cmIMESwitcher set = false
+        try {
+            mShowOngoingImeSwitcherForPhones = Settings.System.getInt(mContext.getContentResolver(),
+            Settings.System.SHOW_STATUSBAR_IME_SWITCHER) == 1;
+        } catch (SettingNotFoundException e) {
+            mShowOngoingImeSwitcherForPhones = mRes.getBoolean(
+            com.android.internal.R.bool.config_show_cmIMESwitcher);
+        }
     }
 
     /* package */ void setInputMethodLocked(String id, int subtypeId) {
