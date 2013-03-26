@@ -88,7 +88,11 @@ public class AwesomeAction {
             case ACTION_ASSIST:
                 Intent intent = new Intent(Intent.ACTION_ASSIST);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mContext.startActivity(intent);
+                try {
+                    mContext.startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    Log.e(TAG, "No Activity found to handle Intent { act=android.intent.action.ASSIST flg=0x10000000 }");
+                }
                 break;
             case ACTION_HOME:
                 Intent homeIntent = new Intent(Intent.ACTION_MAIN);
