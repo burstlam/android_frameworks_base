@@ -39,6 +39,7 @@ import android.os.Message;
 import android.os.ServiceManager;
 import android.provider.Settings;
 import android.util.AttributeSet;
+import android.util.ColorUtils;
 import android.util.ExtendedPropertiesUtils;
 import android.util.Slog;
 import android.view.Display;
@@ -100,6 +101,11 @@ public class NavigationBarView extends LinearLayout {
     private BaseStatusBar mBar;
     private Context mContext;
     private SettingsObserver mSettingsObserver;
+
+    private Canvas mCurrentCanvas;
+    private Canvas mNewCanvas;
+    private TransitionDrawable mTransition;
+    private ColorUtils.ColorSettingInfo mLastBackgroundColor;
 
     // workaround for LayoutTransitions leaving the nav buttons in a weird state (bug 5549288)
     final static boolean WORKAROUND_INVALID_LAYOUT = true;
@@ -272,40 +278,33 @@ public class NavigationBarView extends LinearLayout {
         mButtonWidth = res.getDimensionPixelSize(R.dimen.navigation_key_width);
         mMenuWidth = res.getDimensionPixelSize(R.dimen.navigation_menu_key_width);
 
-        mContext.getContentResolver().registerContentObserver(
-            Settings.System.getUriFor(Settings.System.NAV_BAR_COLOR), false, new ContentObserver(new Handler()) {
-                @Override
-                public void onChange(boolean selfChange) {
-                    updateColor(false);
-                }});
-    }
+        // Only watch for per app color changes when the setting is in check
+        if (ColorUtils.getPerAppColorState(mContext)) {
 
-    private void updateColor(boolean defaults) {
-        Bitmap bm = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-        Canvas cnv = new Canvas(bm);
+            // Reset all colors
+            Bitmap currentBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+            mCurrentCanvas = new Canvas(currentBitmap);
+            mCurrentCanvas.drawColor(0xFF000000);
+            BitmapDrawable currentBitmapDrawable = new BitmapDrawable(currentBitmap);
 
-        if (defaults) {
-            cnv.drawColor(0xFF000000);
-            setBackground(new BitmapDrawable(bm));
-            return;
+            Bitmap newBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+            mNewCanvas = new Canvas(newBitmap);
+            mNewCanvas.drawColor(0xFF000000);
+            BitmapDrawable newBitmapDrawable = new BitmapDrawable(newBitmap);
+
+            mTransition = new TransitionDrawable(new Drawable[]{currentBitmapDrawable, newBitmapDrawable});
+            setBackground(mTransition);
+
+            mLastBackgroundColor = ColorUtils.getColorSettingInfo(mContext, Settings.System.NAV_BAR_COLOR);
+            updateColor();
+
+            mContext.getContentResolver().registerContentObserver(
+                Settings.System.getUriFor(Settings.System.NAV_BAR_COLOR), false, new ContentObserver(new Handler()) {
+                    @Override
+                    public void onChange(boolean selfChange) {
+                        updateColor();
+                    }});
         }
-
-        String setting = Settings.System.getString(mContext.getContentResolver(),
-                Settings.System.NAV_BAR_COLOR);
-        String[] colors = (setting == null || setting.equals("") ?
-                ExtendedPropertiesUtils.PARANOID_COLORS_DEFAULTS[
-                ExtendedPropertiesUtils.PARANOID_COLORS_NAVBAR] : setting).split(
-                ExtendedPropertiesUtils.PARANOID_STRING_DELIMITER);
-        String currentColor = colors[Integer.parseInt(colors[2])];
-        int speed = colors.length < 4 ? 1000 : Integer.parseInt(colors[3]);
-        
-        cnv.drawColor(new BigInteger(currentColor, 16).intValue());
-
-        TransitionDrawable transition = new TransitionDrawable(new Drawable[]{
-                getBackground(), new BitmapDrawable(bm)});
-        transition.setCrossFadeEnabled(true);
-        setBackground(transition);
-        transition.startTransition(speed);
     }
 
     public void setTransparencyManager(TransparencyManager tm) {
@@ -833,7 +832,7 @@ public class NavigationBarView extends LinearLayout {
              ViewGroup group = (ViewGroup) v.findViewById(R.id.nav_buttons);
              group.setMotionEventSplittingEnabled(false);
          }
-         updateColor(true);
+         updateColor();
          mCurrentView = mRotatedViews[Surface.ROTATION_0];
 
          // this takes care of making the buttons
