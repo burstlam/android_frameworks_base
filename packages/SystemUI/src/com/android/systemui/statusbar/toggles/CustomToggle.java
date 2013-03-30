@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.ContentObserver;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -36,7 +38,7 @@ public class CustomToggle extends BaseToggle {
     private int mDoubleClick;
     private int mNumberOfActions;
     private int mCollapseShade;
-    private int mCustomState;
+    private int mCustomState= 0;
     private int mMatchState = 0;
     private int doubleClickCounter = 0;
     private boolean mActionRevert;
@@ -53,6 +55,8 @@ public class CustomToggle extends BaseToggle {
     public static final int ON_CLICK = 11;
     public static final int ON_LONG = 12;
     public static final int ON_BOTH = 13;
+
+    private static final String KEY_TOGGLE_STATE = "toggle_state";
 
     public final static String[] StockClickActions = {
         AwesomeConstant.ACTION_NULL.value(),
@@ -91,9 +95,10 @@ public class CustomToggle extends BaseToggle {
 
     final Runnable delayBootAction = new Runnable () {
         public void run() {
-                mCustomState = 0;
-                AwesomeAction.launchAction(mContext, mClickActions[mCustomState]);
-                startMagicTricks();
+            mCustomState = 0;
+            commitState();
+            AwesomeAction.launchAction(mContext, mClickActions[mCustomState]);
+            startMagicTricks();
         }
     };
 
@@ -119,6 +124,7 @@ public class CustomToggle extends BaseToggle {
                     break;
                 case STATE_ONE:
                     mCustomState = 0;
+                    commitState();
                     AwesomeAction.launchAction(mContext, mClickActions[mCustomState]);
                     shouldCollapse();
                     startMagicTricks();
@@ -126,16 +132,20 @@ public class CustomToggle extends BaseToggle {
                 case SKIP_BACK:
                     if (mCustomState > 0) {
                         mCustomState--;
+                        commitState();
                     } else {
                         mCustomState = mNumberOfActions-1;
+                        commitState();
                     }
                     startMagicTricks();
                     break;
                 case SKIP_FORWARD:
                     if (mCustomState < mNumberOfActions-1) {
                         mCustomState += 1;
+                        commitState();
                     } else {
                         mCustomState = 0;
+                        commitState();
                     }
                     startMagicTricks();
                     break;
@@ -150,9 +160,11 @@ public class CustomToggle extends BaseToggle {
     private void startCounting() {
         if (mCustomState < mNumberOfActions-1) {
             mCustomState += 1;
+            commitState();
             mMatchState = mCustomState-1;
         } else {
             mCustomState = 0;
+            commitState();
             mMatchState = mNumberOfActions-1;
         }
         startActions();
@@ -161,8 +173,10 @@ public class CustomToggle extends BaseToggle {
     private void startReverse() {
         if (mCustomState > 0) {
             mCustomState--;
+            commitState();
         } else {
             mCustomState = mNumberOfActions-1;
+            commitState();
         }
         AwesomeAction.launchAction(mContext, mClickActions[mCustomState]);
         shouldCollapse();
@@ -193,8 +207,12 @@ public class CustomToggle extends BaseToggle {
         }
     }
 
+    private void commitState() {
+        SharedPreferences p = mContext.getSharedPreferences(KEY_TOGGLE_STATE, Context.MODE_PRIVATE);
+        p.edit().putInt("state", mCustomState).commit();
+    }
+
     private void startMagicTricks() {
-        final Resources r = mContext.getResources();
         String iconUri = "";
         Drawable myIcon = null;
         String toggleText = mToggleText[mCustomState];
@@ -207,31 +225,31 @@ public class CustomToggle extends BaseToggle {
         } else {
             myIcon = NavBarHelpers.getIconImage(mContext, mClickActions[mCustomState]);
         }
-    setLabel(toggleText);
-    setIcon(myIcon);
-    scheduleViewUpdate();
+        setLabel(toggleText);
+        setIcon(myIcon);
+        scheduleViewUpdate();
     };
 
     @Override
     public void onClick(View v) {
-            switch (mDoubleClick) {
-                case NO_ACTION:
-                    startCounting();
-                    break;
-                case REVERSE_ONE:
-                case STATE_ONE:
-                case SKIP_BACK:
-                case SKIP_FORWARD:
-                    checkForDoubleClick();
-                    break;
-            }
+        switch (mDoubleClick) {
+            case NO_ACTION:
+                startCounting();
+                break;
+            case REVERSE_ONE:
+            case STATE_ONE:
+            case SKIP_BACK:
+            case SKIP_FORWARD:
+                checkForDoubleClick();
+                break;
+        }
     }
     @Override
     public boolean onLongClick(View v) {
         if (mAdvancedToggle) {
-        AwesomeAction.launchAction(mContext, mLongActions[mCustomState]);
+            AwesomeAction.launchAction(mContext, mLongActions[mCustomState]);
         } else {
-        AwesomeAction.launchAction(mContext, mClickActions[mCustomState]);
+            AwesomeAction.launchAction(mContext, mClickActions[mCustomState]);
         }
         switch (mCollapseShade) {
             case NO_COLLAPSE:
@@ -247,12 +265,11 @@ public class CustomToggle extends BaseToggle {
 
     private void updateSettings() {
         ContentResolver resolver = mContext.getContentResolver();
-        final Resources r = mContext.getResources();
 
         String mDefaultText = "CUSTOM";
 
-        mCustomState = Settings.System.getInt(resolver,
-                Settings.System.CUSTOM_TOGGLE_STATE, 0);
+        SharedPreferences p = mContext.getSharedPreferences(KEY_TOGGLE_STATE, Context.MODE_PRIVATE);
+        mCustomState = p.getInt("state", 0);
 
         mActionRevert = Settings.System.getBoolean(resolver,
                 Settings.System.CUSTOM_TOGGLE_REVERT, false);
@@ -308,10 +325,6 @@ public class CustomToggle extends BaseToggle {
 
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
-
-            resolver.registerContentObserver(Settings.System
-                    .getUriFor(Settings.System.CUSTOM_TOGGLE_STATE),
-                    false, this);
 
             resolver.registerContentObserver(Settings.System
                     .getUriFor(Settings.System.CUSTOM_TOGGLE_REVERT),
