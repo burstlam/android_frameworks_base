@@ -368,14 +368,14 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             if (action.equals(Intent.ACTION_POWERMENU_REBOOT)) {
                 mWindowManagerFuncs.rebootTile();
             }
-		    if (action.equals(Intent.ACTION_POWERMENU_PROFILE)) {
+            if (action.equals(Intent.ACTION_POWERMENU_PROFILE)) {
                showGlobalActionsProfileDialog();
-			}
+            }
             if (action.equals(Intent.ACTION_SCREENSHOT)) {
                 takeScreenshot();
-			}
-			if (action.equals(Intent.ACTION_REBOOTMENU)) {
-				showRebootDialog();
+            }
+            if (action.equals(Intent.ACTION_REBOOTMENU)) {
+                showRebootDialog();
             }
         }
 
@@ -387,8 +387,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 filter.addAction(Intent.ACTION_POWERMENU);
                 filter.addAction(Intent.ACTION_POWERMENU_REBOOT);
                 filter.addAction(Intent.ACTION_POWERMENU_PROFILE);
-				filter.addAction(Intent.ACTION_SCREENSHOT);
-				filter.addAction(Intent.ACTION_REBOOTMENU);
+                filter.addAction(Intent.ACTION_SCREENSHOT);
+                filter.addAction(Intent.ACTION_REBOOTMENU);
                 mContext.registerReceiver(mPowerMenuReceiver, filter);
             }
         }
@@ -904,10 +904,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     }
 
     void showGlobalActionsProfileDialog() {
-	        if (mGlobalActions == null) {
-	            mGlobalActions = new GlobalActions(mContext, mWindowManagerFuncs);
-	        }
-	        mGlobalActions.showProfileDialog();
+            if (mGlobalActions == null) {
+                mGlobalActions = new GlobalActions(mContext, mWindowManagerFuncs);
+            }
+            mGlobalActions.showProfileDialog();
     }
 
     public void showRebootDialog() {
@@ -1577,8 +1577,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             resetScreenHelper();
         }
         if (NavHide != mNavBarAutoHide) {
-        	mNavBarAutoHide = NavHide;
-        	resetScreenHelper();
+            mNavBarAutoHide = NavHide;
+            resetScreenHelper();
         }
     }
 
@@ -2960,7 +2960,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             // decided that it can't be hidden (because of the screen aspect ratio),
             // then take that into account.
             navVisible |= !mCanHideNavigationBar;
-			navVisible &= (Settings.System.getInt(mContext.getContentResolver(), Settings.System.EXPANDED_DESKTOP_STATE, 0) == 0);
+            navVisible &= (Settings.System.getInt(mContext.getContentResolver(), Settings.System.EXPANDED_DESKTOP_STATE, 0) == 0);
 
             if (mNavigationBar != null) {
                 // Force the navigation bar to its appropriate place and
@@ -3930,7 +3930,7 @@ updateDisplayMetrics();
             isWakeKey = false;
         }
 
-        // music is playing, don't wake the screen in case we need to skip track	
+        // music is playing, don't wake the screen in case we need to skip track    
         if (isMusicActive()
                     && mVolBtnMusicControls
                     && mVolumeWakeScreen
@@ -4073,16 +4073,16 @@ updateDisplayMetrics();
                             // initialize long press flag to false for volume events
                             mIsLongPress = false;
 
-                            // Use a message dispatcher to the Audio Service for track control	
-                            // The dispatcher will set the long press flag once called	
+                            // Use a message dispatcher to the Audio Service for track control  
+                            // The dispatcher will set the long press flag once called  
                             int newKeyCode = event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP ?
                                 KeyEvent.KEYCODE_MEDIA_NEXT : KeyEvent.KEYCODE_MEDIA_PREVIOUS;
-                            Message msg = mHandler.obtainMessage(MSG_DISPATCH_VOLKEY_WITH_WAKE_LOCK,	
-                                new KeyEvent(event.getDownTime(), event.getEventTime(), event.getAction(), newKeyCode, 0));	
+                            Message msg = mHandler.obtainMessage(MSG_DISPATCH_VOLKEY_WITH_WAKE_LOCK,    
+                                new KeyEvent(event.getDownTime(), event.getEventTime(), event.getAction(), newKeyCode, 0)); 
                             msg.setAsynchronous(true);
                             mHandler.sendMessageDelayed(msg, ViewConfiguration.getLongPressTimeout());
                         } else {
-                            // If music is playing but we decided not to pass the key to the	
+                            // If music is playing but we decided not to pass the key to the    
                             // application, handle the volume change here.
                             handleVolumeKey(AudioManager.STREAM_MUSIC, keyCode);
                         }
