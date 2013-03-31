@@ -2459,8 +2459,8 @@ public final class Settings {
          * 3 - Icon Centered Text
          * 4 - Icon Circle
          * 5 - CM circlemod w/o %
-		 * 6 - CM circlemod w %
-		 * 7 - Hide
+         * 6 - CM circlemod w %
+         * 7 - Hide
          */
         public static final String STATUSBAR_BATTERY_ICON = "statusbar_battery_icon";
 
@@ -2535,28 +2535,28 @@ public final class Settings {
          */
         public static final String STATUSBAR_BATTERY_BAR_COLOR = "statusbar_battery_bar_color";
 
-		/**
+        /**
          * Statusbar battery text charging colorpicker
          * @hide
          */
         public static final String STATUSBAR_BATTERY_CHARGE_TEXT_COLOR = "statusbar_battery_charge_text_color";
 
-		/**
+        /**
          * Statusbar battery text colorpicker
          * @hide
          */
         public static final String STATUSBAR_BATTERY_TEXT_COLOR = "statusbar_battery_text_color";
 
         /**
-		 * Statusbar battery cm circle ring colorpicker
-		 * @hide
-		 */
+         * Statusbar battery cm circle ring colorpicker
+         * @hide
+         */
         public static final String STATUSBAR_CMCIRLE_RING_COLOR = "statusbar_cmcircle_ring_color";
 
         /**
-		 * Statusbar battery cm circle charging animation ring colorpicker
-		 * @hide
-		 */
+         * Statusbar battery cm circle charging animation ring colorpicker
+         * @hide
+         */
         public static final String STATUSBAR_CMCIRLE_RING_COLOR_CHARGE = "statusbar_cmcircle_ring_color_charge";
 
         /**
@@ -2898,7 +2898,7 @@ public final class Settings {
          */
         public static final String USER_UI_MODE = "user_ui_mode";
 
-		/**
+        /**
          * User interface mode. This is used to change from singlepane mode forcing it to
          * Change into multipane mode. Default is disabled. 
          */
@@ -2932,7 +2932,7 @@ public final class Settings {
          */
         public static final String POWER_DIALOG_SHOW_POWER_OFF = "power_dialog_show_power_off";
 
-    	/**
+        /**
          * Used as a flag to determine if we have statusbar hidden
          * @hide
          */
@@ -2943,6 +2943,12 @@ public final class Settings {
          * &hide
          */
         public static final String STATUSBAR_QUICK_TOGGLE = "statusbar_quick_toggle";
+
+        /**
+         * Screenshot toggle delay
+         * @hide
+         */
+        public static final String SCREENSHOT_TOGGLE_DELAY = "screenshot_toggle_delay";
 
         /**
          * Show the NavBar dialog in Power menu
@@ -2977,13 +2983,13 @@ public final class Settings {
         public static final String POWER_DIALOG_SHOW_VOLUME_STATE_TOGGLE = "power_dialog_show_volume_state_toggle";
 
         /**
-    	 * @hide
-    	 */
+         * @hide
+         */
         public static final String POWER_DIALOG_SHOW_EXPANDED_DESKTOP_TOGGLE = "power_menu_expanded_desktop";
 
         /**
-    	 * Expanded desktop on/off state
-    	 * @hide
+         * Expanded desktop on/off state
+         * @hide
          */
         public static final String EXPANDED_DESKTOP_STATE = "expanded_desktop_state";
 
@@ -3573,13 +3579,13 @@ public final class Settings {
          */
         public static final String POWER_UI_LOW_BATTERY_WARNING_POLICY = "power_ui_low_battery_warning_policy";
 
-        /**	
+        /** 
          * Give MMS Notifications a breathing effect
          * @hide
          */
         public static final String MMS_BREATH = "mms_breath";
 
-        /**	
+        /** 
          * Give MMS Notifications a breathing effect
          * @hide
          */
@@ -4533,12 +4539,12 @@ public final class Settings {
 
 
         /**
-		 * The TCP/IP port to run ADB on, or -1 for USB
-		 * @hide
-		 */
+         * The TCP/IP port to run ADB on, or -1 for USB
+         * @hide
+         */
         public static final String ADB_PORT = "adb_port";
 
-		/**
+        /**
          * Whether to display the ADB notification.
          * @hide
          */
@@ -5176,7 +5182,7 @@ public final class Settings {
         /**
          * Whether the Wimax should be on.  Only the WiMAX service should touch this.
          * @hide
-         */	
+         */ 
          public static final String WIMAX_ON = "wimax_on";
 
         /**
