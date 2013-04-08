@@ -126,6 +126,7 @@ import com.android.systemui.statusbar.policy.Prefs;
 import com.android.systemui.aokp.AwesomeAction;
 import com.android.internal.util.aokp.AokpRibbonHelper;
 import com.android.systemui.aokp.AokpSwipeRibbon;
+import com.android.systemui.statusbar.policy.PieController.Position;
 import com.android.systemui.statusbar.powerwidget.PowerWidget;
 import com.android.systemui.statusbar.phone.ShortcutsWidget;
 
@@ -422,6 +423,9 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.NOTIFICATION_SHORTCUTS_HIDE_CARRIER), false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUSBAR_AUTO_EXPAND_HIDDEN), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.PIE_DISABLE_STATUSBAR_INFO), false, this);
+            update();
         }
 
         @Override
@@ -444,6 +448,8 @@ public class PhoneStatusBar extends BaseStatusBar {
             if (mCarrierLabel != null) {
                 toggleCarrierAndWifiLabelVisibility();
             }
+            updateStatusBarVisibility();
+            showClock(true);
         }
     }
 
@@ -616,6 +622,7 @@ public class PhoneStatusBar extends BaseStatusBar {
                 if (mNavBarAutoHide) {
                     setupAutoHide();
                 }
+                addNavigationBarCallback(mNavigationBarView);
             }
         } catch (RemoteException ex) {
             // no window manager? good luck with that
@@ -1745,6 +1752,10 @@ public class PhoneStatusBar extends BaseStatusBar {
 
     public void showClock(boolean show) {
         if (mStatusBarView == null) return;
+        if (Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PIE_DISABLE_STATUSBAR_INFO, 0) == 1) {
+            show = false;
+        }
         View clock = mStatusBarView.findViewById(R.id.clock);
         View cclock = mStatusBarView.findViewById(R.id.center_clock);
         boolean rightClock = (Settings.System.getInt(mContext.getContentResolver(),
@@ -1837,9 +1848,9 @@ public class PhoneStatusBar extends BaseStatusBar {
                         | StatusBarManager.DISABLE_RECENT
                         | StatusBarManager.DISABLE_BACK
                         | StatusBarManager.DISABLE_SEARCH)) != 0) {
-            // the nav bar will take care of these
-            if (mNavigationBarView != null) 
-                mNavigationBarView.setDisabledFlags(state);
+
+            // all navigation bar listeners will take care of these
+            propagateDisabledFlags(state);
 
             if ((state & StatusBarManager.DISABLE_RECENT) != 0) {
                 // close recents if it's visible
@@ -2698,9 +2709,7 @@ public class PhoneStatusBar extends BaseStatusBar {
 
         mNavigationIconHints = hints;
 
-        if (mNavigationBarView != null) {
-            mNavigationBarView.setNavigationIconHints(hints);
-        }
+        propagateNavigationIconHints(hints);
     }
 
     @Override // CommandQueue
@@ -2805,8 +2814,17 @@ public class PhoneStatusBar extends BaseStatusBar {
         if (DEBUG) {
             Slog.d(TAG, (showMenu?"showing":"hiding") + " the MENU button");
         }
-        if (mNavigationBarView != null) {
-            mNavigationBarView.setMenuVisibility(showMenu);
+        propagateMenuVisibility(showMenu);
+
+        // hide pie triggers when keyguard is visible
+        try {
+            if (mWindowManagerService.isKeyguardLocked()) {
+                disablePie(true);
+            } else {
+                disablePie(false);
+            }
+        } catch (RemoteException e) {
+            // nothing else to do ...
         }
 
         // See above re: lights-out policy for legacy apps.
