@@ -116,6 +116,8 @@ public class CircleBattery extends ImageView {
                     Settings.System.STATUS_BAR_CIRCLE_BATTERY_ANIMATIONSPEED), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_CIRCLE_BATTERY_RESET), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.PIE_DISABLE_STATUSBAR_INFO), false, this);
             onChange(true);
         }
 
@@ -132,6 +134,11 @@ public class CircleBattery extends ImageView {
                     Settings.System.STATUS_BAR_CIRCLE_BATTERY_TEXT_COLOR, res.getColor(R.color.holo_blue_dark)));
             mCircleAnimSpeed = (Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.STATUS_BAR_CIRCLE_BATTERY_ANIMATIONSPEED, 3));
+
+            if (Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PIE_DISABLE_STATUSBAR_INFO, 0) == 1) {
+            BatteryStyle = sbBatteryController.STYLE_HIDE;
+            }
 
             if (Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.STATUS_BAR_CIRCLE_BATTERY_RESET, 0) == 1) {
