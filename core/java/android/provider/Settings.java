@@ -2606,10 +2606,16 @@ public final class Settings {
         public static final String STATUSBAR_BATTERY_BAR_ANIMATE = "statusbar_battery_bar_animate";
 
         /**
-         * Port Mokee StatusBar Mokee 
+         * Port Mokee StatusBar Network Traffic
          * @hide
          */
-        public static final String STATUS_BAR_TRAFFIC = "status_bar_traffic"; 
+        public static final String STATUS_BAR_TRAFFIC = "status_bar_traffic";
+
+        /**
+         * StatusBar Network Traffic Color
+         * @hide
+         */
+        public static final String STATUS_BAR_TRAFFIC_COLOR = "status_bar_traffic_color";
 
         /**
          * @hide

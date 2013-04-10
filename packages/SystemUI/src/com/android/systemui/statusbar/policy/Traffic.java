@@ -42,6 +42,8 @@ public class Traffic extends TextView {
     float speed;
     float totalRxBytes;
 
+    protected int mTrafficColor;
+
     class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
             super(handler);
@@ -82,6 +84,7 @@ public class Traffic extends TextView {
 
         if (!mAttached) {
             mAttached = true;
+            mTrafficColor = getTextColors().getDefaultColor();
             IntentFilter filter = new IntentFilter();
             filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
             getContext().registerReceiver(mIntentReceiver, filter, null,
@@ -158,6 +161,15 @@ public class Traffic extends TextView {
 
     private void updateSettings() {
         ContentResolver resolver = mContext.getContentResolver();
+        int newColor = 0;
+
+        newColor = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_TRAFFIC_COLOR, mTrafficColor);
+        if (newColor < 0 && newColor != mTrafficColor) {
+            mTrafficColor = newColor;
+            setTextColor(mTrafficColor);
+        }
+
         showTraffic = (Settings.System.getInt(resolver,
                 Settings.System.STATUS_BAR_TRAFFIC, 1) == 1);
         if (showTraffic && getConnectAvailable()) {
