@@ -21,17 +21,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.text.format.DateFormat;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 
 import com.android.systemui.R;
 import com.android.systemui.statusbar.util.SpnOverride;
 
 import java.text.SimpleDateFormat;
+import android.text.format.DateFormat;
+import android.text.TextUtils;
 import java.util.Date;
 
 public class PiePolicy {
@@ -104,20 +106,22 @@ public class PiePolicy {
     }
 
     public static String getNetworkProvider() {
-        String operatorName = mContext.getString(R.string.quick_settings_wifi_no_network);
-        TelephonyManager telephonyManager = (TelephonyManager) mContext
-                .getSystemService(Context.TELEPHONY_SERVICE);
-        if(isCN) {
-            String operator = telephonyManager.getNetworkOperator();
-            SpnOverride mSpnOverride = new SpnOverride();
-            operatorName = mSpnOverride.getSpn(operator);
-            if(operatorName == null) {
-                operatorName = telephonyManager.getSimOperatorName();
-            }
-        } else {
-            operatorName = telephonyManager.getNetworkOperatorName();
-            if(operatorName == null) {
-                operatorName = telephonyManager.getSimOperatorName();
+        String operatorName = Settings.System.getString(mContext.getContentResolver(), Settings.System.CUSTOM_CARRIER_LABEL);
+        if(TextUtils.isEmpty(operatorName)) {
+        operatorName = mContext.getString(R.string.quick_settings_wifi_no_network);
+        TelephonyManager telephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
+            if(isCN) {
+                String operator = telephonyManager.getNetworkOperator();
+                SpnOverride mSpnOverride = new SpnOverride();
+                operatorName = mSpnOverride.getSpn(operator);
+                if(operatorName == null) {
+                    operatorName = telephonyManager.getSimOperatorName();
+                }
+            } else {
+                operatorName = telephonyManager.getNetworkOperatorName();
+                if(operatorName == null) {
+                    operatorName = telephonyManager.getSimOperatorName();
+                }
             }
         }
         return operatorName.toUpperCase();
