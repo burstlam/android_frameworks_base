@@ -153,7 +153,7 @@ public class PieControlPanel extends FrameLayout implements StatusBarPanel, OnNa
             // Get original offset
             int gravityIndex = findGravityOffset(convertPieGravitytoGravity(
                     Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.PIE_GRAVITY, 3)));
+                    Settings.System.PIE_GRAVITY, 2)));
             
             // Orient Pie to that place
             reorient(gravityArray[gravityIndex], false);

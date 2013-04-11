@@ -571,7 +571,7 @@ public abstract class BaseStatusBar extends SystemUI implements
 
             // Add pie (s), want some slice?
             int gravity = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.PIE_GRAVITY, 3);
+                    Settings.System.PIE_GRAVITY, 2);
 
             switch(gravity) {
                 case 0:
