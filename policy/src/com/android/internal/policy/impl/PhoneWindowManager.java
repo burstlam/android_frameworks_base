@@ -321,6 +321,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     int mExpandedState;
     int mExpandedMode;
 
+    boolean mHideStatusBar;
+
     // The last window we were told about in focusChanged.
     WindowState mFocusedWindow;
     IApplicationToken mFocusedApp;
@@ -682,6 +684,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.EXPANDED_DESKTOP_MODE), false, this,
                     UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HIDE_STATUSBAR), false, this);
             updateSettings();
         }
 
@@ -3956,8 +3960,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 // and mTopIsFullscreen is that that mTopIsFullscreen is set only if the window
                 // has the FLAG_FULLSCREEN set.  Not sure if there is another way that to be the
                 // case though.
+                mHideStatusBar = Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.HIDE_STATUSBAR, 0) == 1;
                 if (topIsFullscreen || (mExpandedState == 1 && (mExpandedMode == 2 || mExpandedMode == 3))
-                                    || Settings.System.getBoolean(mContext.getContentResolver(), Settings.System.STATUSBAR_HIDDEN, false) == true) {
+                                    || mHideStatusBar) {
                     if (DEBUG_LAYOUT) Log.v(TAG, "** HIDING status bar");
                     if (mStatusBar.hideLw(true)) {
                         changes |= FINISH_LAYOUT_REDO_LAYOUT;

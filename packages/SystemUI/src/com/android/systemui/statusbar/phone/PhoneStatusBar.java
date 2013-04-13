@@ -1493,6 +1493,19 @@ public class PhoneStatusBar extends BaseStatusBar {
         refreshAllStatusBarIcons();
     }
 
+    private void updateStatusBarVisibility() {
+
+        if (Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.AUTO_HIDE_STATUSBAR, 0) == 1) {
+            Settings.System.putInt(mContext.getContentResolver(),
+                    Settings.System.HIDE_STATUSBAR,
+                    (mNotificationData.size() == 0) ? 1 : 0);
+        } else {
+            Settings.System.putInt(mContext.getContentResolver(),
+                    Settings.System.HIDE_STATUSBAR, 0);
+        }
+    }
+
     private void loadNotificationShade() {
         if (mPile == null) return;
 
@@ -1736,6 +1749,8 @@ public class PhoneStatusBar extends BaseStatusBar {
                 })
                 .start();
         }
+
+        if (mNotificationData.size() < 2) updateStatusBarVisibility();
 
         updateCarrierAndWifiLabelVisibility(false);
     }
@@ -3423,7 +3438,10 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.NOTIF_ALPHA), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_DISABLE_PANEL), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.AUTO_HIDE_STATUSBAR), false, this, UserHandle.USER_ALL);
             setNotificationRowHelper();
+            updateStatusBarVisibility();
         }
 
          @Override
