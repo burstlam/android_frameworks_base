@@ -1266,6 +1266,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 break;
             case 1 :
                 // "tablet" UI with a single combined status & navigation bar
+                mNavBarAutoHide = false; // TabUI, No AutoHide for you! 
                 mHasSystemNavBar = true;
                 mNavigationBarCanMove = false;
                 break;
@@ -1552,7 +1553,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 Settings.System.USER_UI_MODE,mStockUIMode)) {
             resetScreenHelper();
         }
-        if (NavHide != mNavBarAutoHide) {
+        if (NavHide != mNavBarAutoHide && mUserUIMode != 1) {
             mNavBarAutoHide = NavHide;
             resetScreenHelper();
         }
