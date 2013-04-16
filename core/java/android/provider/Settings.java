@@ -3038,6 +3038,7 @@ public final class Settings {
 
         /**
          * Expanded desktop style (with status bar or without status bar)
+         * 0 = none, 1 = hide only navbar, 2 = hide only statusbar, 3 = hide both
          * 
          */
         public static final String EXPANDED_DESKTOP_STYLE = "expanded_desktop_style";
