@@ -109,7 +109,7 @@ public class PieController implements BaseStatusBar.NavigationBarCallback,
     private final static String ACTION_IME = "**ime**";
     private final static String ACTION_LAST_APP = "**lastapp**";
     private final static String ACTION_KILL = "**kill**";
-    private final static String ACTION_WIDGETS = "**widgets**";
+    /*private final static String ACTION_WIDGETS = "**widgets**";*/
     private final static String ACTION_NULL = "**null**";
 
     private int mNumberOfButtons = 3;
@@ -595,8 +595,8 @@ public class PieController implements BaseStatusBar.NavigationBarCallback,
                 return mContext.getResources().getDrawable(R.drawable.ic_sysbar_lastapp);
             } else if (uri.equals(ACTION_KILL)) {
                 return mContext.getResources().getDrawable(R.drawable.ic_sysbar_killtask);
-            } else if (uri.equals(ACTION_WIDGETS)) {
-                return mContext.getResources().getDrawable(R.drawable.ic_sysbar_widget);
+            /*} else if (uri.equals(ACTION_WIDGETS)) {
+                return mContext.getResources().getDrawable(R.drawable.ic_sysbar_widget);*/
             } else if (uri.equals(ACTION_POWER)) {
                 return mContext.getResources().getDrawable(R.drawable.ic_sysbar_power);
             } else if (uri.equals(ACTION_NOTIFICATIONS)) {
@@ -783,12 +783,12 @@ public class PieController implements BaseStatusBar.NavigationBarCallback,
         } else if (type.equals(ACTION_KILL)) {
             mHandler.post(mKillTask);
             return;
-        } else if (type.equals(ACTION_WIDGETS)) {
+        /*} else if (type.equals(ACTION_WIDGETS)) {
             try {
                 mBarService.toggleWidgets();
             } catch (RemoteException e) {
             }
-            return;
+            return;*/
         } else if (type.equals(ACTION_LAST_APP)) {
             toggleLastApp();
             return;
