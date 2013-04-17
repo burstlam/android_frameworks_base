@@ -38,38 +38,6 @@
         android:layout_weight="1"
         android:visibility="invisible"/>
     <LinearLayout
-        android:id="@+id/navbarstatus"
-        android:layout_width="64dp"
-        android:layout_height="match_parent"
-        android:focusable="true"
-        android:background="@drawable/silent_mode_indicator"
-        >
-        <ImageView
-            android:layout_width="48dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="top"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="16dp"
-            android:src="@drawable/ic_lock_statusbar_toggle"
-            android:scaleType="center"
-            android:background="?android:attr/actionBarItemBackground"
-            android:duplicateParentState="true"
-            />
-    </LinearLayout>
-    <!-- Spacer -->
-    <View android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:visibility="invisible"/>
-
-    <View android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:visibility="invisible"/>
-
-    <LinearLayout
         android:id="@+id/navbartoggle"
         android:layout_width="64dp"
         android:layout_height="match_parent"
@@ -97,27 +65,52 @@
         android:visibility="invisible"/>
 
     <LinearLayout
-        android:id="@+id/navbarhome"
+        android:id="@+id/navbarstatus"
         android:layout_width="64dp"
         android:layout_height="match_parent"
-        android:background="?android:attr/actionBarItemBackground"
         android:focusable="true"
+        android:background="@drawable/silent_mode_indicator"
         >
         <ImageView
             android:layout_width="48dp"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
+            android:layout_gravity="top"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="6dp"
-            android:layout_marginBottom="6dp"
-            android:src="@drawable/ic_menu_home"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/ic_lock_statusbar_toggle"
             android:scaleType="center"
+            android:background="?android:attr/actionBarItemBackground"
             android:duplicateParentState="true"
-            android:background="@drawable/silent_mode_indicator"
             />
     </LinearLayout>
-
+    <!-- Spacer -->
+    <View android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:visibility="invisible"/>
+    <LinearLayout
+        android:id="@+id/navbarhide"
+        android:layout_width="64dp"
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:background="@drawable/silent_mode_indicator"
+        >
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="top"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/ic_navbarhide"
+            android:scaleType="center"
+            android:background="?android:attr/actionBarItemBackground"
+            android:duplicateParentState="true"
+            />
+    </LinearLayout>
     <!-- Spacer -->
     <View android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -134,39 +127,12 @@
         <ImageView
             android:layout_width="48dp"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
+            android:layout_gravity="top"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="6dp"
             android:layout_marginBottom="6dp"
-            android:src="@drawable/ic_menu_back"
-            android:scaleType="center"
-            android:duplicateParentState="true"
-            android:background="@drawable/silent_mode_indicator"
-            />
-    </LinearLayout>
-    <!-- Spacer -->
-    <View android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:visibility="invisible"/>
-
-    <LinearLayout
-        android:id="@+id/navbarmenu"
-        android:layout_width="64dp"
-        android:layout_height="match_parent"
-        android:background="?android:attr/actionBarItemBackground"
-        android:focusable="true"
-        >
-        <ImageView
-            android:layout_width="48dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="6dp"
-            android:src="@drawable/ic_menu_moreoverflow_normal_holo_dark"
+            android:src="@drawable/ic_menu_set_as"
             android:scaleType="center"
             android:duplicateParentState="true"
             android:background="@drawable/silent_mode_indicator"

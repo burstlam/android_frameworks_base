@@ -254,7 +254,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 Settings.System.POWER_DIALOG_SHOW_TORCH_TOGGLE, false);
 
         mEnableNavBarHideToggle= Settings.System.getBoolean(mContext.getContentResolver(),
-                Settings.System.POWER_DIALOG_SHOW_NAVBAR_HIDE, false);
+                Settings.System.POWER_DIALOG_SHOW_NAVBAR_HIDE, true);
         mNavBarHideToggle = new NavBarAction(mHandler);
 
 		mShowRebootOnLock = Settings.System.getBoolean(mContext.getContentResolver(),
@@ -1191,11 +1191,12 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
     private static class NavBarAction implements Action, View.OnClickListener {
 
-        private final int[] ITEM_IDS = { R.id.navbarstatus, R.id.navbartoggle, R.id.navbarhome, R.id.navbarback,R.id.navbarmenu };
+        private final int[] ITEM_IDS = { R.id.navbartoggle, R.id.navbarstatus, R.id.navbarhide, R.id.navbarback };
 
         public Context mContext;
         public boolean mNavbarVisible;
-        public boolean mStatusBarVisible;
+        public boolean mNavbarStatusInvisible;
+        public boolean mNavbarHide;
         private final Handler mHandler;
         private int mInjectKeycode;
         long mDownTime;
@@ -1210,12 +1211,14 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             mContext = context;
             mNavbarVisible = Settings.System.getBoolean(mContext.getContentResolver(),
                     Settings.System.NAVIGATION_BAR_SHOW_NOW, false);
-            mStatusBarVisible = Settings.System.getBoolean(mContext.getContentResolver(), 
+            mNavbarStatusInvisible = Settings.System.getBoolean(mContext.getContentResolver(),
                     Settings.System.STATUSBAR_HIDDEN_NOW, false);
+            mNavbarHide = Settings.System.getBoolean(mContext.getContentResolver(),
+                    Settings.System.NAV_HIDE_ENABLE, false);
 
             View v = inflater.inflate(R.layout.global_actions_navbar_mode, parent, false);
 
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 3; i++) {
                 View itemView = v.findViewById(ITEM_IDS[i]);
                 if (mKeyguardShowing ){
                     if (ITEM_IDS[i] != R.id.navbarstatus){
@@ -1224,7 +1227,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                     }
                 }
                 
-                itemView.setSelected((i==0)&&(!mStatusBarVisible)||(i==1)&&(mNavbarVisible));
+                itemView.setSelected((i==0)&&(mNavbarVisible)||(i==1)&&(mNavbarStatusInvisible)||(i==2)&&(mNavbarHide));
                 // Set up click handler
                 itemView.setTag(i);
                 itemView.setOnClickListener(this);
@@ -1267,12 +1270,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             switch (index) {
 
             case 0 :
-                mStatusBarVisible = !mStatusBarVisible;
-                updaHiddenStatusbar(mStatusBarVisible);
-                v.setSelected(mStatusBarVisible);
-                mHandler.sendEmptyMessage(MESSAGE_DISMISS);
-                break;
-            case 1 :
                 mNavbarVisible = !mNavbarVisible;
                 Settings.System.putBoolean(mContext.getContentResolver(),
                         Settings.System.NAVIGATION_BAR_SHOW_NOW,
@@ -1281,16 +1278,26 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 mHandler.sendEmptyMessage(MESSAGE_DISMISS);
                 break;
 
+            case 1 :
+                mNavbarStatusInvisible = !mNavbarStatusInvisible;
+                Settings.System.putBoolean(mContext.getContentResolver(),
+                        Settings.System.STATUSBAR_HIDDEN_NOW,
+                         mNavbarStatusInvisible );
+                v.setSelected(mNavbarStatusInvisible);
+                mHandler.sendEmptyMessage(MESSAGE_DISMISS);
+                break;
+
             case 2:
-                injectKeyDelayed(KeyEvent.KEYCODE_HOME,SystemClock.uptimeMillis());
+                mNavbarHide = !mNavbarHide;
+                Settings.System.putBoolean(mContext.getContentResolver(),
+                    Settings.System.NAV_HIDE_ENABLE,
+                         mNavbarHide );
+                v.setSelected(mNavbarHide);
+                mHandler.sendEmptyMessage(MESSAGE_DISMISS);
                 break;
 
             case 3:
                 injectKeyDelayed(KeyEvent.KEYCODE_BACK,SystemClock.uptimeMillis());
-                break;
-
-            case 4:
-                injectKeyDelayed(KeyEvent.KEYCODE_MENU,SystemClock.uptimeMillis());
                 break;
             }
         }
@@ -1300,8 +1307,8 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             mHandler.sendEmptyMessage(MESSAGE_DISMISS);
             mHandler.removeCallbacks(onInjectKey_Down);
             mHandler.removeCallbacks(onInjectKey_Up);
-            mHandler.postDelayed(onInjectKey_Down,25);// wait a few ms to let Dialog dismiss
-            mHandler.postDelayed(onInjectKey_Up,50); // introduce small delay to handle key press
+            mHandler.postDelayed(onInjectKey_Down,30);// wait a few ms to let Dialog dismiss
+            mHandler.postDelayed(onInjectKey_Up,70); // introduce small delay to handle key press
         }
 
         final Runnable onInjectKey_Down = new Runnable() {

@@ -1867,9 +1867,10 @@
   <java-symbol type="layout" name="global_actions_navbar_mode" />
   <java-symbol type="id" name="navbarstatus" />
   <java-symbol type="id" name="navbartoggle" />
-  <java-symbol type="id" name="navbarhome" />
+  <java-symbol type="id" name="navbarhide" />
+  <!--   <java-symbol type="id" name="navbarhome" /> -->
   <java-symbol type="id" name="navbarback" />
-  <java-symbol type="id" name="navbarmenu" />
+  <!--   <java-symbol type="id" name="navbarmenu" /> -->
 
   <!-- Config.xml entries -->
   <java-symbol type="integer" name="config_wallpaperMaxWidth" />
