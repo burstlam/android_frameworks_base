@@ -2980,6 +2980,13 @@ public final class Settings {
          * @hide
          */
         public static final String STATUSBAR_HIDDEN = "statusbar_hidden";
+
+        /**
+         * Whether Status bar should be hiidden when there are no
+         * notifications
+         * @hide
+         */
+        public static final String AUTO_HIDE_STATUSBAR = "auto_hide_statusbar";
         
         /**
          * Statusbar toggle for quick settings
