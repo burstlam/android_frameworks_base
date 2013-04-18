@@ -562,7 +562,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     // Behavior expanded desktop mode
     int mExpandedState;
-    int mExpandedStyle; 
+    int mExpandedStyle;
+
+    boolean mHideStatusBar;
 
     SettingsObserver mSettingsObserver;
     ShortcutManager mShortcutManager;
@@ -678,6 +680,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.TOGGLE_NOTIFICATION_SHADE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUSBAR_HIDDEN), false, this);
             updateSettings();
         }
 
@@ -3524,13 +3528,13 @@ updateDisplayMetrics();
                 // and mTopIsFullscreen is that that mTopIsFullscreen is set only if the window
                 // has the FLAG_FULLSCREEN set.  Not sure if there is another way that to be the
                 // case though.
-                boolean HideStatusBar = Settings.System.getBoolean(mContext.getContentResolver(),
+                mHideStatusBar = Settings.System.getBoolean(mContext.getContentResolver(),
                                         Settings.System.STATUSBAR_HIDDEN, false) == true;
                 boolean toggleNotificationShade = Settings.System.getInt(mContext.getContentResolver(),
                         Settings.System.TOGGLE_NOTIFICATION_SHADE, 0) == 1; 
                 if (topIsFullscreen || (mExpandedState == 1 &&
                                        (mExpandedStyle == 2 || mExpandedStyle == 3) && !toggleNotificationShade)
-                                    || (HideStatusBar && !toggleNotificationShade)) {
+                                    || (mHideStatusBar && !toggleNotificationShade)) {
                     if (DEBUG_LAYOUT) Log.v(TAG, "** HIDING status bar");
                     if (mStatusBar.hideLw(true)) {
                         changes |= FINISH_LAYOUT_REDO_LAYOUT;
