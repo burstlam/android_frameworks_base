@@ -677,7 +677,6 @@ public final class BatteryService extends Binder {
 
         private final int mBatteryLowARGB;
         private final int mBatteryMediumARGB;
-        private final int mBatteryAlmostARGB;
         private final int mBatteryFullARGB;
         private final int mBatteryLedOn;
         private final int mBatteryLedOff;
@@ -689,8 +688,6 @@ public final class BatteryService extends Binder {
                     com.android.internal.R.integer.config_notificationsBatteryLowARGB);
             mBatteryMediumARGB = context.getResources().getInteger(
                     com.android.internal.R.integer.config_notificationsBatteryMediumARGB);
-            mBatteryAlmostARGB = context.getResources().getInteger(
-                    com.android.internal.R.integer.config_notificationsBatteryAlmostARGB);
             mBatteryFullARGB = context.getResources().getInteger(
                     com.android.internal.R.integer.config_notificationsBatteryFullARGB);
             mBatteryLedOn = context.getResources().getInteger(
@@ -716,14 +713,11 @@ public final class BatteryService extends Binder {
                 }
             } else if (status == BatteryManager.BATTERY_STATUS_CHARGING
                     || status == BatteryManager.BATTERY_STATUS_FULL) {
-                if (level >= 70 && level < 100) {
-                    // Solid yellow when charging and between 70-99%
-                    mBatteryLight.setColor(mBatteryAlmostARGB);
-                } else if (status == BatteryManager.BATTERY_STATUS_FULL || level == 100) {
-                    // Solid green when full -- 100%
+                if (status == BatteryManager.BATTERY_STATUS_FULL || level >= 90) {
+                    // Solid green when full or charging and nearly full
                     mBatteryLight.setColor(mBatteryFullARGB);
                 } else {
-                    // Solid orange when charging and between 15-69%
+                    // Solid orange when charging and halfway full
                     mBatteryLight.setColor(mBatteryMediumARGB);
                 }
             } else {
