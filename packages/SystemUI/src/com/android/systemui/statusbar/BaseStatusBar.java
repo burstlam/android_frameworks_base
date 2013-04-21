@@ -241,6 +241,8 @@ public abstract class BaseStatusBar extends SystemUI implements
                     Settings.System.PIE_TRIGGER), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.EXPANDED_DESKTOP_STATE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.EXPANDED_DESKTOP_STYLE), false, this);
         }
 
         @Override
@@ -452,10 +454,14 @@ public abstract class BaseStatusBar extends SystemUI implements
     }
 
     private boolean showPie() {
+        boolean navbarOff = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
+        boolean sbexpanded = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.EXPANDED_DESKTOP_STYLE, 0) == 2;
         boolean pie = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PIE_CONTROLS, 0) == 1;
 
-        return (pie);
+        return (pie && (navbarOff || sbexpanded));
     }
 
     public void updatePieControls() {
