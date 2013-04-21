@@ -23,7 +23,6 @@ import android.view.KeyEvent;
 /**
  * Top-level interface to an accessibility service component.
  *
- * @hide
  */
  oneway interface IAccessibilityServiceClient {
 
