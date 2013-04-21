@@ -24,15 +24,17 @@ import android.animation.LayoutTransition;
 import android.app.KeyguardManager;
 import android.app.StatusBarManager;
 import android.content.ContentResolver;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.TransitionDrawable;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.ContentObserver;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.TransitionDrawable;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
@@ -304,6 +306,29 @@ public class NavigationBarView extends LinearLayout {
                     public void onChange(boolean selfChange) {
                         updateColor();
                     }});
+        }
+    }
+
+    private void updateColor() {
+        ColorUtils.ColorSettingInfo colorInfo = ColorUtils.getColorSettingInfo(mContext,
+                Settings.System.NAV_BAR_COLOR);
+
+        if (!colorInfo.lastColorString.equals(mLastBackgroundColor.lastColorString)) {
+            // Only enable crossfade for transparent backdrops
+            mTransition.setCrossFadeEnabled(!colorInfo.isLastColorOpaque);
+
+            // Clear first layer, paint current color, reset mTransition to first layer
+            mCurrentCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+            mCurrentCanvas.drawColor(mLastBackgroundColor.lastColor);
+            mTransition.resetTransition();
+
+            // Clear second layer, paint new color, start mTransition
+            mNewCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+            mNewCanvas.drawColor(colorInfo.lastColor);
+            mTransition.startTransition(colorInfo.speed);
+
+            // Remember color for later
+            mLastBackgroundColor = colorInfo;
         }
     }
 

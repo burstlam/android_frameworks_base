@@ -2628,7 +2628,7 @@ public class PhoneStatusBar extends BaseStatusBar {
     }
 
     public void setLightsOn(boolean on) {
-        slog.v(TAG, "setLightsOn(" + on + ")");
+        Slog.v(TAG, "setLightsOn(" + on + ")");
         if (on) {
             setSystemUiVisibility(0, View.SYSTEM_UI_FLAG_LOW_PROFILE);
         } else {
