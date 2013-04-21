@@ -22,9 +22,11 @@ import java.util.ArrayList;
 import android.animation.ObjectAnimator;
 import android.app.SearchManager;
 import android.app.admin.DevicePolicyManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -85,6 +87,9 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
     private int mTargetOffset;
     private boolean mIsScreenLarge;
     private int mCreationOrientation;
+    private boolean mUnlockBroadcasted = false;
+    private UnlockReceiver receiver;
+    private IntentFilter filter;
 
     OnTriggerListener mOnTriggerListener = new OnTriggerListener() {
 
@@ -256,6 +261,11 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
         mSecurityMessageDisplay = new KeyguardMessageArea.Helper(this);
         View bouncerFrameView = findViewById(R.id.keyguard_selector_view_frame);
         mBouncerFrame = bouncerFrameView.getBackground();
+        mUnlockBroadcasted = false;
+        filter = new IntentFilter();
+        filter.addAction(UnlockReceiver.ACTION_UNLOCK_RECEIVER);
+        receiver = new UnlockReceiver();
+        mContext.registerReceiver(receiver, filter);
     }
 
     public void setCarrierArea(View carrierArea) {
@@ -560,5 +570,22 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
         mIsBouncing = false;
         KeyguardSecurityViewHelper.
                 hideBouncer(mSecurityMessageDisplay, mFadeView, mBouncerFrame, duration);
+    }
+
+    public class UnlockReceiver extends BroadcastReceiver {
+        public static final String ACTION_UNLOCK_RECEIVER = "com.android.lockscreen.ACTION_UNLOCK_RECEIVER";
+			
+        @Override
+        public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			if (action.equals(ACTION_UNLOCK_RECEIVER)) {
+			    if (!mUnlockBroadcasted) {
+			        mUnlockBroadcasted = true;
+			        mCallback.userActivity(0);
+			        mCallback.dismiss(false);
+			    }
+			}
+			mContext.unregisterReceiver(receiver);
+        }
     }
 }
