@@ -100,8 +100,8 @@ public class NavigationBarView extends LinearLayout {
     
     public DelegateViewHelper mDelegateHelper;
     private BaseStatusBar mBar;
-    private Context mContext;
     private SettingsObserver mSettingsObserver;
+    private Context mContext;
 
     private Canvas mCurrentCanvas;
     private Canvas mNewCanvas;
@@ -170,7 +170,7 @@ public class NavigationBarView extends LinearLayout {
     public static final int KEY_BACK_ALT = 1000;
 
 
-
+    public int mSystemUiLayout = ExtendedPropertiesUtils.getActualProperty("com.android.systemui.layout");
     private int mMenuVisbility;
     private int mMenuLocation;
 
@@ -292,7 +292,7 @@ public class NavigationBarView extends LinearLayout {
             mNewCanvas.drawColor(0xFF000000);
             BitmapDrawable newBitmapDrawable = new BitmapDrawable(newBitmap);
 
-            mTransition = new TransitionDrawable(new Drawable[]{currentBitmapDrawable, newBitmapDrawable});
+            mTransition = new TransitionDrawable(new Drawable[]{currentBitmapDrawable, newBitmapDrawable});        
             setBackground(mTransition);
 
             mLastBackgroundColor = ColorUtils.getColorSettingInfo(mContext, Settings.System.NAV_BAR_COLOR);
@@ -376,7 +376,7 @@ public class NavigationBarView extends LinearLayout {
                 addLightsOutButton(lightsOut, v, landscape && !mLeftyMode, false);
 
                 if (v.getId() == R.id.back){
-                	mBackIcon = v.getDrawable();
+                    mBackIcon = v.getDrawable();
                 }
                 if (mNumberOfButtons == 3 && j != (mNumberOfButtons - 1)) {
                     // add separator view here
@@ -515,7 +515,7 @@ public class NavigationBarView extends LinearLayout {
 
         return v;
     }
-    
+
     private ExtensibleKeyButtonView generateKey(boolean landscape, String clickAction,
             String longpress,
             String iconUri) {
@@ -645,7 +645,7 @@ public class NavigationBarView extends LinearLayout {
 
             }
         }
-        // if Home is to be shown, then we hide the Searchlight.
+     // if Home is to be shown, then we hide the Searchlight.
         getSearchLight().setVisibility((isKeyguardEnabled()&& disableHome) ? View.VISIBLE : View.GONE);
         if (mNavBarAutoHide && !isRotating) {
             if (isKeyguardEnabled())
@@ -688,7 +688,7 @@ public class NavigationBarView extends LinearLayout {
 
     public void setMenuVisibility(final boolean show, final boolean force) {
 
-    	if (!force && mShowMenu == show)
+        if (!force && mShowMenu == show)
             return;
 
         if (mMenuLocation == SHOW_DONT) {
@@ -836,7 +836,7 @@ public class NavigationBarView extends LinearLayout {
 
     @Override
     public void onFinishInflate() {
-    	 rot0 = (FrameLayout) findViewById(R.id.rot0);
+         rot0 = (FrameLayout) findViewById(R.id.rot0);
          rot90 = (FrameLayout) findViewById(R.id.rot90);
 
          mRotatedViews[Surface.ROTATION_0] =
@@ -875,16 +875,16 @@ public class NavigationBarView extends LinearLayout {
     }
 
     public void reorient() {
-        final int rot = mDisplay.getRotation();
-        for (int i=0; i<4; i++) {
+        int rot = mDisplay.getRotation();
+        for (int i=0; i<3; i++) {
             mRotatedViews[i].setVisibility(View.GONE);
-        }
-        if (mCurrentUIMode !=0) { // this is either a tablet of Phablet.  Need to stay at Rot_0
-            mCurrentView = mRotatedViews[Surface.ROTATION_0];
-        } else {
-            mCurrentView = mRotatedViews[rot];
-        }
-        mCurrentView.setVisibility(View.VISIBLE);
+           }
+           if (mSystemUiLayout != 360) { // this is either a tablet of Phablet.  Need to stay at Rot_0
+               mCurrentView = mRotatedViews[Surface.ROTATION_0];
+           } else {
+               mCurrentView = mRotatedViews[rot];
+           }
+           mCurrentView.setVisibility(View.VISIBLE);
 
         // force the low profile & disabled states into compliance
         setLowProfile(mLowProfile, false, true /* force */);
