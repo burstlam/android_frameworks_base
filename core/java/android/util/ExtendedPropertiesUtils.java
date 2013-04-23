@@ -48,37 +48,37 @@ public class ExtendedPropertiesUtils {
     /**
      * Public variables
      */
-    public static final String PARANOID_MAINCONF = "properties.conf";
-    public static final String PARANOID_BACKUPCONF = "backup.conf";
-    public static final String PARANOID_PROPERTIES = "/system/etc/paranoid/" + PARANOID_MAINCONF;
-    public static final String PARANOID_DIR = "/system/etc/paranoid/";
-    public static final String PARANOID_PREFIX = "%";
-    public static final String PARANOID_SEPARATOR = ".";
-    public static final String PARANOID_STRING_DELIMITER = "\\|";
-    public static final String PARANOID_DPI_SUFFIX = ".dpi";
-    public static final String PARANOID_LAYOUT_SUFFIX = ".layout";
-    public static final String PARANOID_FORCE_SUFFIX = ".force";
-    public static final String PARANOID_LARGE_SUFFIX = ".large";
-    public static final String PARANOID_CHECK_SUFFIX = ".version";
-    public static final String PARANOID_DENSITY_SUFFIX = ".den";
-    public static final String PARANOID_SCALEDDENSITY_SUFFIX = ".sden";
-    public static final String PARANOID_EXPAND_SUFFIX = ".expand";
-    public static final String PARANOID_LANDSC_SUFFIX = ".landsc";
+    public static final String BEERBONG_MAINCONF = "properties.conf";
+    public static final String BEERBONG_BACKUPCONF = "backup.conf";
+    public static final String BEERBONG_PROPERTIES = "/system/etc/burstlam/" + BEERBONG_MAINCONF;
+    public static final String BEERBONG_DIR = "/system/etc/burstlam/";
+    public static final String BEERBONG_PREFIX = "%";
+    public static final String BEERBONG_SEPARATOR = ".";
+    public static final String BEERBONG_STRING_DELIMITER = "\\|";
+    public static final String BEERBONG_DPI_SUFFIX = ".dpi";
+    public static final String BEERBONG_LAYOUT_SUFFIX = ".layout";
+    public static final String BEERBONG_FORCE_SUFFIX = ".force";
+    public static final String BEERBONG_LARGE_SUFFIX = ".large";
+    public static final String BEERBONG_CHECK_SUFFIX = ".version";
+    public static final String BEERBONG_DENSITY_SUFFIX = ".den";
+    public static final String BEERBONG_SCALEDDENSITY_SUFFIX = ".sden";
+    public static final String BEERBONG_EXPAND_SUFFIX = ".expand";
+    public static final String BEERBONG_LANDSC_SUFFIX = ".landsc";
 
     // Color definitions
-    public static final String PARANOID_COLORS_SUFFIX = ".colors";
-    public static final String PARANOID_MANCOL_SUFFIX = ".mancol";
-    public static final int PARANOID_COLORS_COUNT = 5;
-    public static final String[] PARANOID_COLORS_SETTINGS = {Settings.System.NAV_BAR_COLOR,
+    public static final String BEERBONG_COLORS_SUFFIX = ".colors";
+    public static final String BEERBONG_MANCOL_SUFFIX = ".mancol";
+    public static final int BEERBONG_COLORS_COUNT = 5;
+    public static final String[] BEERBONG_COLORS_SETTINGS = {Settings.System.NAV_BAR_COLOR,
         Settings.System.NAV_BUTTON_COLOR, Settings.System.NAV_GLOW_COLOR,
         Settings.System.STATUS_BAR_COLOR, Settings.System.STATUS_ICON_COLOR};
-    public static final int[] PARANOID_COLORCODES_DEFAULTS = 
+    public static final int[] BEERBONG_COLORCODES_DEFAULTS = 
         {0xFF000000, 0xB2FFFFFF, 0xFFFFFFFF, 0xFF000000, 0xFF33B5E5};
-    public static final int PARANOID_COLORS_NAVBAR = 0;
-    public static final int PARANOID_COLORS_NAVBUTTON = 1;
-    public static final int PARANOID_COLORS_NAVGLOW = 2;
-    public static final int PARANOID_COLORS_STATBAR = 3;
-    public static final int PARANOID_COLORS_STATICONS = 4;
+    public static final int BEERBONG_COLORS_NAVBAR = 0;
+    public static final int BEERBONG_COLORS_NAVBUTTON = 1;
+    public static final int BEERBONG_COLORS_NAVGLOW = 2;
+    public static final int BEERBONG_COLORS_STATBAR = 3;
+    public static final int BEERBONG_COLORS_STATICONS = 4;
 
     public static HashMap<String, String> mPropertyMap = new HashMap<String, String>();
     public static ActivityThread mMainThread;
@@ -116,7 +116,7 @@ public class ExtendedPropertiesUtils {
         public int firstRun;
         public float scaledDensity;
         public float density;
-        public String[] colors = new String[PARANOID_COLORS_COUNT];
+        public String[] colors = new String[BEERBONG_COLORS_COUNT];
     }
 
     /**
@@ -137,20 +137,20 @@ public class ExtendedPropertiesUtils {
             // Load default values to be used in case that property is 
             // missing from configuration.
             boolean isSystemApp = info.path.contains("system/app");
-            int defaultDpi = Integer.parseInt(getProperty(PARANOID_PREFIX + (isSystemApp ? 
+            int defaultDpi = Integer.parseInt(getProperty(BEERBONG_PREFIX + (isSystemApp ? 
                 "system_default_dpi" : (info.path.length() == 0 ? "0" : "user_default_dpi"))));
-            int defaultLayout = Integer.parseInt(getProperty(PARANOID_PREFIX + (isSystemApp ? 
+            int defaultLayout = Integer.parseInt(getProperty(BEERBONG_PREFIX + (isSystemApp ? 
                 "system_default_layout" : (info.path.length() == 0 ? "0" : "user_default_layout"))));
 
             // Layout fetching.
-            info.layout = Integer.parseInt(getProperty(info.name + PARANOID_LAYOUT_SUFFIX, String.valueOf(defaultLayout)));
+            info.layout = Integer.parseInt(getProperty(info.name + BEERBONG_LAYOUT_SUFFIX, String.valueOf(defaultLayout)));
 
             // DPI fetching.
-            info.dpi = Integer.parseInt(getProperty(info.name + PARANOID_DPI_SUFFIX, String.valueOf(defaultDpi)));
+            info.dpi = Integer.parseInt(getProperty(info.name + BEERBONG_DPI_SUFFIX, String.valueOf(defaultDpi)));
 
             // Extra density fetching.
-            info.density = Float.parseFloat(getProperty(info.name + PARANOID_DENSITY_SUFFIX));
-            info.scaledDensity = Float.parseFloat(getProperty(info.name + PARANOID_SCALEDDENSITY_SUFFIX));
+            info.density = Float.parseFloat(getProperty(info.name + BEERBONG_DENSITY_SUFFIX));
+            info.scaledDensity = Float.parseFloat(getProperty(info.name + BEERBONG_SCALEDDENSITY_SUFFIX));
 
             // In case that densities aren't determined in previous step
             // we calculate it by dividing DPI by default density (160).
@@ -162,18 +162,18 @@ public class ExtendedPropertiesUtils {
             // Extra parameters. Force allows apps to penetrate their hosts, 
             // while large appends SCREENLAYOUT_SIZE_XLARGE mask that makes 
             // layout matching to assign bigger containers.
-            info.force = Integer.parseInt(getProperty(info.name + PARANOID_FORCE_SUFFIX));
-            info.large = Integer.parseInt(getProperty(info.name + PARANOID_LARGE_SUFFIX));
-            info.expand = Integer.parseInt(getProperty(info.name + PARANOID_EXPAND_SUFFIX));
-            info.landsc = Integer.parseInt(getProperty(info.name + PARANOID_LANDSC_SUFFIX));
-            info.mancol = Integer.parseInt(getProperty(info.name + PARANOID_MANCOL_SUFFIX));
+            info.force = Integer.parseInt(getProperty(info.name + BEERBONG_FORCE_SUFFIX));
+            info.large = Integer.parseInt(getProperty(info.name + BEERBONG_LARGE_SUFFIX));
+            info.expand = Integer.parseInt(getProperty(info.name + BEERBONG_EXPAND_SUFFIX));
+            info.landsc = Integer.parseInt(getProperty(info.name + BEERBONG_LANDSC_SUFFIX));
+            info.mancol = Integer.parseInt(getProperty(info.name + BEERBONG_MANCOL_SUFFIX));
             info.firstRun = 0;
 
             // Color parameters
             String[] colors = getProperty(info.name +
-                    PARANOID_COLORS_SUFFIX).split(PARANOID_STRING_DELIMITER);
-            for(int i=0; i < PARANOID_COLORS_COUNT; i++) {
-                    info.colors[i] = colors.length == PARANOID_COLORS_COUNT ?
+                    BEERBONG_COLORS_SUFFIX).split(BEERBONG_STRING_DELIMITER);
+            for(int i=0; i < BEERBONG_COLORS_COUNT; i++) {
+                    info.colors[i] = colors.length == BEERBONG_COLORS_COUNT ?
                             colors[i].toUpperCase() : "";
             }
 
@@ -220,7 +220,7 @@ public class ExtendedPropertiesUtils {
                     break;
                 case FullNameExclude:
                     tempInfo = getAppInfoFromPath((String) input);
-                    if (tempInfo != null && (!isHooked() || getProperty(tempInfo.packageName + PARANOID_FORCE_SUFFIX).equals("1"))) {
+                    if (tempInfo != null && (!isHooked() || getProperty(tempInfo.packageName + BEERBONG_FORCE_SUFFIX).equals("1"))) {
                         mLocalHook.info = tempInfo;
                     }
                     break;
@@ -388,7 +388,7 @@ public class ExtendedPropertiesUtils {
      */
     public static void refreshProperties() {
         mPropertyMap.clear();
-        String[] props = readFile(PARANOID_PROPERTIES).split("\n");
+        String[] props = readFile(BEERBONG_PROPERTIES).split("\n");
         for(int i=0; i<props.length; i++) {
             if (!props[i].startsWith("#")) {
                 String[] pair = props[i].split("=");
@@ -425,7 +425,7 @@ public class ExtendedPropertiesUtils {
             if (isInitialized()) {
                 String result = mPropertyMap.get(prop);
                 if (result == null) return def;
-                if (result.startsWith(PARANOID_PREFIX)) {
+                if (result.startsWith(BEERBONG_PREFIX)) {
                     result = getProperty(result, def);
                 }
                 return result;
@@ -449,12 +449,12 @@ public class ExtendedPropertiesUtils {
      * @return current stored value of property
      */
     public static String readProperty(String prop, String def) {
-        String[] props = readFile(PARANOID_PROPERTIES).split("\n");
+        String[] props = readFile(BEERBONG_PROPERTIES).split("\n");
         for(int i=0; i<props.length; i++) {
             if(props[i].contains("=")) {
                 if(props[i].substring(0, props[i].lastIndexOf("=")).equals(prop)) {
                     String result = props[i].replace(prop+"=", "").trim();  
-                    if (result.startsWith(PARANOID_PREFIX)) {
+                    if (result.startsWith(BEERBONG_PREFIX)) {
                         result = getProperty(result, def);
                     }
                     return result;
@@ -478,24 +478,24 @@ public class ExtendedPropertiesUtils {
         int result = 0;
         boolean getProp = false;
 
-        if (property.endsWith(PARANOID_DPI_SUFFIX)) {
+        if (property.endsWith(BEERBONG_DPI_SUFFIX)) {
             ApplicationInfo appInfo = getAppInfoFromPackageName(property.substring(0, property.length()
-                    - PARANOID_DPI_SUFFIX.length()));
+                    - BEERBONG_DPI_SUFFIX.length()));
             if(appInfo != null) {
                 boolean isSystemApp = 
                         appInfo.sourceDir.substring(0, appInfo.sourceDir.lastIndexOf("/")).contains("system/app");
-                result = Integer.parseInt(getProperty(property, getProperty(PARANOID_PREFIX + (isSystemApp ? 
+                result = Integer.parseInt(getProperty(property, getProperty(BEERBONG_PREFIX + (isSystemApp ? 
                         "system_default_dpi" : "user_default_dpi"))));
             } else {
                 getProp = true;
             }
-        } else if (property.endsWith(PARANOID_LAYOUT_SUFFIX)) {
+        } else if (property.endsWith(BEERBONG_LAYOUT_SUFFIX)) {
             ApplicationInfo appInfo = getAppInfoFromPackageName(property.substring(0, property.length()
-                    - PARANOID_LAYOUT_SUFFIX.length()));
+                    - BEERBONG_LAYOUT_SUFFIX.length()));
             if(appInfo != null) {
                 boolean isSystemApp =
                         appInfo.sourceDir.substring(0, appInfo.sourceDir.lastIndexOf("/")).contains("system/app");
-                result = Integer.parseInt(getProperty(property, getProperty(PARANOID_PREFIX + (isSystemApp ? 
+                result = Integer.parseInt(getProperty(property, getProperty(BEERBONG_PREFIX + (isSystemApp ? 
                         "system_default_layout" : "user_default_layout"))));
             } else {
                 getProp = true;
@@ -507,8 +507,8 @@ public class ExtendedPropertiesUtils {
         if(getProp) result = Integer.parseInt(getProperty(property));
 
         if (result == 0) {
-            result = Integer.parseInt(property.endsWith("dpi") ? getProperty(PARANOID_PREFIX + "rom_default_dpi")
-                : getProperty(PARANOID_PREFIX + "rom_default_layout"));
+            result = Integer.parseInt(property.endsWith("dpi") ? getProperty(BEERBONG_PREFIX + "rom_default_dpi")
+                : getProperty(BEERBONG_PREFIX + "rom_default_layout"));
         }
 
         return result;
