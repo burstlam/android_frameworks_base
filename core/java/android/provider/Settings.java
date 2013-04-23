@@ -3676,12 +3676,15 @@ public final class Settings {
          */
         public static final String NOTIFICATION_SHADE_DIM = "notification_shade_dim";
 
+<<<<<<< HEAD
         /**
          * Override and forcefully disable the fullscreen keyboard
          * @hide
          */
         public static final String DISABLE_FULLSCREEN_KEYBOARD = "disable_fullscreen_keyboard";
 
+=======
+>>>>>>> parent of 9f86b0f... Implement PA's Lockscreen Target (1/2)
         /**
          * Automatic keyboard rotation timeout.  0 to disable completely.
          * @hide
