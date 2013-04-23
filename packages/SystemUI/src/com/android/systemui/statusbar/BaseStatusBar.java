@@ -541,9 +541,7 @@ public abstract class BaseStatusBar extends SystemUI implements
         boolean pie = Settings.System.getInt(mContext.getContentResolver(),
                       Settings.System.PIE_CONTROLS, 0) == 1;
         boolean sbexpanded = Settings.System.getInt(mContext.getContentResolver(),
-                             Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1 || 
-                             Settings.System.getInt(mContext.getContentResolver(),
-                             Settings.System.EXPANDED_DESKTOP_STYLE, 0) == 2;
+                             Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
         boolean autoHide =   Settings.System.getBoolean(mContext.getContentResolver(),
                              Settings.System.NAV_HIDE_ENABLE, false) == true;
         boolean navbarZero = Settings.System.getInt(mContext.getContentResolver(),
