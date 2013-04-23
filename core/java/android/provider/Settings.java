@@ -3593,6 +3593,35 @@ public final class Settings {
          *
          * @hide
          */
+        public static final String[] RIBBON_ICON_SPACE = new String[] {
+            "ribbon_icon_lockscreen_space",
+            "ribbon_icon_notification_space",
+			"ribbon_icon_swipe_space",
+			"ribbon_icon_quicksettings_space",
+        };
+
+        /**
+         *
+         * @hide
+         */
+        public static final String RIBBON_ICON_SPACE_VERTICAL = "ribbon_icon_space_vertical";
+
+        /**
+         * Ribbon Targets
+         *
+         * @hide
+         */
+        public static final String[] RIBBON_ICON_VIBRATE = new String[] {
+            "ribbon_icon_lockscreen_vibrate",
+            "ribbon_icon_notification_vibrate",
+            "ribbon_icon_swipe_vibrate",
+            "ribbon_icon_quicksettings_vibrate",
+        };
+
+        /**
+         *
+         * @hide
+         */
         public static final String RIBBON_HIDE_TIMEOUT = "ribbon_hide_timeout";
 
         /**
@@ -3801,6 +3830,7 @@ public final class Settings {
          * fourth, optional entry determines the transition speed, defaults to 500ms
          * @hide
          */
+
         public static final String NAV_BUTTON_COLOR = "nav_button_color";
 
          /**
