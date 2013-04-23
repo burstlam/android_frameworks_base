@@ -93,8 +93,6 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
                 final int resId = mGlowPadView.getResourceIdForTarget(target);
                 switch (resId) {
                 case com.android.internal.R.drawable.ic_action_assist_generic:
-                    mCallback.userActivity(0);
-                    mCallback.dismiss(false);
                     Intent assistIntent =
                     ((SearchManager) mContext.getSystemService(Context.SEARCH_SERVICE))
                     .getAssistIntent(mContext, UserHandle.USER_CURRENT);
@@ -103,12 +101,12 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
                     } else {
                         Log.w(TAG, "Failed to get intent for assist activity");
                     }
+                    mCallback.userActivity(0);
                     break;
 
                 case com.android.internal.R.drawable.ic_lockscreen_camera:
-                    mCallback.userActivity(0);
-                    mCallback.dismiss(false);
                     mActivityLauncher.launchCamera(null, null);
+                    mCallback.userActivity(0);
                     break;
 
                 case com.android.internal.R.drawable.ic_lockscreen_unlock_phantom:
