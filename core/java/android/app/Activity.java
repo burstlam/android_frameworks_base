@@ -5249,9 +5249,9 @@ public class Activity extends ContextThemeWrapper
                 }
                 // Per-App-Color
                 else if (ExtendedPropertiesUtils.mGlobalHook.mancol != 1 && ColorUtils.getPerAppColorState(this)) {
-                    for (int i = 0; i < ExtendedPropertiesUtils.PARANOID_COLORS_COUNT; i++) {
+                    for (int i = 0; i < ExtendedPropertiesUtils.BEERBONG_COLORS_COUNT; i++) {
                         // Get color settings
-                        String setting = ExtendedPropertiesUtils.PARANOID_COLORS_SETTINGS[i];
+                        String setting = ExtendedPropertiesUtils.BEERBONG_COLORS_SETTINGS[i];
                         ColorUtils.ColorSettingInfo colorInfo = ColorUtils.getColorSettingInfo(this, setting);
 
                         // Get appropriate color
