@@ -1,11 +1,7 @@
 
 package com.android.systemui.statusbar.toggles;
 
-<<<<<<< HEAD
-import android.content.ComponentName;
-=======
 import android.content.ComponentName; 
->>>>>>> 348abea... Derp Pie Toggle
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
