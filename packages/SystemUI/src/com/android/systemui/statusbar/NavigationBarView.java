@@ -35,6 +35,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuff.Mode;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
@@ -853,7 +854,9 @@ public class NavigationBarView extends LinearLayout {
              ViewGroup group = (ViewGroup) v.findViewById(R.id.nav_buttons);
              group.setMotionEventSplittingEnabled(false);
          }
-         updateColor();
+         if (ColorUtils.getPerAppColorState(mContext)) {
+             updateColor();
+         }
          mCurrentView = mRotatedViews[Surface.ROTATION_0];
 
          // this takes care of making the buttons
