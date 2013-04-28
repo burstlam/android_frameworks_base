@@ -2996,6 +2996,13 @@ public final class Settings {
          * @hide
          */
         public static final String AUTO_HIDE_STATUSBAR = "auto_hide_statusbar";
+
+        /**
+         *
+         * Whether or not hidden Statusbar can be pulled down
+         * @hide
+         */
+        public static final String HIDDEN_STATUSBAR_PULLDOWN = "hidden_statusbar_pulldown";
         
         /**
          * Statusbar toggle for quick settings
