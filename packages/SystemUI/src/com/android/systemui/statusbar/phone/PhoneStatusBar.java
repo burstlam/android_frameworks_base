@@ -369,6 +369,8 @@ public class PhoneStatusBar extends BaseStatusBar {
 
     DisplayMetrics mDisplayMetrics = new DisplayMetrics();
 
+    private int mLastCount = -1;
+
     // XXX: gesture research
     private final GestureRecorder mGestureRec = DEBUG_GESTURES
         ? new GestureRecorder("/sdcard/statusbar_gestures.dat") 
@@ -417,13 +419,13 @@ public class PhoneStatusBar extends BaseStatusBar {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NOTIFICATION_SHORTCUTS_HIDE_CARRIER), false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.AUTO_HIDE_STATUSBAR), false, this, UserHandle.USER_ALL);
-            update();
+                    Settings.System.STATUSBAR_AUTO_EXPAND_HIDDEN), false, this);
         }
 
         @Override
         public void onChange(boolean selfChange) {
             update();
+            updateStatusBarVisibility();
         }
 
         public void update() {
@@ -440,7 +442,6 @@ public class PhoneStatusBar extends BaseStatusBar {
             if (mCarrierLabel != null) {
                 toggleCarrierAndWifiLabelVisibility();
             }
-            updateStatusBarVisibility();
         }
     }
 
@@ -986,10 +987,6 @@ public class PhoneStatusBar extends BaseStatusBar {
 
     @Override
     public void toggleNotificationShade() {
-        Settings.System.putInt(mContext.getContentResolver(),
-                Settings.System.TOGGLE_NOTIFICATION_SHADE,
-                (mExpandedVisible) ? 0 : 1);
-
         int msg = (mExpandedVisible)
                 ? MSG_CLOSE_PANELS : MSG_OPEN_NOTIFICATION_PANEL;
         mHandler.removeMessages(msg);
@@ -1445,14 +1442,16 @@ public class PhoneStatusBar extends BaseStatusBar {
     }
 
     private void updateStatusBarVisibility() {
-        if (Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.AUTO_HIDE_STATUSBAR, 0) == 1) {
-            Settings.System.putBoolean(mContext.getContentResolver(),
-                    Settings.System.STATUSBAR_HIDDEN,
-                    (mNotificationData.size() == 0) ? true : false);
-        } else {
-            Settings.System.putBoolean(mContext.getContentResolver(),
-                    Settings.System.STATUSBAR_HIDDEN, false);
+        if (Settings.System.getBoolean(mContext.getContentResolver(),
+                    Settings.System.STATUSBAR_AUTO_EXPAND_HIDDEN, false)) {
+
+            boolean hiddenStatusbar = (mNotificationData.size() == 0) ? true : false;
+            
+            if (Settings.System.getBoolean(mContext.getContentResolver(),
+                    Settings.System.STATUSBAR_HIDDEN_NOW, false) != hiddenStatusbar){
+                Settings.System.putBoolean(mContext.getContentResolver(),
+                    Settings.System.STATUSBAR_HIDDEN_NOW, hiddenStatusbar);
+            }
         }
     }
 
@@ -1633,6 +1632,27 @@ public class PhoneStatusBar extends BaseStatusBar {
     protected void setAreThereNotifications() {
         final boolean any = mNotificationData.size() > 0;
 
+        // to inhibit "jumping" auto-expand statusbar
+        // make sure we trigger it only if needed
+        boolean from0to1 = false;
+        boolean from1to0 = false;
+        
+        if (mLastCount==-1){
+            mLastCount = mNotificationData.size();
+            if (mLastCount > 0){
+                from0to1 = true;
+            }
+        } else {
+            int curr = mNotificationData.size();
+            if (curr == 1 && mLastCount == 0){
+                from0to1 = true;
+            }
+            if (curr == 0 && mLastCount == 1){
+                from1to0 = true;
+            }
+            mLastCount = curr;
+        }
+
         final boolean clearable = any && mNotificationData.hasClearableItems();
 
         if (DEBUG) {
@@ -1692,7 +1712,10 @@ public class PhoneStatusBar extends BaseStatusBar {
                 })
                 .start();
         }
-        if (mNotificationData.size() < 2) updateStatusBarVisibility();
+
+        if (from0to1 || from1to0){
+            updateStatusBarVisibility(); 
+        }
 
         updateCarrierAndWifiLabelVisibility(false);
     }
