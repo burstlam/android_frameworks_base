@@ -128,7 +128,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
     private MyAdapter mAdapter;
 
-    private boolean mKeyguardShowing = false;
+    private static boolean mKeyguardShowing = false;
     private boolean mDeviceProvisioned = false;
     private ToggleAction.State mAirplaneState = ToggleAction.State.Off;
     private boolean mIsWaitingForEcmExit = false;
@@ -1194,7 +1194,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         private final int[] ITEM_IDS = { R.id.navbartoggle, R.id.navbarstatus, R.id.navbarhide, R.id.piecontrol, R.id.navbarback };
 
         public Context mContext;
-        public boolean mNavbarStatusInvisible;
+        public boolean mStatusBarVisible;
         public boolean mNavbarVisible;
         public boolean mNavbarHide;
         public boolean mPieControl;
@@ -1212,8 +1212,8 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             mContext = context;
             mNavbarVisible = Settings.System.getBoolean(mContext.getContentResolver(),
                     Settings.System.NAVIGATION_BAR_SHOW_NOW, false);
-            mNavbarStatusInvisible = Settings.System.getBoolean(mContext.getContentResolver(),
-                    Settings.System.STATUSBAR_HIDDEN, false);
+            mStatusBarVisible = Settings.System.getBoolean(mContext.getContentResolver(),
+                    Settings.System.STATUSBAR_HIDDEN_NOW, false);
             mPieControl = Settings.System.getBoolean(mContext.getContentResolver(),
                     Settings.System.PIE_CONTROLS, false);
             mNavbarHide = Settings.System.getBoolean(mContext.getContentResolver(),
@@ -1223,7 +1223,15 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
             for (int i = 0; i < 5; i++) {
                 View itemView = v.findViewById(ITEM_IDS[i]);
-                itemView.setSelected((i==0)&&(mNavbarVisible)||(i==1)&&(mNavbarStatusInvisible)||(i==2)&&(mNavbarHide)||(i==3)&&(mPieControl));
+
+                if (mKeyguardShowing ){
+                    if (ITEM_IDS[i] != R.id.navbarstatus){
+                        itemView.setVisibility(View.INVISIBLE);
+                        continue;
+                    }
+                }
+
+                itemView.setSelected((i==0)&&(mNavbarVisible)||(i==1)&&(mStatusBarVisible)||(i==2)&&(mNavbarHide)||(i==3)&&(mPieControl));
                 // Set up click handler
                 itemView.setTag(i);
                 itemView.setOnClickListener(this);
@@ -1239,7 +1247,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
 
         public boolean showDuringKeyguard() {
-            return false;
+            return true;
         }
 
         public boolean showBeforeProvisioning() {
@@ -1251,6 +1259,11 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
 
         void willCreate() {
+        }
+
+        private void updaHiddenStatusbar(boolean value) {
+            Settings.System.putBoolean(mContext.getContentResolver(),
+                    Settings.System.STATUSBAR_HIDDEN_NOW, value);
         }
 
         public void onClick(View v) {
@@ -1270,11 +1283,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 break;
 
             case 1 :
-                mNavbarStatusInvisible = !mNavbarStatusInvisible;
-                Settings.System.putBoolean(mContext.getContentResolver(),
-                        Settings.System.STATUSBAR_HIDDEN,
-                         mNavbarStatusInvisible );
-                v.setSelected(mNavbarStatusInvisible);
+                mStatusBarVisible = !mStatusBarVisible;
+                updaHiddenStatusbar(mStatusBarVisible);
+                v.setSelected(mStatusBarVisible);
                 mHandler.sendEmptyMessage(MESSAGE_DISMISS);
                 break;
 

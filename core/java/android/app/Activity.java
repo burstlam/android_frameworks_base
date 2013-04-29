@@ -2400,6 +2400,7 @@ public class Activity extends ContextThemeWrapper
 
     boolean mightBeMyGesture = false;
     float tStatus;
+    boolean isFullScreenApp = false;
     
     /**
      * Called to process touch screen events.  You can override this to
@@ -2412,33 +2413,42 @@ public class Activity extends ContextThemeWrapper
      * @return boolean Return true if this event was consumed.
      */
     public boolean dispatchTouchEvent(MotionEvent ev) {
-            boolean mHiddenStatusbarPulldown = (Settings.System.getInt(getContentResolver(),
-                Settings.System.HIDDEN_STATUSBAR_PULLDOWN, 0) == 1);
             switch (ev.getAction())
             {
                 case MotionEvent.ACTION_DOWN:
                     tStatus = ev.getY();
                     if (tStatus < getStatusBarHeight())
                     {
-                        mightBeMyGesture = true;
+                        isFullScreenApp = (getWindow().getAttributes().flags &
+                                WindowManager.LayoutParams.FLAG_FULLSCREEN)==WindowManager.LayoutParams.FLAG_FULLSCREEN;
+                        
+                        boolean swipeEnabled = Settings.System.getBoolean(getContentResolver(),
+                                Settings.System.STATUSBAR_SWIPE_FOR_FULLSCREEN, false);
+                        
+                        if (swipeEnabled){
+                            mightBeMyGesture = true;
+                        }
                         return true;
                     }
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    if (mightBeMyGesture && mHiddenStatusbarPulldown)
+                    if (mightBeMyGesture)
                     {
                         if(ev.getY() > tStatus)
                         {
                             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                            mHandler.postDelayed(new Runnable() {
-                            public void run() {
-                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-                                getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                            // dont change flags for non fullscreen apps
+                            if (isFullScreenApp){
+                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                             }
-
-                            }, 10000);
-
+                            mHandler.postDelayed(new Runnable() {
+                                public void run() {
+                                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+                                    if (isFullScreenApp){
+                                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                                    }
+                                }
+                            }, 5000);
                         }
                         
                         mightBeMyGesture = false;

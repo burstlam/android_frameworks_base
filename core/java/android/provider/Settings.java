@@ -2979,24 +2979,22 @@ public final class Settings {
         public static final String POWER_DIALOG_SHOW_POWER_OFF = "power_dialog_show_power_off";
 
         /**
-         * Used as a flag to determine if we have statusbar hidden
+         * Used as a flag to determine if we have statusbar hidden now
          * @hide
          */
-        public static final String STATUSBAR_HIDDEN = "statusbar_hidden";
+        public static final String STATUSBAR_HIDDEN_NOW = "statusbar_hidden_now";
 
         /**
-         * Whether Status bar should be hiidden when there are no
-         * notifications
+         * Used as a flag to determine if we have audo-expand statusbar enabled
          * @hide
          */
-        public static final String AUTO_HIDE_STATUSBAR = "auto_hide_statusbar";
+        public static final String STATUSBAR_AUTO_EXPAND_HIDDEN = "statusbar_auto_expand_hidden";
 
         /**
-         *
-         * Whether or not hidden Statusbar can be pulled down
+         * Used as a flag to determine if we have audo-expand statusbar enabled
          * @hide
          */
-        public static final String HIDDEN_STATUSBAR_PULLDOWN = "hidden_statusbar_pulldown";
+        public static final String STATUSBAR_SWIPE_FOR_FULLSCREEN = "statusbar_swipe_for_fullscreen";
         
         /**
          * Statusbar toggle for quick settings
@@ -4067,14 +4065,6 @@ public final class Settings {
          * @hide
          */
         public static final String MISSED_CALL_BREATH = "missed_call_breath";
-
-        /**
-         * Whether Status Bar is currently hidden or not for notification
-         * toggle notification shade
-         *
-         * @hide
-         */
-        public static final String TOGGLE_NOTIFICATION_SHADE = "toggle_notification_shade";
 
         /**
          * MediaScanner behavior on boot.
