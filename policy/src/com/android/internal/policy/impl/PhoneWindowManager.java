@@ -556,6 +556,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     boolean mHomePressed;
     boolean mHomeLongPressed;
     boolean mMenuLongPressed;
+    boolean mMenuWasInjected = false;
     boolean mBackLongPressed;
     boolean mAppSwitchLongPressed;
     Intent mHomeIntent;
@@ -1104,6 +1105,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     break;
                 case KEY_ACTION_MENU:
                     triggerVirtualKeypress(KeyEvent.KEYCODE_MENU);
+                    mMenuWasInjected = true;
                     break;
                 case KEY_ACTION_APP_SWITCH:
                     sendCloseSystemWindows(SYSTEM_DIALOG_REASON_RECENT_APPS);
@@ -2667,7 +2669,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         if (DEBUG_INPUT) {
             Log.d(TAG, "interceptKeyTi keyCode=" + keyCode + " down=" + down + " repeatCount="
                     + repeatCount + " keyguardOn=" + keyguardOn + " mHomePressed=" + mHomePressed
-                    + " canceled=" + canceled);
+                    + " canceled=" + canceled + " mIsVirtualKeypress=" + mIsVirtualKeypress);
         }
 
         // If we think we might have a volume down & power key chord on the way
@@ -2852,6 +2854,18 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 }
                 if (canceled)
                     return -1;
+
+
+                // maxwen: special key injected KEYCODE_MENU
+                // ignore the up event that comes after this virtual one
+                // else the menu will close if 3-dot menu is used
+                if (!mIsVirtualKeypress && mMenuWasInjected){
+                    mMenuWasInjected = false;
+                    if (DEBUG_INPUT) {
+                        Log.d(TAG, "ignoring KeyEvent.KEYCODE_MENU up event after virtual keypress");
+                    }
+                    return -1;
+                }
             }
         } else if (keyCode == KeyEvent.KEYCODE_SEARCH) {
             if (down) {
