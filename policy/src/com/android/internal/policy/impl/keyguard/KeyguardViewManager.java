@@ -43,6 +43,7 @@ import android.view.ViewGroup;
 import android.view.ViewManager;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
+import android.view.MotionEvent;
 import android.widget.FrameLayout;
 
 import com.android.internal.R;
@@ -138,6 +139,10 @@ public class KeyguardViewManager {
     }
 
     class ViewManagerHost extends FrameLayout {
+
+        private boolean mightBeMyGesture = false;
+        private float tStatus;
+
         public ViewManagerHost(Context context) {
             super(context);
         }
@@ -185,6 +190,65 @@ public class KeyguardViewManager {
             }
             return super.dispatchKeyEvent(event);
         }
+
+        @Override
+        public boolean dispatchTouchEvent(MotionEvent event) {
+            if (mKeyguardView != null) {
+                switch (event.getAction())
+                {
+                    case MotionEvent.ACTION_DOWN:
+                        tStatus = event.getY();
+                        if (tStatus < getStatusBarHeight())
+                        {
+                            boolean swipeEnabled = Settings.System.getBoolean(mContext.getContentResolver(),
+                                    Settings.System.STATUSBAR_SWIPE_FOR_FULLSCREEN, false);
+
+                            boolean settingStatusbarHidden = Settings.System.getBoolean(mContext.getContentResolver(),
+                                    Settings.System.STATUSBAR_HIDDEN_NOW, false);
+                            
+                            if (swipeEnabled && settingStatusbarHidden){
+                                mightBeMyGesture = true;
+                            }
+                        
+                            return true;
+                        }
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        if (mightBeMyGesture)
+                        {
+                            if(event.getY() > tStatus)
+                            {
+                                Settings.System.putBoolean(mContext.getContentResolver(),
+                                    Settings.System.STATUSBAR_HIDDEN_NOW, false);
+                                
+                                mKeyguardHost.postDelayed(new Runnable() {
+                                    public void run() {
+                                        Settings.System.putBoolean(mContext.getContentResolver(),
+                                            Settings.System.STATUSBAR_HIDDEN_NOW, true);
+                                    }
+                                }, 5000);
+                            }
+                            
+                            mightBeMyGesture = false;
+                                
+                            return true;
+                        }
+                        break;
+                    default:
+                        mightBeMyGesture = false;
+                        break;
+                }
+              
+                if (mKeyguardView.dispatchTouchEvent(event)) {
+                    return true;
+                }
+            }
+            return super.dispatchTouchEvent(event);
+        }
+                
+        private int getStatusBarHeight() {
+            return mContext.getResources().getDimensionPixelSize(com.android.internal.R.dimen.status_bar_height);
+        }
     }
 
     SparseArray<Parcelable> mStateContainer = new SparseArray<Parcelable>();
@@ -202,10 +266,18 @@ public class KeyguardViewManager {
 
             mKeyguardHost = new ViewManagerHost(mContext);
 
+            boolean settingStatusbarHidden = Settings.System.getBoolean(mContext.getContentResolver(),
+                                                Settings.System.STATUSBAR_HIDDEN_NOW, false);
+
             int flags = WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                     | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR
-                    | WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN
                     | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
+
+            if (!settingStatusbarHidden) {
+                flags |= WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN;
+            } else {
+                flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+            }
 
             if (!mNeedsInput) {
                 flags |= WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM;
@@ -481,6 +553,8 @@ public class KeyguardViewManager {
         public void observe() {
             mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(
                     Settings.System.LOCKSCREEN_TRANSPARENT), false, this);
+            mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUSBAR_HIDDEN_NOW), false, this);
         }
 
         @Override
