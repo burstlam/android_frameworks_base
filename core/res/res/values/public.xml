@@ -2064,13 +2064,6 @@
   <public type="string" name="color_picker_hex" />
   <public type="string" name="color_picker_arrow_right" />
 
-  <!-- Simple color dialog layout. -->
-  <public type="layout" name="dialog_color_picker" id="0x01090018" />
-  <public type="id" name="color_picker_view" />
-  <public type="id" name="old_color_panel" />
-  <public type="id" name="new_color_panel" />
-  <public type="id" name="hex" />
-
   <!-- Kill App -->
   <java-symbol type="string" name="app_killed_message" />
   <java-symbol type="integer" name="config_backKillTimeout" />
