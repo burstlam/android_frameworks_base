@@ -24,11 +24,9 @@ public class PieToggle extends StatefulToggle {
     @Override
     protected void doEnable() {
         Settings.System.putInt(mContext.getContentResolver(),
-                Settings.System.PIE_CONTROLS, 1);
+                Settings.System.PIE_CONTROLS, 2);
         Settings.System.putBoolean(mContext.getContentResolver(),
                 Settings.System.NAV_HIDE_ENABLE, true);
-        Settings.System.putBoolean(mContext.getContentResolver(),
-                Settings.System.NAVIGATION_BAR_SHOW_NOW, false);
     }
 
     @Override
@@ -37,8 +35,6 @@ public class PieToggle extends StatefulToggle {
                 Settings.System.PIE_CONTROLS, 0);
         Settings.System.putBoolean(mContext.getContentResolver(),
                 Settings.System.NAV_HIDE_ENABLE, false);
-        Settings.System.putBoolean(mContext.getContentResolver(),
-                Settings.System.NAVIGATION_BAR_SHOW_NOW, true);
     }
 
     @Override
@@ -53,7 +49,7 @@ public class PieToggle extends StatefulToggle {
     @Override
     protected void updateView() {
         boolean enabled = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.PIE_CONTROLS, 0) == 1;
+                Settings.System.PIE_CONTROLS, 0) == 2;
         
         setEnabledState(enabled);
         setIcon(enabled ? R.drawable.ic_qs_pie_on : R.drawable.ic_qs_pie_off);
