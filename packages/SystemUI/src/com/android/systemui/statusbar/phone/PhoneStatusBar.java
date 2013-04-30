@@ -1314,14 +1314,6 @@ public class PhoneStatusBar extends BaseStatusBar {
     }
 
     public void addIcon(String slot, int index, int viewIndex, StatusBarIcon icon) {
-
-    Drawable iconDrawable = StatusBarIconView.getIcon(mContext, icon);
-        if (mLastIconColor == null || mLastIconColor.isLastColorNull) {
-            iconDrawable.clearColorFilter();
-        } else {
-            iconDrawable.setColorFilter(mLastIconColor.lastColor, PorterDuff.Mode.SRC_IN);
-        }
-
         if (SPEW) Slog.d(TAG, "addIcon slot=" + slot + " index=" + index + " viewIndex=" + viewIndex
                 + " icon=" + icon);
 

@@ -29,11 +29,17 @@ import com.android.systemui.recent.RecentTasksLoader;
 import com.android.systemui.recent.RecentsActivity;
 import com.android.systemui.recent.TaskDescription;
 import com.android.systemui.statusbar.pie.PieLayout;
+import com.android.systemui.statusbar.phone.QuickSettingsContainerView;
+import com.android.systemui.statusbar.policy.BatteryController;
+import com.android.systemui.statusbar.policy.Clock;
+import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.NotificationRowLayout;
 import com.android.systemui.statusbar.policy.PieController;
 import com.android.systemui.statusbar.policy.PieController.Position;
 import com.android.systemui.statusbar.tablet.StatusBarPanel;
 import com.android.systemui.statusbar.WidgetView;
+import com.android.systemui.TransparencyManager;
+import com.android.systemui.aokp.AokpSwipeRibbon;
 
 import android.app.ActivityManager;
 import android.app.ActivityManagerNative;
@@ -63,6 +69,8 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable; 
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
@@ -73,6 +81,7 @@ import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.UserHandle;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.ColorUtils;
 import android.util.DisplayMetrics;
 import android.util.ExtendedPropertiesUtils; 
@@ -96,10 +105,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.RemoteViews;
 import android.widget.TextView;
-
-import com.android.systemui.statusbar.WidgetView;
-import com.android.systemui.TransparencyManager;
-import com.android.systemui.aokp.AokpSwipeRibbon;
 
 import java.util.ArrayList;
 import java.math.BigInteger;
@@ -161,6 +166,22 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     protected int mCurrentUserId = 0;
 
+    // Policy
+    public NetworkController mNetworkController;
+    public BatteryController mBatteryController;
+    public SignalClusterView mSignalCluster;
+    public Clock mClock;
+
+    // left-hand icons
+    public LinearLayout mStatusIcons;
+
+    // Statusbar view container
+    public ViewGroup mBarView;
+
+    // Color fields
+    private Canvas mCurrentCanvas;
+    private Canvas mNewCanvas;
+    private TransitionDrawable mTransition;
     public ColorUtils.ColorSettingInfo mLastIconColor;
     public ColorUtils.ColorSettingInfo mLastBackgroundColor;
 
@@ -455,112 +476,7 @@ public abstract class BaseStatusBar extends SystemUI implements
 
         // this calls attachPie() implicitly
         mSettingsObserver.onChange(true);
-
         mSettingsObserver.observe();
-    }
-
-        // Only watch for per app color changes when the setting is in check
-        if (ColorUtils.getPerAppColorState(mContext)) {
-
-            // Reset all colors
-            Bitmap currentBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-            mCurrentCanvas = new Canvas(currentBitmap);
-            mCurrentCanvas.drawColor(0xFF000000);
-            BitmapDrawable currentBitmapDrawable = new BitmapDrawable(currentBitmap);
-
-            Bitmap newBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-            mNewCanvas = new Canvas(newBitmap);
-            mNewCanvas.drawColor(0xFF000000);
-            BitmapDrawable newBitmapDrawable = new BitmapDrawable(newBitmap);
-
-            mTransition = new TransitionDrawable(new Drawable[]{currentBitmapDrawable, newBitmapDrawable});
-            mBarView.setBackground(mTransition);
-
-            mLastIconColor = ColorUtils.getColorSettingInfo(mContext, Settings.System.STATUS_ICON_COLOR);
-            mLastBackgroundColor = ColorUtils.getColorSettingInfo(mContext, ExtendedPropertiesUtils.isTablet()
-                    ? Settings.System.NAV_BAR_COLOR : Settings.System.STATUS_BAR_COLOR);
-
-            updateIconColor();
-            updateBackgroundColor();
-
-            // Listen for status bar icon color changes
-            mContext.getContentResolver().registerContentObserver(
-                Settings.System.getUriFor(Settings.System.STATUS_ICON_COLOR), false, new ContentObserver(new Handler()) {
-                    @Override
-                    public void onChange(boolean selfChange) {
-                        updateIconColor();
-                    }});
-
-            // Listen for status bar background color changes
-            mContext.getContentResolver().registerContentObserver(
-                Settings.System.getUriFor(ExtendedPropertiesUtils.isTablet() ?
-                        Settings.System.NAV_BAR_COLOR : Settings.System.STATUS_BAR_COLOR),
-                        false, new ContentObserver(new Handler()) {
-                    @Override
-                    public void onChange(boolean selfChange) {
-                        updateBackgroundColor();
-                    }});
-
-            // Listen for per-app-color state changes, this one will revert to stock colors all over
-            mContext.getContentResolver().registerContentObserver(
-                Settings.System.getUriFor(Settings.System.PER_APP_COLOR),
-                        false, new ContentObserver(new Handler()) {
-                    @Override
-                    public void onChange(boolean selfChange) {
-                        if (!ColorUtils.getPerAppColorState(mContext)) {
-                            for (int i = 0; i < ExtendedPropertiesUtils.BEERBONG_COLORS_COUNT; i++) {
-                                ColorUtils.ColorSettingInfo colorInfo = ColorUtils.getColorSettingInfo(mContext,
-                                        Settings.System.STATUS_ICON_COLOR);
-                                ColorUtils.setColor(mContext, ExtendedPropertiesUtils.BEERBONG_COLORS_SETTINGS[i],
-                                        colorInfo.systemColorString, "NULL", 1, 250);
-                            }
-                        }
-                    }});
-        }
-    }
-
-    private void updateIconColor() {
-        ColorUtils.ColorSettingInfo colorInfo = ColorUtils.getColorSettingInfo(mContext,
-                Settings.System.STATUS_ICON_COLOR);
-        if (!colorInfo.lastColorString.equals(mLastIconColor.lastColorString)) {
-            if(mClock != null) mClock.setTextColor(colorInfo.lastColor);
-            if(mSignalCluster != null) mSignalCluster.setColor(colorInfo);
-            //if(mBatteryController != null) mBatteryController.setColor(colorInfo);
-            if (mStatusIcons != null) {
-                for(int i = 0; i < mStatusIcons.getChildCount(); i++) {
-                    Drawable iconDrawable = ((ImageView)mStatusIcons.getChildAt(i)).getDrawable();
-                    if (colorInfo.isLastColorNull) {
-                        iconDrawable.clearColorFilter();
-                    } else {
-                        iconDrawable.setColorFilter(colorInfo.lastColor, PorterDuff.Mode.SRC_IN);
-                    }
-                }
-            }
-            mLastIconColor = colorInfo;
-        }
-    }
-
-    private void updateBackgroundColor() {
-        ColorUtils.ColorSettingInfo colorInfo = ColorUtils.getColorSettingInfo(mContext,
-                ExtendedPropertiesUtils.isTablet() ? Settings.System.NAV_BAR_COLOR :
-                Settings.System.STATUS_BAR_COLOR);
-        if (!colorInfo.lastColorString.equals(mLastBackgroundColor.lastColorString)) {
-            // Only enable crossfade for transparent backdrops
-            mTransition.setCrossFadeEnabled(!colorInfo.isLastColorOpaque);
-
-            // Clear first layer, paint current color, reset transition to first layer
-            mCurrentCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-            mCurrentCanvas.drawColor(mLastBackgroundColor.lastColor);
-            mTransition.resetTransition();
-
-            // Clear second layer, paint new color, start transition
-            mNewCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-            mNewCanvas.drawColor(colorInfo.lastColor);
-            mTransition.startTransition(colorInfo.speed);
-
-            // Remember for later
-            mLastBackgroundColor = colorInfo;
-        }
     }
 
     public void userSwitched(int newUserId) {
@@ -764,6 +680,16 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     protected H createHandler() {
          return new H();
+    }
+
+    static int screenLayout() {
+        final int screenSize = Resources.getSystem().getConfiguration().screenLayout &
+                Configuration.SCREENLAYOUT_SIZE_MASK;
+        return screenSize;
+    }
+
+    protected boolean isScreenPortrait() {
+        return mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
     }
 
     static void sendCloseSystemWindows(Context context, String reason) {
@@ -1534,13 +1460,13 @@ public abstract class BaseStatusBar extends SystemUI implements
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.EXPANDED_DESKTOP_STATE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.EXPANDED_DESKTOP_MODE), false, this);
+                    Settings.System.EXPANDED_DESKTOP_STYLE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAVIGATION_BAR_SHOW), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NAVIGATION_BAR_CAN_MOVE), false, this);
+                    Settings.System.STATUSBAR_HIDDEN_NOW), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.HIDE_STATUSBAR), false, this);
+                    Settings.System.NAV_HIDE_ENABLE), false, this); 
         }
 
         @Override
@@ -1632,7 +1558,7 @@ public abstract class BaseStatusBar extends SystemUI implements
             }
             mForceDisableBottomAndTopTrigger = forceDisableBottomAndTopTrigger;
             int expandedMode = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.EXPANDED_DESKTOP_MODE, 0);
+                    Settings.System.EXPANDED_DESKTOP_STYLE, 0);
             boolean expanded = Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
             final int showByDefault = mContext.getResources().getBoolean(
@@ -1640,14 +1566,12 @@ public abstract class BaseStatusBar extends SystemUI implements
             boolean hasNavigationBar = Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.NAVIGATION_BAR_SHOW, showByDefault) == 1;
             boolean autoHideStatusBar = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.HIDE_STATUSBAR, 0) == 1;
+                    Settings.System.STATUSBAR_HIDDEN_NOW, 0) == 1;
             boolean disableRightTriggerForNavbar =
                     screenLayout() != Configuration.SCREENLAYOUT_SIZE_LARGE
                     && !isScreenPortrait()
                     && hasNavigationBar
-                    && ((expandedMode == 2 && expanded) || !expanded)
-                    && Settings.System.getInt(mContext.getContentResolver(),
-                        Settings.System.NAVIGATION_BAR_CAN_MOVE, 1) == 1;
+                    && ((expandedMode == 2 && expanded) || !expanded);
 
             if ((!expanded && hasNavigationBar && !autoHideStatusBar)
                 || mForceDisableBottomAndTopTrigger) {
