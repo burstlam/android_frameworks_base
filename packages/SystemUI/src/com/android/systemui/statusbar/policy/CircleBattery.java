@@ -129,7 +129,7 @@ public class CircleBattery extends ImageView {
 
             if (Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PIE_DISABLE_STATUSBAR_INFO, 0) == 1) {
-            BatteryStyle = sbBatteryController.STYLE_HIDE;
+            batteryStyle = SbBatteryController.STYLE_HIDE;
             }
 
             setVisibility(mActivated ? View.VISIBLE : View.GONE);
