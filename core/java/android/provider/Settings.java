@@ -3054,14 +3054,6 @@ public final class Settings {
          */
         public static final String LOCKSCREEN_MAXIMIZE_WIDGETS = "lockscreen_maximize_widgets";
 
-        /**	
-         * Defines the shortcuts to be shown on lockscreen
-         * Usage is like this: target:icon|target:icon|target:icon
-         * if :icon is not set, default application icon will be used
-         * @hide
-         */
-        public static final String LOCKSCREEN_SHORTCUTS = "lockscreen_shortcuts";
-
         /**
          * Setting to allow % on lockscreen always showing.
          * @hide
