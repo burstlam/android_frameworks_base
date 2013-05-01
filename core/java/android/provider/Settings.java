@@ -3001,7 +3001,13 @@ public final class Settings {
          * @hide
          */
         public static final String STATUSBAR_SWIPE_FOR_FULLSCREEN = "statusbar_swipe_for_fullscreen";
-        
+
+        /**
+         * Allows hidden Statusbar timeout to be configured
+         * @hide
+         */
+        public static final String HIDDEN_STATUSBAR_PULLDOWN_TIMEOUT = "hidden_statusbar_pulldown_timeout";
+
         /**
          * Statusbar toggle for quick settings
          * &hide
