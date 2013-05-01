@@ -4463,6 +4463,204 @@ public final class Settings {
          */
         public static final String PIE_STICK = "pie_stick";
 
+        /**
+         * Center Pie? Should default to 1 (yes, center)
+         * @hide
+         */
+        public static final String PIE_CENTER = "pie_center";
+
+        /**
+         * Pie last app, should default to 0 (no, show only when needed)
+         * @hide
+         */
+        public static final String PIE_LAST_APP = "pie_last_app";
+
+        /**
+         * Pie kill task, default to 0 (off)
+         * @hide
+         */
+        public static final String PIE_KILL_TASK = "pie_kill_task";
+
+        /**
+         * Pie action widgets, default to off
+         * @hide
+         */
+        public static final String PIE_APP_WINDOW = "pie_app_window";
+
+        /**
+         * Pie action notifications, default to off
+         * @hide
+         */
+        public static final String PIE_ACT_NOTIF = "pie_act_notif";
+
+        /**
+         * Pie action quicksettings, default to off
+         * @hide
+         */
+        public static final String PIE_ACT_QS = "pie_act_qs";
+
+        /**
+         * Pie screenshot, should default to 0 (no, not show)
+         * @hide
+         */
+        public static final String PIE_SCREENSHOT = "pie_screenshot";
+
+        /**
+         * Pie power, should default to 0 (no, show only when needed)
+         * @hide
+         */
+        public static final String PIE_POWER = "pie_power";
+
+        /*
+         * Pie gap angle, should default to 2
+         * @hide
+         */
+        public static final String PIE_GAP = "pie_gap";
+
+        /**
+         * Pie empty angle, should default to 12
+         * @hide
+         */
+        public static final String PIE_ANGLE = "pie_angle";
+
+        /**
+         * Pie trigger fraction, should default to 1
+         * @hide
+         */
+        public static final String PIE_TRIGGER = "pie_trigger";
+
+        /**
+         * Location of the pie in the screen
+         * 0 = Gravity.LEFT
+         * 1 = Gravity.TOP
+         * 2 = Gravity.RIGHT
+         * 3 = Gravity.BOTTOM (default)
+         * @hide
+         */
+        public static final String PIE_GRAVITY = "pie_gravity";
+
+        /**
+         * Pie status report
+         * 0 = Bare
+         * 1 = Quick
+         * 2 = Default
+         * 3 = Slow
+         * @hide
+         */
+        public static final String PIE_MODE = "pie_mode";
+
+        /**
+         * Pie size fraction, default is 1.0f (normal)
+         * @hide
+         */
+        public static final String PIE_SIZE = "pie_size";
+
+        /**
+         * Pie Notification Ability
+         * @hide
+         */
+        public static final String PIE_NOTIFICATIONS = "pie_notifications";
+
+        // PIE COLORS EVERYWHERE! //
+
+        /**
+         * @hide
+         */
+        public static final String PIE_ENABLE_COLOR = "pie_enable_color";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_JUICE = "pie_juice";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTON_COLOR = "pie_button_color";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_SNAP_BACKGROUND = "pie_snap_background";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BACKGROUND = "pie_background";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_SELECT = "pie_select";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_OUTLINES = "pie_outlines";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_STATUS_CLOCK = "pie_status_clock";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_STATUS = "pie_status";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CHEVRON_LEFT = "pie_chevron_left";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_CHEVRON_RIGHT = "pie_chevron_right";
+
+        // PIE COLORS EVERYWHERE! //
+
+         /**
+          * Wakelock Blocker Master Switch
+          * @hide
+          */
+         public static final String WAKELOCK_BLOCKING_ENABLED = "wakelock_blocking_enabled";
+ 
+         /**
+          * Wakelock Blocker Apps List
+          * @hide
+          */
+         public static final String WAKELOCK_BLOCKING_LIST = "wakelock_blocking_list";
+
+        /**
+         * Whether Status bar should be hiidden when there are no
+         * notifications
+         * @hide
+         */
+        public static final String AUTO_HIDE_STATUSBAR = "auto_hide_statusbar";
+
+        /**
+         * Whether Status Bar is currently hidden or not
+         * @hide
+         */
+        public static final String HIDE_STATUSBAR = "hide_statusbar";
+
+        /**
+         * Whether Status Bar is currently hidden or not for notification
+         * toggle notification shade
+         *
+         * @hide
+         */
+        public static final String TOGGLE_NOTIFICATION_AND_QS_SHADE = "toggle_notification_and_qs_shade";
+
+        /**
+         * Peek at stausbar when it is hidden by swiping down from top
+         * end of the screen
+         *
+         * @hide
+         */
+        public static final String STATUSBAR_PEEK = "statusbar_peek";
+
         //PIE - SLIM Version
 
         /**
@@ -4680,203 +4878,61 @@ public final class Settings {
         */
         public static final String PIE_LONG_PRESS_ENABLE = "pie_long_press_enable";
 
-        /**
-         * Center Pie? Should default to 1 (yes, center)
-         * @hide
-         */
-        public static final String PIE_CENTER = "pie_center";
-
-        /**
-         * Pie last app, should default to 0 (no, show only when needed)
-         * @hide
-         */
-        public static final String PIE_LAST_APP = "pie_last_app";
-
-        /**
-         * Pie kill task, default to 0 (off)
-         * @hide
-         */
-        public static final String PIE_KILL_TASK = "pie_kill_task";
-
-        /**
-         * Pie action widgets, default to off
-         * @hide
-         */
-        public static final String PIE_APP_WINDOW = "pie_app_window";
-
-        /**
-         * Pie action notifications, default to off
-         * @hide
-         */
-        public static final String PIE_ACT_NOTIF = "pie_act_notif";
-
-        /**
-         * Pie action quicksettings, default to off
-         * @hide
-         */
-        public static final String PIE_ACT_QS = "pie_act_qs";
-
-        /**
-         * Pie screenshot, should default to 0 (no, not show)
-         * @hide
-         */
-        public static final String PIE_SCREENSHOT = "pie_screenshot";
-
-        /**
-         * Pie power, should default to 0 (no, show only when needed)
-         * @hide
-         */
-        public static final String PIE_POWER = "pie_power";
-
-        /*
-         * Pie gap angle, should default to 2
-         * @hide
-         */
-        public static final String PIE_GAP = "pie_gap";
-
-        /**
-         * Pie empty angle, should default to 12
-         * @hide
-         */
-        public static final String PIE_ANGLE = "pie_angle";
-
-        /**
-         * Pie trigger fraction, should default to 1
-         * @hide
-         */
-        public static final String PIE_TRIGGER = "pie_trigger";
-
-        /**
-         * Location of the pie in the screen
-         * 0 = Gravity.LEFT
-         * 1 = Gravity.TOP
-         * 2 = Gravity.RIGHT
-         * 3 = Gravity.BOTTOM (default)
-         * @hide
-         */
-        public static final String PIE_GRAVITY = "pie_gravity";
-
-        /**
-         * Pie status report
-         * 0 = Bare
-         * 1 = Quick
-         * 2 = Default
-         * 3 = Slow
-         * @hide
-         */
-        public static final String PIE_MODE = "pie_mode";
-
-        /**
-         * Pie size fraction, default is 1.0f (normal)
-         * @hide
-         */
-        public static final String PIE_SIZE = "pie_size";
-
-        /**
-         * Pie Notification Ability
-         * @hide
-         */
-        public static final String PIE_NOTIFICATIONS = "pie_notifications";
-
-        // PIE COLORS EVERYWHERE! //
 
         /**
          * @hide
          */
-        public static final String PIE_ENABLE_COLOR = "pie_enable_color";
+        public static final String PIE_SECOND_LAYER_ACTIVE = "pie_second_layer_active";
 
         /**
          * @hide
          */
-        public static final String PIE_JUICE = "pie_juice";
+        public static final String PIE_BUTTONS_QTY_SECOND_LAYER = "pie_buttons_qty_second_layer";
 
         /**
          * @hide
          */
-        public static final String PIE_BUTTON_COLOR = "pie_button_color";
+        public static final String[] PIE_CUSTOM_ACTIVITIES_SECOND_LAYER = new String[] {
+            "pie_custom_intent_sec_0",
+            "pie_custom_intent_sec_1",
+            "pie_custom_intent_sec_2",
+            "pie_custom_intent_sec_3",
+            "pie_custom_intent_sec_4",
+            "pie_custom_intent_sec_5",
+            "pie_custom_intent_sec_6",
+        };
 
         /**
          * @hide
          */
-        public static final String PIE_SNAP_BACKGROUND = "pie_snap_background";
+        public static final String[] PIE_LONGPRESS_ACTIVITIES_SECOND_LAYER = new String[] {
+            "pie_longpress_intent_sec_0",
+            "pie_longpress_intent_sec_1",
+            "pie_longpress_intent_sec_2",
+            "pie_longpress_intent_sec_3",
+            "pie_longpress_intent_sec_4",
+            "pie_longpress_intent_sec_5",
+            "pie_longpress_intent_sec_6",
+        };
 
         /**
          * @hide
          */
-        public static final String PIE_BACKGROUND = "pie_background";
+        public static final String[] PIE_CUSTOM_ICONS_SECOND_LAYER = new String[] {
+            "pie_custom_icon_sec_0",
+            "pie_custom_icon_sec_1",
+            "pie_custom_icon_sec_2",
+            "pie_custom_icon_sec_3",
+            "pie_custom_icon_sec_4",
+            "pie_custom_icon_sec_5",
+            "pie_custom_icon_sec_6",
+        };
 
-        /**
-         * @hide
-         */
-        public static final String PIE_SELECT = "pie_select";
-
-        /**
-         * @hide
-         */
-        public static final String PIE_OUTLINES = "pie_outlines";
-
-        /**
-         * @hide
-         */
-        public static final String PIE_STATUS_CLOCK = "pie_status_clock";
-
-        /**
-         * @hide
-         */
-        public static final String PIE_STATUS = "pie_status";
-
-        /**
-         * @hide
-         */
-        public static final String PIE_CHEVRON_LEFT = "pie_chevron_left";
-
-        /**
-         * @hide
-         */
-        public static final String PIE_CHEVRON_RIGHT = "pie_chevron_right";
-
-        // PIE COLORS EVERYWHERE! //
-
-         /**
-          * Wakelock Blocker Master Switch
-          * @hide
-          */
-         public static final String WAKELOCK_BLOCKING_ENABLED = "wakelock_blocking_enabled";
- 
-         /**
-          * Wakelock Blocker Apps List
-          * @hide
-          */
-         public static final String WAKELOCK_BLOCKING_LIST = "wakelock_blocking_list";
-
-        /**
-         * Whether Status bar should be hiidden when there are no
-         * notifications
-         * @hide
-         */
-        public static final String AUTO_HIDE_STATUSBAR = "auto_hide_statusbar";
-
-        /**
-         * Whether Status Bar is currently hidden or not
-         * @hide
-         */
-        public static final String HIDE_STATUSBAR = "hide_statusbar";
-
-        /**
-         * Whether Status Bar is currently hidden or not for notification
-         * toggle notification shade
-         *
-         * @hide
-         */
-        public static final String TOGGLE_NOTIFICATION_AND_QS_SHADE = "toggle_notification_and_qs_shade";
-
-        /**
-         * Peek at stausbar when it is hidden by swiping down from top
-         * end of the screen
-         *
-         * @hide
-         */
-        public static final String STATUSBAR_PEEK = "statusbar_peek";
+       /**
+        *
+        * @hide
+        */
+        public static final String PIE_LONG_PRESS_ENABLE_SECOND_LAYER = "pie_long_press_enable_second_layer";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
