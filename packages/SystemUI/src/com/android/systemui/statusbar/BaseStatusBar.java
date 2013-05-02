@@ -106,6 +106,8 @@ import com.android.systemui.aokp.AppWindow;
 
 import java.util.ArrayList;
 import java.math.BigInteger;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public abstract class BaseStatusBar extends SystemUI implements
         CommandQueue.Callbacks {
@@ -1121,7 +1123,17 @@ public abstract class BaseStatusBar extends SystemUI implements
             switch (m.what) {
              case MSG_TOGGLE_RECENTS_PANEL:
                  if (DEBUG) Slog.d(TAG, "toggle recents panel");
-                 toggleRecentsActivity();
+                // additional optimization when we get an outside call
+                // for recents app switcher - start loading the recent
+                // tasks first before toggle the recentsactvity
+                 Timer timer = new Timer();
+                 preloadRecentTasksList();
+                 timer.schedule( new TimerTask(){
+                     public void run() {
+                         cancelPreloadingRecentTasksList();
+                         toggleRecentsActivity();
+                     }
+                 }, 20);
                  break;
              case MSG_CLOSE_RECENTS_PANEL:
                  if (DEBUG) Slog.d(TAG, "closing recents panel");
