@@ -547,7 +547,7 @@ public abstract class BaseStatusBar extends SystemUI implements
         boolean navbarZero = Settings.System.getInt(mContext.getContentResolver(),
                              Settings.System.NAVIGATION_BAR_SHOW, 0) == 0;
 
-        return (pie && (sbexpanded || autoHide || navbarZero));
+        return ((pie && (autoHide || navbarZero)) || sbexpanded );
     }
 
     public void updatePieControls() {
