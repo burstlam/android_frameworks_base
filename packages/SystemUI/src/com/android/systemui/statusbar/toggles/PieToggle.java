@@ -12,12 +12,16 @@ import android.provider.Settings;
 import android.view.View;
 
 import com.android.systemui.R;
+import com.android.internal.util.aokp.SysHelpers;
 
 public class PieToggle extends StatefulToggle {
+
+    SettingsObserver mSettingsObserver;
 
     @Override
     protected void init(Context c, int style) {
         super.init(c, style);
+        mSettingsObserver = new SettingsObserver(new Handler());
         scheduleViewUpdate();
     }
 
@@ -65,6 +69,7 @@ public class PieToggle extends StatefulToggle {
     class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
             super(handler);
+            observe();
         }
 
         void observe() {
@@ -79,7 +84,7 @@ public class PieToggle extends StatefulToggle {
 
         @Override
         public void onChange(boolean selfChange) {
-            scheduleViewUpdate();
+            SysHelpers.restartSystemUI();
         }
     }
 }
