@@ -12,12 +12,16 @@ import android.provider.Settings;
 import android.view.View;
 
 import com.android.systemui.R;
+import com.android.internal.util.aokp.SysHelpers;
 
 public class PieToggle extends StatefulToggle {
+
+    SettingsObserver mSettingsObserver;
 
     @Override
     protected void init(Context c, int style) {
         super.init(c, style);
+        mSettingsObserver = new SettingsObserver(new Handler());
         scheduleViewUpdate();
     }
 
@@ -56,6 +60,25 @@ public class PieToggle extends StatefulToggle {
         setLabel(enabled ? R.string.quick_settings_pie_on_label
                 : R.string.quick_settings_pie_off_label);
         super.updateView();
+    }
+
+    class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+            observe();
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.PIE_CONTROLS), false,
+                    this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            SysHelpers.restartSystemUI();
+        }
     }
 
 }
