@@ -2985,6 +2985,14 @@ public final class Settings {
         public static final String POWER_DIALOG_SHOW_POWER_OFF = "power_dialog_show_power_off";
 
         /**
+         * Whether Status Bar is currently hidden or not for notification
+         * toggle notification shade
+         *
+         * @hide
+         */
+        public static final String TOGGLE_NOTIFICATION_SHADE = "toggle_notification_shade";
+
+        /**
          * Used as a flag to determine if we have statusbar hidden now
          * @hide
          */
