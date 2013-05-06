@@ -3150,7 +3150,7 @@ public final class Settings {
         /**
          * @hide
          */
-        public static final String POWER_DIALOG_SHOW_EXPANDED_DESKTOP_TOGGLE = "power_menu_expanded_desktop";
+        public static final String POWER_MENU_EXPANDED_DESKTOP_ENABLED = "power_menu_expanded_desktop_enabled";
 
         /**
          * Expanded desktop on/off state
