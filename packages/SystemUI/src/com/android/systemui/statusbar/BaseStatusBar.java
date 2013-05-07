@@ -1468,7 +1468,13 @@ public abstract class BaseStatusBar extends SystemUI implements
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUSBAR_HIDDEN_NOW), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NAV_HIDE_ENABLE), false, this); 
+                    Settings.System.NAV_HIDE_ENABLE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAVIGATION_BAR_HEIGHT), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAVIGATION_BAR_HEIGHT_LANDSCAPE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAVIGATION_BAR_WIDTH), false, this);
         }
 
         @Override
@@ -1559,22 +1565,47 @@ public abstract class BaseStatusBar extends SystemUI implements
                 return;
             }
             mForceDisableBottomAndTopTrigger = forceDisableBottomAndTopTrigger;
+
+            // get expanded desktop values
             int expandedMode = Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.EXPANDED_DESKTOP_STYLE, 0);
             boolean expanded = Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
+
+            // get statusbar auto hide value
+            boolean autoHideStatusBar = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.STATUSBAR_HIDDEN_NOW, 0) == 1;
+
+            // get navigation bar values
             final int showByDefault = mContext.getResources().getBoolean(
                     com.android.internal.R.bool.config_showNavigationBar) ? 1 : 0;
             boolean hasNavigationBar = Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.NAVIGATION_BAR_SHOW, showByDefault) == 1;
-            boolean autoHideStatusBar = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.STATUSBAR_HIDDEN_NOW, 0) == 1;
-            boolean disableRightTriggerForNavbar =
-                    screenLayout() != Configuration.SCREENLAYOUT_SIZE_LARGE
-                    && !isScreenPortrait()
-                    && hasNavigationBar
-                    && ((expandedMode == 2 && expanded) || !expanded);
+            boolean navigationBarHeight = Settings.System.getInt(mContext.getContentResolver(),
+                                Settings.System.NAVIGATION_BAR_HEIGHT,
+                                mContext.getResources().getDimensionPixelSize(
+                                                com.android.internal.R.dimen.navigation_bar_height)) != 0;
+            boolean navigationBarHeightLandscape = Settings.System.getInt(mContext.getContentResolver(),
+                                Settings.System.NAVIGATION_BAR_HEIGHT_LANDSCAPE,
+                                mContext.getResources().getDimensionPixelSize(
+                                                com.android.internal.R.dimen.navigation_bar_height_landscape)) != 0;
+            boolean navigationBarWidth = Settings.System.getInt(mContext.getContentResolver(),
+                                Settings.System.NAVIGATION_BAR_WIDTH,
+                                mContext.getResources().getDimensionPixelSize(
+                                                com.android.internal.R.dimen.navigation_bar_width)) != 0;
 
+            // disable on phones in landscape right trigger for navbar
+            boolean disableRightTriggerForNavbar =
+                    !isScreenPortrait()
+                    && hasNavigationBar
+                    && ((expandedMode == 2 && expanded) || !expanded)
+                    && navigationBarWidth;
+
+            // take in account the navbar dimensions
+            hasNavigationBar = (hasNavigationBar && isScreenPortrait() && navigationBarHeight)
+                                || (hasNavigationBar && !isScreenPortrait() && navigationBarHeightLandscape);
+
+            // let's set the triggers
             if ((!expanded && hasNavigationBar && !autoHideStatusBar)
                 || mForceDisableBottomAndTopTrigger) {
                 if (disableRightTriggerForNavbar) {
@@ -1584,7 +1615,7 @@ public abstract class BaseStatusBar extends SystemUI implements
                                     | Position.RIGHT.FLAG);
                 }
             } else if ((!expanded && !hasNavigationBar && !autoHideStatusBar)
-                || (expandedMode == 1 && expanded && hasNavigationBar && !autoHideStatusBar)) {
+                || (expandedMode == 1 && expanded && !autoHideStatusBar)) {
                 if (!mPieImeIsShowing) {
                     if (disableRightTriggerForNavbar) {
                         updatePieTriggerMask(Position.LEFT.FLAG
@@ -1614,14 +1645,25 @@ public abstract class BaseStatusBar extends SystemUI implements
                 }
             } else {
                 if (!mPieImeIsShowing) {
-                    updatePieTriggerMask(Position.LEFT.FLAG
-                                    | Position.BOTTOM.FLAG
-                                    | Position.RIGHT.FLAG
-                                    | Position.TOP.FLAG);
+                    if (disableRightTriggerForNavbar) {
+                        updatePieTriggerMask(Position.LEFT.FLAG
+                                        | Position.BOTTOM.FLAG
+                                        | Position.TOP.FLAG);
+                    } else {
+                        updatePieTriggerMask(Position.LEFT.FLAG
+                                        | Position.BOTTOM.FLAG
+                                        | Position.RIGHT.FLAG
+                                        | Position.TOP.FLAG);
+                    }
                 } else {
-                    updatePieTriggerMask(Position.LEFT.FLAG
-                                    | Position.RIGHT.FLAG
-                                    | Position.TOP.FLAG);
+                    if (disableRightTriggerForNavbar) {
+                        updatePieTriggerMask(Position.LEFT.FLAG
+                                        | Position.TOP.FLAG);
+                    } else {
+                        updatePieTriggerMask(Position.LEFT.FLAG
+                                        | Position.RIGHT.FLAG
+                                        | Position.TOP.FLAG);
+                    }
                 }
             }
     }
