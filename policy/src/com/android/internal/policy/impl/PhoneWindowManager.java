@@ -4091,13 +4091,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 // and mTopIsFullscreen is that that mTopIsFullscreen is set only if the window
                 // has the FLAG_FULLSCREEN set.  Not sure if there is another way that to be the
                 // case though.
-                boolean settingStatusbarHidden = Settings.System.getBoolean(mContext.getContentResolver(),
+                mHideStatusBar = Settings.System.getBoolean(mContext.getContentResolver(),
                         Settings.System.STATUSBAR_HIDDEN_NOW, false);
                 boolean toggleNotificationShade = Settings.System.getInt(mContext.getContentResolver(),
                         Settings.System.TOGGLE_NOTIFICATION_SHADE, 0) == 1;
 
                 if ((topIsFullscreen && !toggleNotificationShade)
-                        || (settingStatusbarHidden && !toggleNotificationShade)
+                        || (mHideStatusBar && !toggleNotificationShade)
                         || (mExpandedState == 1 &&
                            (mExpandedStyle == 2 || mExpandedStyle == 3)&& !toggleNotificationShade)) {
                     if (DEBUG_LAYOUT) Log.v(TAG, "** HIDING status bar");
