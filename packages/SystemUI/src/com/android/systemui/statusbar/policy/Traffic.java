@@ -33,8 +33,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
-import com.android.internal.util.aokp.StatusBarHelpers;
-
 public class Traffic extends TextView {
     private boolean mAttached;
     TrafficStats mTrafficStats;
@@ -45,8 +43,6 @@ public class Traffic extends TextView {
     float totalRxBytes;
 
     protected int mTrafficColor;
-    protected int mStockFontSize;
-    protected int mFontSize;
 
     class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
@@ -89,7 +85,6 @@ public class Traffic extends TextView {
         if (!mAttached) {
             mAttached = true;
             mTrafficColor = getTextColors().getDefaultColor();
-            mStockFontSize = StatusBarHelpers.pixelsToSp(mContext,getTextSize());
             IntentFilter filter = new IntentFilter();
             filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
             getContext().registerReceiver(mIntentReceiver, filter, null,
@@ -166,20 +161,15 @@ public class Traffic extends TextView {
 
     private void updateSettings() {
         ContentResolver resolver = mContext.getContentResolver();
-
-        mFontSize = Settings.System.getInt(resolver,
-			Settings.System.STATUSBAR_FONT_SIZE, mStockFontSize);
-
         int newColor = 0;
+
         newColor = Settings.System.getInt(resolver,
                 Settings.System.STATUS_BAR_TRAFFIC_COLOR, mTrafficColor);
         if (newColor < 0 && newColor != mTrafficColor) {
             mTrafficColor = newColor;
             setTextColor(mTrafficColor);
         }
-        if (mFontSize != getTextSize()){
-			setTextSize(mFontSize);
-        }
+
         showTraffic = (Settings.System.getInt(resolver,
                 Settings.System.STATUS_BAR_TRAFFIC, 1) == 1);
         if (showTraffic && getConnectAvailable()) {
