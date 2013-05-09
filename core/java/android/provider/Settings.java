@@ -4631,7 +4631,7 @@ public final class Settings {
          *
          * @hide
          */
-        public static final String TOGGLE_NOTIFICATION_SHADE = "toggle_notification_shade";
+        public static final String TOGGLE_NOTIFICATION_AND_QS_SHADE = "toggle_notification_and_qs_shade";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
