@@ -232,6 +232,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private static final int KEY_ACTION_KILL_APP = 11;
     private static final int KEY_ACTION_LAST_APP = 12;
     private static final int KEY_ACTION_CUSTOM_APP = 13;
+    private static final int KEY_ACTION_QS = 14;
 
     // Masks for checking presence of hardware keys.
     // Must match values in core/res/res/values/config.xml
@@ -775,7 +776,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     Settings.System.EXPANDED_DESKTOP_STYLE), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.TOGGLE_NOTIFICATION_SHADE), false, this);
+                    Settings.System.TOGGLE_NOTIFICATION_AND_QS_SHADE), false, this);
 
             updateSettings();
         }
@@ -1156,6 +1157,17 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         }
                     } catch (RemoteException e) {
                         Slog.e(TAG, "RemoteException when toggling notification shade", e);
+                        mStatusBarService = null;
+                    }
+                    break;
+                case KEY_ACTION_QS:
+                    try {
+                        IStatusBarService statusbar = getStatusBarService();
+                        if (statusbar != null) {
+                            statusbar.toggleQSShade();
+                        }
+                    } catch (RemoteException e) {
+                        Slog.e(TAG, "RemoteException when toggling QS shade", e);
                         mStatusBarService = null;
                     }
                     break;
@@ -4107,13 +4119,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 // case though.
                 mHideStatusBar = Settings.System.getBoolean(mContext.getContentResolver(),
                         Settings.System.STATUSBAR_HIDDEN_NOW, false);
-                boolean toggleNotificationShade = Settings.System.getInt(mContext.getContentResolver(),
-                        Settings.System.TOGGLE_NOTIFICATION_SHADE, 0) == 1;
+                boolean toggleNotificationAndQSShade = Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.TOGGLE_NOTIFICATION_AND_QS_SHADE, 0) == 1;
 
-                if ((topIsFullscreen && !toggleNotificationShade)
-                        || (mHideStatusBar && !toggleNotificationShade)
+                if ((topIsFullscreen && !toggleNotificationAndQSShade)
+                        || (mHideStatusBar && !toggleNotificationAndQSShade)
                         || (mExpandedState == 1 &&
-                           (mExpandedStyle == 2 || mExpandedStyle == 3)&& !toggleNotificationShade)) {
+                           (mExpandedStyle == 2 || mExpandedStyle == 3) && !toggleNotificationAndQSShade)) {
                     if (DEBUG_LAYOUT) Log.v(TAG, "** HIDING status bar");
                     if (mStatusBar.hideLw(true)) {
                         changes |= FINISH_LAYOUT_REDO_LAYOUT;
