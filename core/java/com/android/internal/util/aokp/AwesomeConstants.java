@@ -268,7 +268,7 @@ public class AwesomeConstants {
                 value = getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_notifications");
                 break;
             case ACTION_QS:
-                value = getSystemUIDrawable(context, "com.android.systemui.R.drawable/ic_sysbar_qs");
+                value = getSystemUIDrawable(context, "com.android.systemui.drawable/ic_sysbar_qs");
                 break;
             case ACTION_ASSIST:
                 value = getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_assist");
