@@ -232,14 +232,14 @@ public class AwesomeAction {
                     // Let's hope we don't catch one!
                 }
                 break;
-            case ACTION_QS:
+            /*case ACTION_QS:
                 try {
                     IStatusBarService.Stub.asInterface(
                             ServiceManager.getService(mContext.STATUS_BAR_SERVICE)).toggleQSShade();
                 } catch (RemoteException e) {
                     // wtf is this
                 }
-                break;
+                break;*/
             case ACTION_APP:
                 try {
                     Intent intentapp = Intent.parseUri(action, 0);
