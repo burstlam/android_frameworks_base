@@ -33,12 +33,11 @@ public class CustomToggle extends BaseToggle {
     public String[] mClickActions = new String[5];
     public String[] mLongActions = new String[5];
     public String[] mToggleIcons = new String[5];
-    public String[] mToggleText = new String[5];
 
     private int mDoubleClick;
     private int mNumberOfActions;
     private int mCollapseShade;
-    private int mCustomState= 0;
+    private int mCustomState;
     private int mMatchState = 0;
     private int doubleClickCounter = 0;
     private boolean mActionRevert;
@@ -96,8 +95,7 @@ public class CustomToggle extends BaseToggle {
         public void run() {
             mCustomState = 0;
             commitState();
-            AwesomeAction.launchAction(mContext, "**null**".equals(mClickActions[mCustomState])
-                    ? mLongActions[mCustomState] : mClickActions[mCustomState]);
+            launchLongOrShort();
             startMagicTricks();
         }
     };
@@ -125,7 +123,7 @@ public class CustomToggle extends BaseToggle {
                 case STATE_ONE:
                     mCustomState = 0;
                     commitState();
-                    AwesomeAction.launchAction(mContext, mClickActions[mCustomState]);
+                    launchLongOrShort();
                     shouldCollapse();
                     startMagicTricks();
                     break;
@@ -178,7 +176,7 @@ public class CustomToggle extends BaseToggle {
             mCustomState = mNumberOfActions-1;
             commitState();
         }
-        AwesomeAction.launchAction(mContext, mClickActions[mCustomState]);
+        launchLongOrShort();
         shouldCollapse();
         startMagicTricks();
     }
@@ -191,6 +189,11 @@ public class CustomToggle extends BaseToggle {
         }
         shouldCollapse();
         startMagicTricks();
+    }
+
+    final void launchLongOrShort() {
+        AwesomeAction.launchAction(mContext, "**null**".equals(mClickActions[mCustomState])
+                ? mLongActions[mCustomState] : mClickActions[mCustomState]);
     }
 
     private void shouldCollapse() {
@@ -206,14 +209,17 @@ public class CustomToggle extends BaseToggle {
     }
 
     private void commitState() {
-        SharedPreferences p = mContext.getSharedPreferences(KEY_TOGGLE_STATE, Context.MODE_PRIVATE);
-        p.edit().putInt("state", mCustomState).commit();
+        Settings.System.putInt(mContext.getContentResolver(),
+                Settings.System.CUSTOM_TOGGLE_STATE, mCustomState);
+        updateSettings();
     }
 
     private void startMagicTricks() {
         String iconUri = "";
         Drawable myIcon = null;
-        String toggleText = mToggleText[mCustomState];
+        String toggleText = NavBarHelpers.getProperSummary(mContext,
+                "**null**".equals(mClickActions[mCustomState])
+                ? mLongActions[mCustomState] : mClickActions[mCustomState]);
         iconUri = mToggleIcons[mCustomState];
         if (iconUri != null && iconUri.length() > 0) {
             File f = new File(Uri.parse(iconUri).getPath());
@@ -261,16 +267,14 @@ public class CustomToggle extends BaseToggle {
     private void updateSettings() {
         ContentResolver resolver = mContext.getContentResolver();
 
-        String mDefaultText = "CUSTOM";
-
-        SharedPreferences p = mContext.getSharedPreferences(KEY_TOGGLE_STATE, Context.MODE_PRIVATE);
-        mCustomState = p.getInt("state", 0);
-
         mActionRevert = Settings.System.getBoolean(resolver,
                 Settings.System.CUSTOM_TOGGLE_REVERT, false);
 
+        mCustomState = Settings.System.getInt(resolver,
+                Settings.System.CUSTOM_TOGGLE_STATE, 0);
+
         mMatchAction = Settings.System.getBoolean(resolver,
-                Settings.System.MATCH_ACTION_ICON, true);
+                Settings.System.MATCH_ACTION_ICON, false);
 
         mCollapseShade = Settings.System.getInt(resolver,
                 Settings.System.COLLAPSE_SHADE, 10);
@@ -300,13 +304,6 @@ public class CustomToggle extends BaseToggle {
 
             mToggleIcons[j] = Settings.System.getString(resolver,
                     Settings.System.CUSTOM_TOGGLE_ICONS[j]);
-            mToggleText[j] = Settings.System.getString(resolver,
-                    Settings.System.CUSTOM_TOGGLE_TEXT[j]);
-            if (mToggleText[j] == null) {
-                mToggleText[j] = mDefaultText;
-                Settings.System.putString(resolver,
-                        Settings.System.CUSTOM_TOGGLE_TEXT[j], mToggleText[j]);
-            }
         }
         startMagicTricks();
     }
@@ -321,6 +318,10 @@ public class CustomToggle extends BaseToggle {
 
             resolver.registerContentObserver(Settings.System
                     .getUriFor(Settings.System.CUSTOM_TOGGLE_REVERT),
+                    false, this);
+
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.CUSTOM_TOGGLE_STATE),
                     false, this);
 
             resolver.registerContentObserver(Settings.System
@@ -348,12 +349,6 @@ public class CustomToggle extends BaseToggle {
                         Settings.System.getUriFor(Settings.System.CUSTOM_TOGGLE_ICONS[j]),
                         false,
                         this);
-                resolver.registerContentObserver(
-                        Settings.System
-                                .getUriFor(Settings.System.CUSTOM_TOGGLE_TEXT[j]),
-                        false,
-                        this);
-
                 resolver.registerContentObserver(
                         Settings.System
                                 .getUriFor(Settings.System.CUSTOM_LONGPRESS_TOGGLE[j]),
