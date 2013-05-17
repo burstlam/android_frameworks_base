@@ -154,7 +154,7 @@ class SelectActionModeCallback implements ActionMode.Callback {
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
-        mWebView.clearSelection();
+        mWebView.selectionDone();
     }
 
     private void setMenuVisibility(Menu menu, boolean visible, int resourceId) {
