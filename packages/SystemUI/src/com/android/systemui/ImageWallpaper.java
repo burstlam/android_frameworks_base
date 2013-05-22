@@ -26,6 +26,7 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Region.Op;
 import android.opengl.GLUtils;
@@ -481,7 +482,9 @@ public class ImageWallpaper extends WallpaperService {
                         c.restore();
                     }
                     if (mBackground != null) {
-                        c.drawBitmap(mBackground, 0, 0, null);
+                        Paint paint = new Paint();
+                        paint.setDither(true);
+                        c.drawBitmap(mBackground, 0, 0, paint);
                     }
                 } finally {
                     sh.unlockCanvasAndPost(c);
