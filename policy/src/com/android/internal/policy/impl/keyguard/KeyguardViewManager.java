@@ -276,7 +276,7 @@ public class KeyguardViewManager {
                                                 Settings.System.STATUSBAR_HIDDEN_NOW, false);
 
             int flags = WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                    | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR
+                    | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR;
 
             if (hwAccelerated != 0) {
                 flags |= WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
