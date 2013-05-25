@@ -34,8 +34,10 @@ import android.os.BatteryManager;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.AttributeSet;
+import android.util.Slog;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -273,6 +275,9 @@ public class SbBatteryController extends LinearLayout {
                 Settings.System.STATUSBAR_BATTERY_ICON, 0);
         mFontSize = Settings.System.getInt(cr,
 			Settings.System.STATUSBAR_FONT_SIZE, mStockFontSize);
+
+        int width = StatusBarHelpers.getIconWidth(mContext, mFontSize);
+			mBatteryIcon.getLayoutParams().width = width;
 
         boolean disableStatusBarInfo = Settings.System.getInt(cr,
                 Settings.System.PIE_DISABLE_STATUSBAR_INFO, 0) == 1;
