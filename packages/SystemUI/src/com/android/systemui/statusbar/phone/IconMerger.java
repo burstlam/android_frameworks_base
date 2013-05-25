@@ -25,6 +25,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.android.internal.statusbar.StatusBarIcon;
+import com.android.internal.util.aokp.StatusBarHelpers;
 
 import com.android.systemui.R;
 import com.android.systemui.statusbar.StatusBarIconView;
