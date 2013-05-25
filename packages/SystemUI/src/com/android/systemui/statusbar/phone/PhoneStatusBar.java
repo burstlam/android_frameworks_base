@@ -549,9 +549,6 @@ public class PhoneStatusBar extends BaseStatusBar {
                 com.android.internal.R.integer.config_screenBrightnessDim);
 
         updateDisplaySize(); // populates mDisplayMetrics
-        //loadDimens();
-
-        //mIconSize = res.getDimensionPixelSize(com.android.internal.R.dimen.status_bar_icon_size);
 
         mStatusBarWindow = (StatusBarWindowView) View.inflate(context,
                 R.layout.super_status_bar, null);
@@ -3284,10 +3281,6 @@ public class PhoneStatusBar extends BaseStatusBar {
 
         int newIconHPadding = res.getDimensionPixelSize(
                 R.dimen.status_bar_icon_padding);
-        int toppadding = mContext.getResources().getDimensionPixelSize(
-                R.dimen.status_bar_icon_top_padding);
-        int bottompadding = mContext.getResources().getDimensionPixelSize(
-                R.dimen.status_bar_icon_bottom_padding);
         int padding = mContext.getResources().getDimensionPixelSize(
                 com.android.internal.R.dimen.status_bar_padding);
         float fontSizepx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, mFontSize,
@@ -3296,7 +3289,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         mNaturalBarHeight = (int) (fontSizepx + padding);
         // Set the Bar height to the size of the font plus padding.
 
-        int newIconSize = mNaturalBarHeight - (toppadding + bottompadding);
+        int newIconSize = StatusBarHelpers.getIconWidth(mContext, mFontSize);
 
         if (newIconHPadding != mIconHPadding || newIconSize != mIconSize) {
             mIconHPadding = newIconHPadding;
