@@ -3887,12 +3887,6 @@ public final class Settings {
          *
          * @hide
          */
-        public static final String APP_WINDOW_OPACITY = "app_window_opacity";
-
-        /**
-         *
-         * @hide
-         */
         public static final String APP_WINDOW_HIDDEN_APPS = "app_window_hidden_apps";
 
         /**
