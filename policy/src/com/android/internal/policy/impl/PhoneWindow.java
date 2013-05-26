@@ -2328,9 +2328,9 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
                     } catch (Exception e) {
                     }
                     break;
-                case 8:
-                    mSbm.toggleRecentApps();
-                    break;
+                //case 8:
+                //    mSbm.toggleRecentApps();
+                //    break;
             }
         }
 
