@@ -55,6 +55,7 @@ public class CircleBattery extends ImageView {
     private Handler mHandler;
     private Context mContext;
     private BatteryReceiver mBatteryReceiver = null;
+    private SettingsObserver mObserver;
 
     // state variables
     private boolean mAttached;      // whether or not attached to a window
@@ -115,6 +116,10 @@ public class CircleBattery extends ImageView {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUSBAR_CMCIRLE_RING_COLOR_CHARGE), false, this);
             onChange(true);
+        }
+
+        public void unobserve() {
+            mContext.getContentResolver().unregisterContentObserver(this);
         }
 
         @Override
@@ -199,8 +204,7 @@ public class CircleBattery extends ImageView {
         mContext = context;
         mHandler = new Handler();
 
-        SettingsObserver settingsObserver = new SettingsObserver(mHandler);
-        settingsObserver.observe();
+        mObserver = new SettingsObserver(mHandler);
         mBatteryReceiver = new BatteryReceiver(mContext);
 
         // initialize and setup all paint variables
@@ -238,6 +242,7 @@ public class CircleBattery extends ImageView {
         super.onAttachedToWindow();
         if (!mAttached) {
             mAttached = true;
+            mObserver.observe();
             mBatteryReceiver.updateRegistration();
             mHandler.postDelayed(mInvalidate, 250);
         }
@@ -248,6 +253,7 @@ public class CircleBattery extends ImageView {
         super.onDetachedFromWindow();
         if (mAttached) {
             mAttached = false;
+            mObserver.unobserve();
             mBatteryReceiver.updateRegistration();
             mCircleRect = null; // makes sure, size based variables get
                                 // recalculated on next attach
