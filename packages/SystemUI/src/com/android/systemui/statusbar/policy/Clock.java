@@ -126,7 +126,9 @@ public class Clock extends TextView {
             // The time zone may have changed while the receiver wasn't registered, so update the Time
             mCalendar = Calendar.getInstance(TimeZone.getDefault());
 
+            if (mSettingsObserver == null) {
             mSettingsObserver = new SettingsObserver(new Handler());
+            }
             mSettingsObserver.observe();
         }
 
