@@ -136,6 +136,7 @@ public class PieMenu extends FrameLayout {
     private int mPanelOrientation;
     private int mInnerPieRadius;
     private int mOuterPieRadius;
+    private int mPieAngle;
     private int mPieGap;
     private int mInnerChevronRadius;
     private int mOuterChevronRadius;
@@ -293,6 +294,8 @@ public class PieMenu extends FrameLayout {
                 Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1  && !SbarExpanded;
         mPieSize = Settings.System.getFloat(mContext.getContentResolver(),
                 Settings.System.PIE_SIZE, 0.9f);
+        mPieAngle = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PIE_ANGLE, 0);
         mPieGap = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PIE_GAP, 3);
         mHapticFeedback = Settings.System.getInt(mContext.getContentResolver(),
@@ -655,7 +658,7 @@ public class PieMenu extends FrameLayout {
     }
 
     private void layoutPie() {
-        float emptyangle = mEmptyAngle * (float)Math.PI / 180;
+        float emptyangle = mPieAngle * (float)Math.PI / 180;
         int inner = mInnerPieRadius;
         int outer = mOuterPieRadius;
 
