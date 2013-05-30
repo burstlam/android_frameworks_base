@@ -671,7 +671,7 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
                     mStreamStates[AudioSystem.STREAM_DTMF], 0);
         }
         mVolumeKeysControlRingStream = Settings.System.getIntForUser(mContentResolver,
-                    Settings.System.VOLUME_KEYS_CONTROL_RING_STREAM, 1, UserHandle.USER_CURRENT) == 1;
+                    Settings.System.VOLUME_KEYS_CONTROL_RING_STREAM, 0, UserHandle.USER_CURRENT) == 0;
     }
 
     private void readDockAudioSettings(ContentResolver cr)
@@ -760,7 +760,7 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
 
             readDockAudioSettings(cr);
             mVolumeKeysControlRingStream = Settings.System.getIntForUser(mContentResolver,
-                    Settings.System.VOLUME_KEYS_CONTROL_RING_STREAM, 1, UserHandle.USER_CURRENT) == 1;
+                    Settings.System.VOLUME_KEYS_CONTROL_RING_STREAM, 0, UserHandle.USER_CURRENT) == 0;
             updateManualSafeMediaVolume();
         }
 
