@@ -2968,14 +2968,6 @@ public final class Settings {
         public static final String FORCE_DUAL_PANEL = "force_dualpanel";
 
         /**
-         * Control the display of the action overflow button within app UI.
-         * 0 = use system default
-         * 1 = force on
-         * @hide
-         */
-        public static final String UI_FORCE_OVERFLOW_BUTTON = "ui_force_overflow_button";
-
-        /**
          * Show the pending notification counts as overlays on the status bar
          * Whether to enable custom rebindings of the actions performed on
          * certain key press events.
