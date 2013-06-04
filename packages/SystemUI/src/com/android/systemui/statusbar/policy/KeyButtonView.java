@@ -160,7 +160,7 @@ public class KeyButtonView extends ImageView {
         if (!colorInfo.lastColorString.equals(mLastButtonColor.lastColorString)) {
             if (colorInfo.isLastColorNull) {
                 mSettingsObserver = GlobalSettingsObserver.getInstance(mContext);
-                msettingsObserver.observe();
+                mSettingsObserver.observe();
             } else {
                 setColorFilter(ColorUtils.extractRGB(colorInfo.lastColor) | 0xFF000000, PorterDuff.Mode.SRC_ATOP);
                 BUTTON_QUIESCENT_ALPHA = (float)ColorUtils.extractAlpha(colorInfo.lastColor) / 255f;
@@ -177,7 +177,7 @@ public class KeyButtonView extends ImageView {
         if (!colorInfo.lastColorString.equals(mLastGlowColor.lastColorString)) {
             if (colorInfo.isLastColorNull) {
                 mSettingsObserver = GlobalSettingsObserver.getInstance(mContext);
-                msettingsObserver.observe();
+                mSettingsObserver.observe();
             } else {
                 mGlowBG.setColorFilter(colorInfo.lastColor, PorterDuff.Mode.SRC_ATOP);
             }
