@@ -60,8 +60,6 @@ public class StatusBarIconView extends AnimatedImageView {
     public StatusBarIconView(Context context, String slot, Notification notification) {
         super(context);
         final Resources res = mContext.getResources();
-        final float densityMultiplier = res.getDisplayMetrics().density;
-        final float scaledPx = 8 * densityMultiplier;
         mSlot = slot;
         mNumberPaint = new Paint();
         mNumberPaint.setTextAlign(Paint.Align.CENTER);
@@ -74,7 +72,7 @@ public class StatusBarIconView extends AnimatedImageView {
             final float densityMultiplier = res.getDisplayMetrics().density;
             textSize = 8 * densityMultiplier;
         }
-        mNumberPaint.setTextSize(scaledPx);
+        mNumberPaint.setTextSize(textSize);
         mNotification = notification;
         mShowNotificationCount = Settings.System.getBoolean(mContext.getContentResolver(),
                 Settings.System.STATUSBAR_NOTIF_COUNT, false);

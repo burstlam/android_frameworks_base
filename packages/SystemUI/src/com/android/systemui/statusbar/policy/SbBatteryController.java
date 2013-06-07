@@ -41,12 +41,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-<<<<<<< HEAD
 
 import android.R.integer;
-=======
 import com.android.internal.util.aokp.StatusBarHelpers;
->>>>>>> 9aa758c... FW : Allow user selection of Font Size
 import com.android.systemui.R;
 
 public class SbBatteryController extends LinearLayout {
@@ -380,8 +377,8 @@ public class SbBatteryController extends LinearLayout {
         if (StatusBarHelpers.pixelsToSp(mContext,mBatteryTextOnly.getTextSize()) != mFontSize) {
             // assume if one needs changed, all of them do.
             mBatteryTextOnly.setTextSize(mFontSize);
-            mBatteryTextOnly_Low.setTextSize(mFontSize);
-            mBatteryTextOnly_Plugged.setTextSize(mFontSize);
+            //mBatteryTextOnly_Low.setTextSize(mFontSize);
+            //mBatteryTextOnly_Plugged.setTextSize(mFontSize);
         }
         setBatteryIcon(mLevel, mPlugged);
 
