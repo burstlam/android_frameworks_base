@@ -295,4 +295,6 @@
     <dimen name="notification_shortcuts_spacing_height">88dp</dimen>
     <dimen name="notification_shortcuts_drawer_margin">56dp</dimen>
 
+    <!-- PA HALO -->
+    <dimen name="halo_content_max_width">250dp</dimen>
 </resources>
