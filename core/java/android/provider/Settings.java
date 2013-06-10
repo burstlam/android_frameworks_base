@@ -2572,12 +2572,6 @@ public final class Settings {
         public static final String STATUSBAR_CLOCK_DATE_FORMAT = "statusbar_clock_date_format";
 
         /**
-         * This should be an Int representing the Font Size in SP.
-         * @hide
-        */
-        public static final String STATUSBAR_FONT_SIZE = "statusbar_font_size";
-
-        /**
          * Show the pending notification counts as overlays on the statusbar
          * @hide
          */
