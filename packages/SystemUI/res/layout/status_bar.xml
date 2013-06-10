@@ -97,8 +97,6 @@
                 android:singleLine="true"
                 android:layout_marginRight="4dp"
                 android:gravity="left|center_vertical"
-                android:paddingTop="@dimen/status_bar_icon_top_padding"
-                android:paddingBottom="@dimen/status_bar_icon_bottom_padding"
                 />
     
                 <LinearLayout
@@ -141,8 +139,6 @@
                 android:singleLine="true"
                 android:paddingLeft="6dip"
                 android:gravity="left|center_vertical"
-                android:paddingTop="@dimen/status_bar_icon_top_padding"
-                android:paddingBottom="@dimen/status_bar_icon_bottom_padding"
                 />
         </LinearLayout>
     </LinearLayout>
