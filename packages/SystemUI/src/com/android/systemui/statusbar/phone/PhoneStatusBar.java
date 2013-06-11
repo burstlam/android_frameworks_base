@@ -1698,7 +1698,7 @@ public class PhoneStatusBar extends BaseStatusBar {
             }
         } else {
             mClearButton.setAlpha(clearable ? 1.0f : 0.0f);
-            mClearButton.setVisibility(clearable ? View.VISIBLE : View.INVISIBLE);
+            mClearButton.setVisibility(clearable ? View.VISIBLE : View.GONE);
         }
         mClearButton.setEnabled(clearable);
 
