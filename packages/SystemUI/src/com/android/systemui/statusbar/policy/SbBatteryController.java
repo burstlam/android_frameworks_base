@@ -86,7 +86,12 @@ public class SbBatteryController extends LinearLayout {
 	public static final int BATTERY_STYLE_CIRCLE_PERCENT = 6;
 	public static final int STYLE_ICON_CIRCLE_RB = 7;
 	public static final int STYLE_ICON_SQUARE_RB = 8;
-    public static final int STYLE_HIDE = 9;
+	public static final int STYLE_ICON_BRICK_RB = 9;
+	public static final int STYLE_ICON_GAUGE_RB = 10;
+	public static final int STYLE_ICON_PLANET_RB = 11;
+	public static final int STYLE_ICON_RACING_RB = 12;
+	public static final int STYLE_ICON_SLIDER_RB = 13;
+    public static final int STYLE_HIDE = 14;
 
     public SbBatteryController(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -166,6 +171,26 @@ public class SbBatteryController extends LinearLayout {
 			case STYLE_ICON_SQUARE_RB:
                  icon = plugged ? R.drawable.stat_sys_battery_charge_square
                  : R.drawable.stat_sys_battery_square;
+                 break;
+			case STYLE_ICON_BRICK_RB:
+                 icon = plugged ? R.drawable.stat_sys_battery_charge_brick
+                 : R.drawable.stat_sys_battery_brick;
+                 break;
+			case STYLE_ICON_GAUGE_RB:
+                 icon = plugged ? R.drawable.stat_sys_battery_charge_gauge
+                 : R.drawable.stat_sys_battery_gauge;
+                 break;
+			case STYLE_ICON_PLANET_RB:
+                 icon = plugged ? R.drawable.stat_sys_battery_charge_planet
+                 : R.drawable.stat_sys_battery_planet;
+                 break;
+			case STYLE_ICON_RACING_RB:
+                 icon = plugged ? R.drawable.stat_sys_battery_charge_racing
+                 : R.drawable.stat_sys_battery_racing;
+                 break;
+			case STYLE_ICON_SLIDER_RB:
+                 icon = plugged ? R.drawable.stat_sys_battery_charge_slider
+                 : R.drawable.stat_sys_battery_slider;
                  break;
             default:
                  icon = plugged ? R.drawable.stat_sys_battery_charge
@@ -338,6 +363,41 @@ public class SbBatteryController extends LinearLayout {
                 setVisibility(View.VISIBLE);
                 break;
             case STYLE_ICON_SQUARE_RB:
+                mBatteryText.setVisibility(View.GONE);
+                mBatteryCenterText.setVisibility(View.GONE);
+                mBatteryIcon.setVisibility(View.VISIBLE);
+                mBatteryTextOnly.setVisibility(View.GONE);
+                setVisibility(View.VISIBLE);
+                break;
+            case STYLE_ICON_BRICK_RB:
+                mBatteryText.setVisibility(View.GONE);
+                mBatteryCenterText.setVisibility(View.GONE);
+                mBatteryIcon.setVisibility(View.VISIBLE);
+                mBatteryTextOnly.setVisibility(View.GONE);
+                setVisibility(View.VISIBLE);
+                break;
+            case STYLE_ICON_GAUGE_RB:
+                mBatteryText.setVisibility(View.GONE);
+                mBatteryCenterText.setVisibility(View.GONE);
+                mBatteryIcon.setVisibility(View.VISIBLE);
+                mBatteryTextOnly.setVisibility(View.GONE);
+                setVisibility(View.VISIBLE);
+                break;
+            case STYLE_ICON_PLANET_RB:
+                mBatteryText.setVisibility(View.GONE);
+                mBatteryCenterText.setVisibility(View.GONE);
+                mBatteryIcon.setVisibility(View.VISIBLE);
+                mBatteryTextOnly.setVisibility(View.GONE);
+                setVisibility(View.VISIBLE);
+                break;
+            case STYLE_ICON_RACING_RB:
+                mBatteryText.setVisibility(View.GONE);
+                mBatteryCenterText.setVisibility(View.GONE);
+                mBatteryIcon.setVisibility(View.VISIBLE);
+                mBatteryTextOnly.setVisibility(View.GONE);
+                setVisibility(View.VISIBLE);
+                break;
+            case STYLE_ICON_SLIDER_RB:
                 mBatteryText.setVisibility(View.GONE);
                 mBatteryCenterText.setVisibility(View.GONE);
                 mBatteryIcon.setVisibility(View.VISIBLE);
