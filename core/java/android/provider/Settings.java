@@ -3117,6 +3117,12 @@ public final class Settings {
         public static final String STATUSBAR_HIDDEN_NOW = "statusbar_hidden_now";
 
         /**
+         * Used as a flag to determine if we want to show a hidden statusbar with a swipe
+         * @hide
+         */
+        public static final String STATUSBAR_SHOW_HIDDEN_WITH_SWIPE = "statusbar_show_hidden_with_swipe";
+
+        /**
          * Used as a flag to determine if we have audo-expand statusbar enabled
          * @hide
          */
@@ -3126,13 +3132,13 @@ public final class Settings {
          * Used as a flag to determine if we have audo-expand statusbar enabled
          * @hide
          */
-        public static final String STATUSBAR_SWIPE_FOR_FULLSCREEN = "statusbar_swipe_for_fullscreen";
+        public static final String STATUSBAR_SWIPE_ENABLE = "statusbar_swipe_enable";
 
         /**
          * Allows hidden Statusbar timeout to be configured
          * @hide
          */
-        public static final String HIDDEN_STATUSBAR_PULLDOWN_TIMEOUT = "hidden_statusbar_pulldown_timeout";
+        public static final String STATUSBAR_SWIPE_TIMEOUT = "statusbar_swipe_timeout";
 
         /**
          * Statusbar toggle for quick settings

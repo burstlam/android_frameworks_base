@@ -31,6 +31,8 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.os.SystemProperties;
+import android.os.ServiceManager;
+import android.os.RemoteException;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
@@ -44,6 +46,7 @@ import android.view.ViewManager;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.view.MotionEvent;
+import android.view.IWindowManager;
 import android.widget.FrameLayout;
 
 import com.android.internal.R;
@@ -143,8 +146,11 @@ public class KeyguardViewManager {
         private boolean mightBeMyGesture = false;
         private float tStatus;
 
+        private IWindowManager mWm;
+
         public ViewManagerHost(Context context) {
             super(context);
+            mWm = IWindowManager.Stub.asInterface(ServiceManager.getService("window"));
         }
 
         @Override
@@ -193,9 +199,6 @@ public class KeyguardViewManager {
 
         @Override
         public boolean dispatchTouchEvent(MotionEvent event) {
-            // get user timeout, default at 5 sec.
-            int mHiddenStatusbarPulldownTimeout = (Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.HIDDEN_STATUSBAR_PULLDOWN_TIMEOUT, 5000)); 
             if (mKeyguardView != null) {
                 switch (event.getAction())
                 {
@@ -204,7 +207,7 @@ public class KeyguardViewManager {
                         if (tStatus < getStatusBarHeight())
                         {
                             boolean swipeEnabled = Settings.System.getBoolean(mContext.getContentResolver(),
-                                    Settings.System.STATUSBAR_SWIPE_FOR_FULLSCREEN, false);
+                                    Settings.System.STATUSBAR_SWIPE_ENABLE, false);
 
                             boolean settingStatusbarHidden = Settings.System.getBoolean(mContext.getContentResolver(),
                                     Settings.System.STATUSBAR_HIDDEN_NOW, false);
@@ -219,23 +222,18 @@ public class KeyguardViewManager {
                     case MotionEvent.ACTION_MOVE:
                         if (mightBeMyGesture)
                         {
-                            if(event.getY() > tStatus)
+                            if(event.getY() > (tStatus + 5)) 
                             {
-                                Settings.System.putBoolean(mContext.getContentResolver(),
-                                    Settings.System.STATUSBAR_HIDDEN_NOW, false);
-                                
-                                mKeyguardHost.postDelayed(new Runnable() {
-                                    public void run() {
-                                        Settings.System.putBoolean(mContext.getContentResolver(),
-                                            Settings.System.STATUSBAR_HIDDEN_NOW, true);
-                                    }
-                                // User picked timeout here
-                                }, mHiddenStatusbarPulldownTimeout);
-                            }
+                                try {
+                                    mWm.startSwipeTimer();
+                                } catch(RemoteException e){
+                                    Log.e(TAG, "startSwipeTimer", e);
+                                }
                             
-                            mightBeMyGesture = false;
-                                
-                            return true;
+                                mightBeMyGesture = false;
+                                // dont send event further
+                                return true;
+                            }
                         }
                         break;
                     default:

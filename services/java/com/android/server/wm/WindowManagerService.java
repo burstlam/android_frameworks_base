@@ -866,6 +866,8 @@ public class WindowManagerService extends IWindowManager.Stub
         }
 
         ThemeUtils.registerThemeChangeReceiver(mContext, mThemeChangeReceiver);
+        
+        StatusbarSwipeManager.getInstance().setContext(mContext);
     }
 
     private Context getUiContext() {
@@ -11312,4 +11314,17 @@ public class WindowManagerService extends IWindowManager.Stub
             displayContent.updateDisplayInfo();
         }
     }
+    
+    public void startSwipeTimer(){
+        StatusbarSwipeManager.getInstance().startTimer();
+    }
+    
+    public void stopSwipeTimer(){
+        StatusbarSwipeManager.getInstance().stopTimer();
+    }
+    
+    public void resumeSwipeTimer(){
+        StatusbarSwipeManager.getInstance().resumeTimer();
+    }
+
 }

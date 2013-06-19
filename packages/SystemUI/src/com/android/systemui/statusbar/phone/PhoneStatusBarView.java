@@ -18,6 +18,8 @@ package com.android.systemui.statusbar.phone;
 
 import android.app.ActivityManager;
 import android.app.StatusBarManager;
+import android.os.ServiceManager;
+import android.os.RemoteException;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.Resources.NotFoundException;
@@ -29,6 +31,7 @@ import android.util.Slog;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.IWindowManager;
 
 import com.android.internal.util.aokp.BackgroundAlphaColorDrawable;
 import com.android.systemui.R;
@@ -48,6 +51,8 @@ public class PhoneStatusBarView extends PanelBar {
     PanelView mNotificationPanel, mSettingsPanel;
     private boolean mShouldFade;
     private int mToggleStyle;
+
+    private IWindowManager mWm;
 
     public PhoneStatusBarView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -69,6 +74,8 @@ public class PhoneStatusBarView extends PanelBar {
         // no need for observer, sysui gets killed when the style is changed.
         mToggleStyle = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.TOGGLES_STYLE, 0);
+
+        mWm = IWindowManager.Stub.asInterface(ServiceManager.getService("window"));
     }
 
     public void setBar(PhoneStatusBar bar) {
@@ -184,6 +191,12 @@ public class PhoneStatusBarView extends PanelBar {
         mFadingPanel = null;
         mLastFullyOpenedPanel = null;
 
+        try {
+            mWm.resumeSwipeTimer();
+        } catch(RemoteException e){
+            Slog.e(TAG, "resumeSwipeTimer", e);
+        }
+
         Settings.System.putInt(mContext.getContentResolver(),
             Settings.System.TOGGLE_NOTIFICATION_SHADE, 0);
     }
@@ -198,6 +211,12 @@ public class PhoneStatusBarView extends PanelBar {
         mFadingPanel = openPanel;
         mLastFullyOpenedPanel = openPanel;
         mShouldFade = true; // now you own the fade, mister
+
+        try {
+            mWm.stopSwipeTimer();
+        } catch(RemoteException e){
+            Slog.e(TAG, "stopSwipeTimer", e);
+        }
     }
 
     @Override

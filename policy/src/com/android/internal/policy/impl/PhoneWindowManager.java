@@ -645,6 +645,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     PowerManager.WakeLock mBroadcastWakeLock;
     boolean mHavePendingMediaKeyRepeatWithWakeLock;
 
+    private boolean mIsShowingHiddenWithSwipe = false;
+    private boolean mStatusbarHidden = false;
+
     // Fallback actions by key code.
     private final SparseArray<KeyCharacterMap.FallbackAction> mFallbackActions =
             new SparseArray<KeyCharacterMap.FallbackAction>();
@@ -758,6 +761,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     Settings.System.NAV_HIDE_ENABLE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUSBAR_HIDDEN_NOW), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUSBAR_SHOW_HIDDEN_WITH_SWIPE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAVIGATION_BAR_HEIGHT), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -1144,6 +1149,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     try {
                         IStatusBarService statusbar = getStatusBarService();
                         if (statusbar != null) {
+                            // fake as a swipe to show it always
+                            try {
+                                mWindowManager.startSwipeTimer();
+                            } catch(RemoteException e){
+                                Log.e(TAG, "startSwipeTimer", e);
+                            }
+
                             statusbar.toggleNotificationShade();
                         }
                     } catch (RemoteException e) {
@@ -1917,6 +1929,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mNavBarAutoHide = NavHide;
             resetScreenHelper(); 
         }
+
+        mIsShowingHiddenWithSwipe = Settings.System.getBoolean(mContext.getContentResolver(), 
+                        Settings.System.STATUSBAR_SHOW_HIDDEN_WITH_SWIPE, false);
+
+        mStatusbarHidden = Settings.System.getBoolean(mContext.getContentResolver(), 
+                        Settings.System.STATUSBAR_HIDDEN_NOW, false);
     }
 
     private void resetScreenHelper() {
@@ -4128,13 +4146,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 // and mTopIsFullscreen is that that mTopIsFullscreen is set only if the window
                 // has the FLAG_FULLSCREEN set.  Not sure if there is another way that to be the
                 // case though.
-                boolean settingStatusbarHidden = Settings.System.getBoolean(mContext.getContentResolver(),
-                        Settings.System.STATUSBAR_HIDDEN_NOW, false);
                 boolean toggleNotificationShade = Settings.System.getInt(mContext.getContentResolver(),
                         Settings.System.TOGGLE_NOTIFICATION_SHADE, 0) == 1;
 
                 if ((topIsFullscreen && !toggleNotificationShade)
-                        || (settingStatusbarHidden && !toggleNotificationShade)
+                        || (mStatusbarHidden && !toggleNotificationShade && !mIsShowingHiddenWithSwipe)
                         || (mExpandedState == 1 &&
                            (mExpandedStyle == 2 || mExpandedStyle == 3)&& !toggleNotificationShade)) {
                     if (DEBUG_LAYOUT) Log.v(TAG, "** HIDING status bar");
