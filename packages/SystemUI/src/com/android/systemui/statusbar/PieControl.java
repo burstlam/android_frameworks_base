@@ -53,6 +53,8 @@ public class PieControl implements OnClickListener {
     public static final String RECENT_BUTTON = "##recent##";
     public static final String POWER_BUTTON = "##power##";
     public static final String LAST_APP_BUTTON = "##lastapp##";
+    public static final String KILL_TASK_BUTTON = "##killtask##";
+    public static final String APP_WINDOW_BUTTON = "##appwindow##";
 
     protected Context mContext;
     protected PieMenu mPie;
@@ -63,6 +65,8 @@ public class PieControl implements OnClickListener {
     private PieItem mMenu;
     private PieItem mRecent;
     private PieItem mLastApp;
+    private PieItem mKillTask;
+    private PieItem mAppWindow;
     private PieItem mSearch;
     private PieItem mPower;
     private OnNavButtonPressedListener mListener;
@@ -124,10 +128,14 @@ public class PieControl implements OnClickListener {
         mRecent = makeItem(R.drawable.ic_sysbar_recent, 1, RECENT_BUTTON, false);
         mPower = makeItem(R.drawable.ic_sysbar_power, 1, POWER_BUTTON, true);
         mLastApp = makeItem(R.drawable.ic_sysbar_lastapp, 1, LAST_APP_BUTTON, true);
+        mKillTask = makeItem(R.drawable.ic_sysbar_killtask_pie, 1, KILL_TASK_BUTTON, true);
+        mAppWindow = makeItem(R.drawable.ic_sysbar_appwindow_pie, 1, APP_WINDOW_BUTTON, true);
         mMenu = makeItem(R.drawable.ic_sysbar_menu, 1, MENU_BUTTON, true);
+        mPie.addItem(mKillTask);
+        mPie.addItem(mLastApp);
+        mPie.addItem(mAppWindow);
         mPie.addItem(mMenu);
         mPie.addItem(mPower);
-        mPie.addItem(mLastApp);
 
         if(mIsAssistantAvailable) {
             mSearch = makeItem(R.drawable.ic_sysbar_search_side, 1, SEARCH_BUTTON, true);
