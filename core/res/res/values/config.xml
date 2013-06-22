@@ -1219,6 +1219,9 @@
     <!-- Integer to configure panel auto brightness mode when changed -->
     <integer name="config_panelAutoBrightnessValue">-1</integer>
 
+    <!-- Boolean to enable adb by default on a per-device basis -->
+    <bool name="config_enableAdbByDefault">false</bool>
+
     <!-- True if the Irda service should be started at system start -->
     <bool name="config_enableIrdaManagerService">false</bool>
 
