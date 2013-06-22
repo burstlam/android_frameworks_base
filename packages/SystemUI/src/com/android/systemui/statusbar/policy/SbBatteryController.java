@@ -86,7 +86,8 @@ public class SbBatteryController extends LinearLayout {
 	public static final int STYLE_ICON_PLANET_RB = 11;
 	public static final int STYLE_ICON_RACING_RB = 12;
 	public static final int STYLE_ICON_SLIDER_RB = 13;
-    public static final int STYLE_HIDE = 14;
+    public static final int STYLE_ICON_RUSH_RB = 14;
+    public static final int STYLE_HIDE = 15;
 
     public SbBatteryController(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -185,6 +186,10 @@ public class SbBatteryController extends LinearLayout {
 			case STYLE_ICON_SLIDER_RB:
                  icon = plugged ? R.drawable.stat_sys_battery_charge_slider
                  : R.drawable.stat_sys_battery_slider;
+                 break;
+            case STYLE_ICON_RUSH_RB:
+                 icon = plugged ? R.drawable.stat_sys_battery_charge_rush
+                 : R.drawable.stat_sys_battery_rush;
                  break;
             default:
                  icon = plugged ? R.drawable.stat_sys_battery_charge
@@ -392,6 +397,12 @@ public class SbBatteryController extends LinearLayout {
                 mBatteryCenterText.setVisibility(View.GONE);
                 mBatteryIcon.setVisibility(View.VISIBLE);
                 mBatteryTextOnly.setVisibility(View.GONE);
+                setVisibility(View.VISIBLE);
+                break;
+            case STYLE_ICON_RUSH_RB:
+                mBatteryText.setVisibility(View.GONE);
+                mBatteryCenterText.setVisibility(View.GONE);
+                mBatteryIcon.setVisibility(View.VISIBLE);
                 setVisibility(View.VISIBLE);
                 break;
             default:
