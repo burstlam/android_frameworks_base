@@ -3613,16 +3613,6 @@ public final class Settings {
         public static final String STATUSBAR_WIFI_SIGNAL_TEXT_COLOR = "statusbar_wifi_signal_text_color";
 
         /**
-         * Which lockscreen style to use. The value is an integer.
-         * ( 0 - GlowPadView    : JB     )
-         * ( 1 - MultiwaveView  : ICS    )
-         * ( 2 - Tabs           : GB     )
-         * ( 3 - Rotary         : Eclair )
-         * @hide
-         */
-        public static final String LOCKSCREEN_STYLE = "lockscreen_style";
-
-        /**
          *
          * @hide
          */
