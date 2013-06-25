@@ -1778,5 +1778,6 @@
   <java-symbol type="drawable" name="shadow_left" />
   <java-symbol type="drawable" name="shadow_right" />
   <java-symbol type="drawable" name="shadow_bottom" />
+  <java-symbol type="integer" name="min_gesture_prediction_score" />
 
 </resources>

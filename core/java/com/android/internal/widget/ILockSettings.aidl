@@ -16,6 +16,8 @@
 
 package com.android.internal.widget;
 
+import android.gesture.Gesture;
+
 /** {@hide} */
 interface ILockSettings {
     void setBoolean(in String key, in boolean value, in int userId);
@@ -29,7 +31,10 @@ interface ILockSettings {
     boolean checkPattern(in String pattern, int userId);
     void setLockPassword(in String password, int userId);
     boolean checkPassword(in String password, int userId);
+    void setLockGesture(in Gesture gesture, int userId);
+    boolean checkGesture(in Gesture gesture, int userId);
     boolean havePattern(int userId);
+    boolean haveGesture(int userId);
     boolean havePassword(int userId);
     void removeUser(int userId);
 }
