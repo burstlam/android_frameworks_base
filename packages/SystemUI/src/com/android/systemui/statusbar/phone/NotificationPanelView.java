@@ -196,6 +196,8 @@ public class NotificationPanelView extends PanelView {
 
             switch (event.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:
+                    if (mStatusBar.mHideSettingsPanel)
+                        break;
                     if (mSwipeToSwitch) {
                       mGestureStartX = event.getX(0);
                       mGestureStartY = event.getY(0);
@@ -221,6 +223,8 @@ public class NotificationPanelView extends PanelView {
                     }
                     break;
                 case MotionEvent.ACTION_MOVE:
+                    if (mStatusBar.mHideSettingsPanel)
+                        break;
                     if (mSwipeToSwitch) {
                         final float deltaX = Math.abs(event.getX(0) - mGestureStartX);
                         final float deltaY = Math.abs(event.getY(0) - mGestureStartY);
@@ -255,18 +259,8 @@ public class NotificationPanelView extends PanelView {
                     }
                     break;
                 case MotionEvent.ACTION_POINTER_DOWN:
-                    if (mOkToFlip) {
-                        float miny = event.getY(0);
-                        float maxy = miny;
-                        for (int i=1; i<event.getPointerCount(); i++) {
-                            final float y = event.getY(i);
-                            if (y < miny) miny = y;
-                            if (y > maxy) maxy = y;
-                        }
-                        if (maxy - miny < mHandleBarHeight) {
-                            shouldFlip = true;
-                        }
-                    }
+                    if (!mStatusBar.mHideSettingsPanel)
+                        shouldFlip = true;
                     break;
                 case MotionEvent.ACTION_UP:
                     if (mSwipeToSwitch) {
@@ -276,8 +270,8 @@ public class NotificationPanelView extends PanelView {
                     }
                     break;
             }
-            if(mOkToFlip && shouldFlip) {
-                if (getMeasuredHeight() < mHandleBarHeight) {
+            if (mOkToFlip && shouldFlip && !mStatusBar.mHideSettingsPanel) {
+                if (mJustPeeked || getExpandedHeight() < mHandleBarHeight) {
                     mStatusBar.switchToSettings();
                 } else {
                     mStatusBar.flipToSettings();
