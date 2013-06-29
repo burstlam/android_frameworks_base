@@ -107,6 +107,7 @@ public class ToggleManager {
     public static final String WIRELESS_ADB_TOGGLE = "WIRELESSADB";
     public static final String DARK_TOGGLE = "DARK";
     public static final String MUSIC_TOGGLE = "MUSIC";
+    public static final String HALO_TOGGLE = "HALO";
 
     private int mStyle;
     private boolean mShowRebootOnLock = true;
@@ -184,6 +185,7 @@ public class ToggleManager {
             toggleMap.put(WIRELESS_ADB_TOGGLE, WirelessAdbToggle.class);
             toggleMap.put(DARK_TOGGLE, DarkToggle.class);
             toggleMap.put(MUSIC_TOGGLE, MusicToggle.class);
+            toggleMap.put(HALO_TOGGLE, HaloToggle.class);
             // toggleMap.put(BT_TETHER_TOGGLE, null);
         }
         return toggleMap;
