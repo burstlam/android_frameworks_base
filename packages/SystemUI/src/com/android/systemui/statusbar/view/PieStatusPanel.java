@@ -36,6 +36,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Handler;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Animation;
