@@ -232,6 +232,7 @@ public class PieMenu extends FrameLayout {
     private boolean mHapticFeedback;
     private boolean mNavbarOff;
     private boolean mSbarHide;
+    private boolean mIsProtected;
 
     // Animations
     private int mGlowOffsetLeft = 150;
@@ -313,6 +314,7 @@ public class PieMenu extends FrameLayout {
                 Settings.System.PIE_GAP, 2);
         mHapticFeedback = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.HAPTIC_FEEDBACK_ENABLED, 1) != 0;
+        mIsProtected = mPanel.getKeyguardStatus();
 
         // Snap
         mSnapRadius = (int)(mResources.getDimensionPixelSize(R.dimen.pie_snap_radius) * mPieSize);
@@ -802,7 +804,7 @@ public class PieMenu extends FrameLayout {
             int state;
 
             // Draw background
-            if (mStatusMode != -1) {
+            if (mStatusMode != -1 && !mIsProtected) {
                 canvas.drawARGB((int)(mAnimators[ANIMATOR_DEC_SPEED15].fraction * 0xcc), 0, 0, 0);
             }
 
@@ -838,7 +840,7 @@ public class PieMenu extends FrameLayout {
             }
 
             // Paint status report only if settings allow
-            if (mStatusMode != -1) {
+            if (mStatusMode != -1 && !mIsProtected) {
 
                 // Draw chevron rings
                 mChevronBackgroundLeft.setAlpha((int)(mAnimators[ANIMATOR_DEC_SPEED15].fraction * mGlowOffsetLeft / 2 * (mPanelOrientation == Gravity.TOP ? 0.2 : 1)));
