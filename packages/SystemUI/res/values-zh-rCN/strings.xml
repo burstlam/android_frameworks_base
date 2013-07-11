@@ -31,9 +31,6 @@
     <item quantity="other" msgid="1040784359794890744">"%d 个最近运行的应用"</item>
   </plurals>
 
-    <!-- Content description of the halo button in the notification panel for accessibility (not shown on the screen). [CHAR LIMIT=NONE] -->
-    <string name="accessibility_halo">打开HALO</string>
-
     <string name="status_bar_no_notifications_title" msgid="4755261167193833213">"无通知"</string>
     <string name="status_bar_ongoing_events_title" msgid="1682504513316879202">"正在进行的"</string>
     <string name="status_bar_latest_events_title" msgid="6594767438577593172">"通知"</string>
@@ -262,5 +259,10 @@
     <string name="pie_phone_status_no_service">无服务</string>
     <string name="pie_phone_status_airplane_mode">已进入飞行模式</string>
     <string name="pie_phone_status_emergency_only">仅可拨打紧急电话</string>
+
+    <!-- HALO -->
+    <string name="accessibility_halo">打开HALO</string>
+    <string name="halo_dismiss">取消通知</string>
+    <string name="halo_hide">隐藏HALO</string>
 
 </resources>
