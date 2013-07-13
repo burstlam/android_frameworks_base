@@ -346,16 +346,20 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
             // Do the startup animations only once
             mFirstStart = false;
             // Halo dock position
-            mTickerLeft = savePositionX == 0 ? true : false;
-            updateTriggerPosition(savePositionX, savePositionY);
+            mTickerLeft = msavePositionX == 0 ? true : false;
+            updateTriggerPosition(msavePositionX, msavePositionY);
             mEffect.mHaloTextViewL.setVisibility(mTickerLeft ? View.VISIBLE : View.GONE);
             mEffect.mHaloTextViewR.setVisibility(mTickerLeft ? View.GONE : View.VISIBLE);
-            mEffect.setHaloX(savePositionX);
-            mEffect.setHaloY(savePositionY);
+            mEffect.setHaloX(msavePositionX);
+            mEffect.setHaloY(msavePositionY);
             mEffect.nap(500);
             if (mHideTicker) mEffect.sleep(HaloEffect.SNAP_TIME + HaloEffect.NAP_TIME + 2500, HaloEffect.SLEEP_TIME, false);
         }
-    }    
+    }
+
+    private boolean isLandscapeMod() {
+        return mScreenWidth < mScreenHeight;
+    }
 
     private void updateTriggerPosition(int x, int y) {
         try {
