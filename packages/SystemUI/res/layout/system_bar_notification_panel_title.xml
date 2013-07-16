@@ -87,6 +87,15 @@
                 android:contentDescription="@string/accessibility_notifications_button" />
        </FrameLayout>
 
+       <ImageView android:id="@+id/clear_all_button"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:scaleType="center"
+           android:src="@drawable/ic_notify_clear"
+           android:paddingTop="6dp"
+           android:contentDescription="@string/accessibility_clear_all" />
+      </LinearLayout>
+
         <ImageView android:id="@+id/halo_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -96,15 +105,6 @@
             android:paddingRight="15dp"
             android:src="@drawable/ic_notify_halo_normal"
             android:contentDescription="@string/accessibility_halo" />
-
-       <ImageView android:id="@+id/clear_all_button"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:scaleType="center"
-           android:src="@drawable/ic_notify_clear"
-           android:paddingTop="6dp"
-           android:contentDescription="@string/accessibility_clear_all" />
-      </LinearLayout>
     </RelativeLayout>
     <TableLayout
         android:id="@+id/icons"
