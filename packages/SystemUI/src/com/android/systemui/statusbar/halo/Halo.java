@@ -788,8 +788,14 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
 
                         boolean gestureChanged = false;
                         final int deltaIndex = (Math.abs(deltaY) - verticalThreshold) / verticalSteps;
-                        if (deltaY > 0) {                           
--                            if (deltaIndex < 2 && mGesture != Gesture.UP1) {
+                        if (deltaIndex < 1 && mGesture != Gesture.NONE) {
+                            // Dead zone buffer to prevent accidental notifiction dismissal
+                            gestureChanged = true;
+                            mEffect.setHaloOverlay(HaloProperties.Overlay.NONE, 0f);
+                            if (verticalGesture()) gestureText = "";
+                            mGesture = Gesture.NONE;
+                        } else if (deltaY > 0) { 
+                            if (deltaIndex == 1 && mGesture != Gesture.UP1) {
                                 mGesture = Gesture.UP1;
                                 gestureChanged = true;
                                 mEffect.setHaloOverlay(HaloProperties.Overlay.DISMISS, 1f);
