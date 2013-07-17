@@ -153,7 +153,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
     private String mNotificationText = "";
 
     private Paint mPaintHolo = new Paint();
-    private Paint mPaintHoloBlue = new Paint();
+    private Paint mPaintHoloCustom = new Paint();
     private Paint mPaintWhite = new Paint();
     private Paint mPaintHoloRed = new Paint();
 
@@ -219,9 +219,9 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
             if (!selfChange) {
                 mEffect.wake();
                 if (mEnableColor) {
-                    mEffect.ping(mPaintHolo, HaloEffect.WAKE_TIME);
+                    mEffect.ping(mPaintHoloCustom, HaloEffect.WAKE_TIME);
                 } else {
-                    mEffect.ping(mPaintHoloBlue, HaloEffect.WAKE_TIME);
+                    mEffect.ping(mPaintHolo, HaloEffect.WAKE_TIME);
                 }
                 mEffect.nap(HaloEffect.SNAP_TIME + 1000);
                 if (mHideTicker) mEffect.sleep(HaloEffect.SNAP_TIME + HaloEffect.NAP_TIME + 2500, HaloEffect.SLEEP_TIME, false);
@@ -259,10 +259,10 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
         int color = Settings.System.getInt(mContext.getContentResolver(), 
                Settings.System.HALO_EFFECT_COLOR, 0xFF33B5E5);
 
+        mPaintHoloCustom.setAntiAlias(true);
+        mPaintHoloCustom.setColor(color);
         mPaintHolo.setAntiAlias(true);
-        mPaintHolo.setColor(color);
-        mPaintHoloBlue.setAntiAlias(true);
-        mPaintHoloBlue.setColor(0xff33b5e5);
+        mPaintHolo.setColor(getResources().getColor(R.color.halo_ping_color));
         mPaintWhite.setAntiAlias(true);
         mPaintWhite.setColor(0xfff0f0f0);
         mPaintHoloRed.setAntiAlias(true);
@@ -814,7 +814,11 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
                                 tick(mLastNotificationEntry, gestureText, 0, 250);
 
                                 // Ping to notify the user we're back where we started
-                                mEffect.ping(mPaintHoloBlue, 0);
+                                if (mEnableColor) {
+                                    mEffect.ping(mPaintHoloCustom, 0);
+                                } else {
+                                    mEffect.ping(mPaintHolo, 0);
+                                }
                             } else {
                                 setIcon(mMarkerIndex);
 
@@ -1239,9 +1243,9 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
 
                         // Pop while not tasking, only if notification is certified fresh
                         if (mEnableColor) {
-                            if (mGesture != Gesture.TASK && mState != State.SILENT) mEffect.ping(mPaintHolo, HaloEffect.WAKE_TIME);
+                            if (mGesture != Gesture.TASK && mState != State.SILENT) mEffect.ping(mPaintHoloCustom, HaloEffect.WAKE_TIME);
                         } else {
-                            if (mGesture != Gesture.TASK && mState != State.SILENT) mEffect.ping(mPaintHoloBlue, HaloEffect.WAKE_TIME);
+                            if (mGesture != Gesture.TASK && mState != State.SILENT) mEffect.ping(mPaintHolo, HaloEffect.WAKE_TIME);
                         }
 
                         if (mState == State.IDLE || mState == State.HIDDEN) {
