@@ -401,7 +401,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
                 View rightMenuKey = generateKey(landscape, KEY_MENU_RIGHT);
                 addButton(navButtonLayout, rightMenuKey, landscape && !mLeftyMode);
                 addLightsOutButton(lightsOut, rightMenuKey, landscape && !mLeftyMode, true);
-            } else if(mMenuArrowKeys) {
+            } else if (mMenuArrowKeys) {
                     addButton(navButtonLayout, generateKey(landscape, KEY_ARROW_LEFT), !landscape);
                     addButton(navButtonLayout, generateKey(landscape, KEY_ARROW_RIGHT), landscape);
             }
