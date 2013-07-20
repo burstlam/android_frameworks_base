@@ -4206,6 +4206,7 @@
     <string name="action_app_window">App Window</string>
     <string name="action_ribbon">AOKP Ribbon</string>
     <string name="action_app">Custom App/Shortcut</string>
+    <string name="action_qs">QuickSettings</string>
 
     <!-- Privacy Guard -->
     <string name="permlab_changePrivacyGuardState">enable or disable privacy guard</string>
@@ -4228,5 +4229,4 @@ le to access personal data</string>
     <string name="permdesc_interceptSmsSent">Allows the app to
         intercept an outgoing SMS.
         Malicious apps may use this to prevent outgoing SMS messages.</string>
-
 </resources>

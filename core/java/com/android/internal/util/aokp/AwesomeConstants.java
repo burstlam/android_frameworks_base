@@ -51,6 +51,7 @@ public class AwesomeConstants {
         ACTION_WIDGETS       { @Override public String value() { return "**widgets**";}},
         ACTION_APP_WINDOW    { @Override public String value() { return "**app_window**";}},
         ACTION_NOTIFICATIONS { @Override public String value() { return "**notifications**";}},
+        ACTION_QS            { @Override public String value() { return "**quicksettings**";}},
         ACTION_CLOCKOPTIONS  { @Override public String value() { return "**clockoptions**";}},
         ACTION_VOICEASSIST   { @Override public String value() { return "**voiceassist**";}},
         ACTION_LAST_APP      { @Override public String value() { return "**lastapp**";}},
@@ -174,6 +175,9 @@ public class AwesomeConstants {
             case ACTION_NOTIFICATIONS:
                 value = res.getString(com.android.internal.R.string.action_notifications);
                 break;
+            case ACTION_QS:
+                value = res.getString(com.android.internal.R.string.action_qs);
+                break;
             case ACTION_ASSIST:
                 value = res.getString(com.android.internal.R.string.action_assist);
                 break;
@@ -268,6 +272,9 @@ public class AwesomeConstants {
                 break;
             case ACTION_NOTIFICATIONS:
                 value = getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_notifications");
+                break;
+            case ACTION_QS:
+                value = getSystemUIDrawable(context, "com.android.systemui.drawable/ic_sysbar_qs");
                 break;
             case ACTION_ASSIST:
                 value = getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_assist");

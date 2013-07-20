@@ -226,10 +226,18 @@ public class AwesomeAction {
             case ACTION_NOTIFICATIONS:
                 try {
                     IStatusBarService.Stub.asInterface(
-                            ServiceManager.getService(mContext.STATUS_BAR_SERVICE)).expandNotificationsPanel();
+                            ServiceManager.getService(mContext.STATUS_BAR_SERVICE)).toggleNotificationShade();
                 } catch (RemoteException e) {
                     // A RemoteException is like a cold
                     // Let's hope we don't catch one!
+                }
+                break;
+            case ACTION_QS:
+                try {
+                    IStatusBarService.Stub.asInterface(
+                            ServiceManager.getService(mContext.STATUS_BAR_SERVICE)).toggleQSShade();
+                } catch (RemoteException e) {
+                    // wtf is this
                 }
                 break;
             case ACTION_APP:
