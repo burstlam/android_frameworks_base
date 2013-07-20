@@ -659,7 +659,7 @@ public class InputMethodService extends AbstractInputMethodService {
         //IME is not showing on first onCreate to be sure
         //toggle it off for PIE
         Settings.System.putInt(getContentResolver(),
-                Settings.System.PIE_SOFTKEYBOARD_IS_SHOWING, 0);
+                Settings.System.SPIE_SOFTKEYBOARD_IS_SHOWING, 0);
 
         initViews();
         mWindow.getWindow().setLayout(MATCH_PARENT, WRAP_CONTENT);
@@ -1430,7 +1430,7 @@ public class InputMethodService extends AbstractInputMethodService {
 
         //IME softkeyboard is showing....toggle it
         Settings.System.putInt(getContentResolver(),
-                Settings.System.PIE_SOFTKEYBOARD_IS_SHOWING, 1);
+                Settings.System.SPIE_SOFTKEYBOARD_IS_SHOWING, 1);
 
         int mKeyboardRotationTimeout = Settings.System.getInt(getContentResolver(),
                 Settings.System.KEYBOARD_ROTATION_TIMEOUT, 0);
@@ -1531,7 +1531,7 @@ public class InputMethodService extends AbstractInputMethodService {
 
         //IME softkeyboard is hiding....toggle it
         Settings.System.putInt(getContentResolver(),
-                Settings.System.PIE_SOFTKEYBOARD_IS_SHOWING, 0);
+                Settings.System.SPIE_SOFTKEYBOARD_IS_SHOWING, 0);
 
         int mKeyboardRotationTimeout = Settings.System.getInt(getContentResolver(),
                 Settings.System.KEYBOARD_ROTATION_TIMEOUT, 0);

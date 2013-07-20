@@ -424,9 +424,9 @@ public class PhoneStatusBar extends BaseStatusBar {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUSBAR_AUTO_EXPAND_HIDDEN), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_DISABLE_STATUSBAR_INFO), false, this);
+                    Settings.System.SPIE_DISABLE_STATUSBAR_INFO), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_CONTROLS), false, this);
+                    Settings.System.SPIE_CONTROLS), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.EXPANDED_DESKTOP_STATE), false, this);
             update();
@@ -1758,11 +1758,11 @@ public class PhoneStatusBar extends BaseStatusBar {
         if (mStatusBarView == null) return;
         ContentResolver resolver = mContext.getContentResolver();
         boolean disableStatusBarInfo = Settings.System.getInt(resolver,
-                Settings.System.PIE_DISABLE_STATUSBAR_INFO, 0) == 1;
+                Settings.System.SPIE_DISABLE_STATUSBAR_INFO, 0) == 1;
         if (disableStatusBarInfo) {
             // call only the settings if statusbar info is really hidden
             int pieMode = Settings.System.getInt(resolver,
-                    Settings.System.PIE_CONTROLS, 0);
+                    Settings.System.SPIE_CONTROLS, 0);
             boolean expandedDesktopState = Settings.System.getInt(resolver,
                     Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
 
@@ -2825,6 +2825,9 @@ public class PhoneStatusBar extends BaseStatusBar {
 
         if (mPieControlPanel != null)
             mPieControlPanel.setMenu(showMenu);
+
+        if (mPieControlsTrigger != null)
+            mPieControlsTrigger.setVisibility(!mPieControlPanel.getKeyguardStatus() ? View.VISIBLE : View.GONE);
 
         if (DEBUG) {
             Slog.d(TAG, (showMenu?"showing":"hiding") + " the MENU button");

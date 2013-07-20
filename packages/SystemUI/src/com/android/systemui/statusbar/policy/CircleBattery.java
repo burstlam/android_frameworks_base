@@ -116,7 +116,7 @@ public class CircleBattery extends ImageView {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUSBAR_CMCIRLE_RING_COLOR_CHARGE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_DISABLE_STATUSBAR_INFO), false, this);
+                    Settings.System.SPIE_DISABLE_STATUSBAR_INFO), false, this);
             onChange(true);
         }
 
@@ -133,8 +133,8 @@ public class CircleBattery extends ImageView {
             mPercentage = (batteryStyle == SbBatteryController.BATTERY_STYLE_CIRCLE_PERCENT);
 
             if (Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.PIE_DISABLE_STATUSBAR_INFO, 0) == 1) {
-            BatteryStyle = sbBatteryController.STYLE_HIDE;
+                Settings.System.SPIE_DISABLE_STATUSBAR_INFO, 0) == 1) {
+            batteryStyle = SbBatteryController.STYLE_HIDE;
             }
 
             setVisibility(mActivated ? View.VISIBLE : View.GONE);

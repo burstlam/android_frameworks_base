@@ -349,11 +349,6 @@ public abstract class BaseStatusBar extends SystemUI implements
     public void collapse() {
     }
 
-    @Override
-    protected void onConfigurationChanged(Configuration newConfig) {
-        if (mPieControlPanel != null) mPieControlPanel.bumpConfiguration();
-    }
-
     public QuickSettingsContainerView getQuickSettingsPanel() {
         // This method should be overriden
         return null;
@@ -613,15 +608,8 @@ public abstract class BaseStatusBar extends SystemUI implements
                     if (true) Slog.v(TAG, "userId " + mCurrentUserId + " is in the house");
                     userSwitched(mCurrentUserId);
                 }
-            }, filter);
-
-            mSettingsObserver = new PieSettingsObserver(new Handler());
-
-            // this calls attachPie() implicitly
-            mSettingsObserver.onChange(true);
-
-            mSettingsObserver.observe(); 
-    }
+            }
+        }, filter);
 
         // Only watch for per app color changes when the setting is in check
         if (ColorUtils.getPerAppColorState(mContext)) {
@@ -646,44 +634,41 @@ public abstract class BaseStatusBar extends SystemUI implements
 
             updateIconColor();
             updateBackgroundColor();
+            }
 
-            // Listen for status bar icon color changes
-            mContext.getContentResolver().registerContentObserver(
-                Settings.System.getUriFor(Settings.System.STATUS_ICON_COLOR), false, new ContentObserver(new Handler()) {
-                    @Override
-                    public void onChange(boolean selfChange) {
-                        updateIconColor();
-                    }});
+        // Listen for status bar icon color changes
+        mContext.getContentResolver().registerContentObserver(
+            Settings.System.getUriFor(Settings.System.STATUS_ICON_COLOR), false, new ContentObserver(new Handler()) {
+                @Override
+                public void onChange(boolean selfChange) {
+                    updateIconColor();
+                }});
 
-            // Listen for status bar background color changes
-            mContext.getContentResolver().registerContentObserver(
-                Settings.System.getUriFor(ExtendedPropertiesUtils.isTablet() ?
-                        Settings.System.NAV_BAR_COLOR : Settings.System.STATUS_BAR_COLOR),
-                        false, new ContentObserver(new Handler()) {
-                    @Override
-                    public void onChange(boolean selfChange) {
-                        updateBackgroundColor();
-                    }});
+        // Listen for status bar background color changes
+        mContext.getContentResolver().registerContentObserver(
+            Settings.System.getUriFor(ExtendedPropertiesUtils.isTablet() ?
+                    Settings.System.NAV_BAR_COLOR : Settings.System.STATUS_BAR_COLOR),
+                    false, new ContentObserver(new Handler()) {
+                @Override
+                public void onChange(boolean selfChange) {
+                    updateBackgroundColor();
+                }});
 
-            // Listen for per-app-color state changes, this one will revert to stock colors all over
-            mContext.getContentResolver().registerContentObserver(
-                Settings.System.getUriFor(Settings.System.PER_APP_COLOR),
-                        false, new ContentObserver(new Handler()) {
-                    @Override
-                    public void onChange(boolean selfChange) {
-                        if (!ColorUtils.getPerAppColorState(mContext)) {
-                            for (int i = 0; i < ExtendedPropertiesUtils.BEERBONG_COLORS_COUNT; i++) {
-                                ColorUtils.ColorSettingInfo colorInfo = ColorUtils.getColorSettingInfo(mContext,
-                                        Settings.System.STATUS_ICON_COLOR);
-                                ColorUtils.setColor(mContext, ExtendedPropertiesUtils.BEERBONG_COLORS_SETTINGS[i],
-                                        colorInfo.systemColorString, "NULL", 1, 250);
-                            }
+        // Listen for per-app-color state changes, this one will revert to stock colors all over
+        mContext.getContentResolver().registerContentObserver(
+            Settings.System.getUriFor(Settings.System.PER_APP_COLOR),
+                    false, new ContentObserver(new Handler()) {
+                @Override
+                public void onChange(boolean selfChange) {
+                    if (!ColorUtils.getPerAppColorState(mContext)) {
+                        for (int i = 0; i < ExtendedPropertiesUtils.BEERBONG_COLORS_COUNT; i++) {
+                            ColorUtils.ColorSettingInfo colorInfo = ColorUtils.getColorSettingInfo(mContext,
+                                    Settings.System.STATUS_ICON_COLOR);
+                            ColorUtils.setColor(mContext, ExtendedPropertiesUtils.BEERBONG_COLORS_SETTINGS[i],
+                                    colorInfo.systemColorString, "NULL", 1, 250);
                         }
-                    }});
-        }
-
-        attachPie();
-
+                    }
+                }});
 
         // Listen for PIE gravity
         mContext.getContentResolver().registerContentObserver(
@@ -711,17 +696,20 @@ public abstract class BaseStatusBar extends SystemUI implements
                 updateHalo();
             }});
 
-        updateHalo();
-
-        mContext.getContentResolver().registerContentObserver(
+       mContext.getContentResolver().registerContentObserver(
                 Settings.System.getUriFor(Settings.System.HALO_SIZE), false, new ContentObserver(new Handler()) {
             @Override
             public void onChange(boolean selfChange) {                
                 restartHalo();
             }});
 
-        SettingsObserver settingsObserver = new SettingsObserver(new Handler());
-        settingsObserver.observe();
+        updateHalo();
+
+        mSettingsObserver = new PieSettingsObserver(new Handler());
+
+        // this calls attachPie() implicitly
+        mSettingsObserver.onChange(true);
+        mSettingsObserver.observe();
     }
 
     public void setHaloTaskerActive(boolean haloTaskerActive, boolean updateNotificationIcons) {
@@ -780,6 +768,11 @@ public abstract class BaseStatusBar extends SystemUI implements
                 mHalo = null;
             }
         }
+
+        attachPie();
+
+        SettingsObserver settingsObserver = new SettingsObserver(new Handler());
+        settingsObserver.observe();
     }
 
     private boolean showPie() {
@@ -1180,6 +1173,16 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     protected H createHandler() {
          return new H();
+    }
+
+    static int screenLayout() {
+        final int screenSize = Resources.getSystem().getConfiguration().screenLayout &
+                Configuration.SCREENLAYOUT_SIZE_MASK;
+        return screenSize;
+    }
+
+    protected boolean isScreenPortrait() {
+        return mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
     }
 
     static void sendCloseSystemWindows(Context context, String reason) {
@@ -2000,8 +2003,9 @@ public abstract class BaseStatusBar extends SystemUI implements
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
+        if (mPieControlPanel != null) mPieControlPanel.bumpConfiguration();
         if (DEBUG) Slog.d(TAG, "Configuration changed! Update pie triggers");
-        attachPie();
+        attachSPie();
     }
 
     private final class PieSettingsObserver extends ContentObserver {
@@ -2012,19 +2016,19 @@ public abstract class BaseStatusBar extends SystemUI implements
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_CONTROLS), false, this);
+                    Settings.System.SPIE_CONTROLS), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_GRAVITY), false, this);
+                    Settings.System.SPIE_GRAVITY), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_TRIGGER_GRAVITY_LEFT_RIGHT), false, this);
+                    Settings.System.SPIE_TRIGGER_GRAVITY_LEFT_RIGHT), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_TRIGGER_THICKNESS), false, this);
+                    Settings.System.SPIE_TRIGGER_THICKNESS), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_TRIGGER_HEIGHT), false, this);
+                    Settings.System.SPIE_TRIGGER_HEIGHT), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_TRIGGER_SHOW), false, this);
+                    Settings.System.SPIE_TRIGGER_SHOW), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_SOFTKEYBOARD_IS_SHOWING), false, this);
+                    Settings.System.SPIE_SOFTKEYBOARD_IS_SHOWING), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.EXPANDED_DESKTOP_STATE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -2046,36 +2050,36 @@ public abstract class BaseStatusBar extends SystemUI implements
         @Override
         public void onChange(boolean selfChange) {
             mPieTriggerSlots = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.PIE_GRAVITY, Position.LEFT.FLAG);
+                    Settings.System.SPIE_GRAVITY, Position.LEFT.FLAG);
             mPieShowTrigger = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.PIE_TRIGGER_SHOW, 0) == 1;
+                    Settings.System.SPIE_TRIGGER_SHOW, 0) == 1;
             mPieTriggerThickness = Settings.System.getFloat(mContext.getContentResolver(),
-                    Settings.System.PIE_TRIGGER_THICKNESS,
-                    mContext.getResources().getDimension(R.dimen.pie_trigger_thickness));
+                    Settings.System.SPIE_TRIGGER_THICKNESS,
+                    mContext.getResources().getDimension(R.dimen.pies_trigger_thickness));
             mPieTriggerHeight = Settings.System.getFloat(mContext.getContentResolver(),
-                    Settings.System.PIE_TRIGGER_HEIGHT,
+                    Settings.System.SPIE_TRIGGER_HEIGHT,
                     0.8f);
             mPieTriggerGravityLeftRight = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.PIE_TRIGGER_GRAVITY_LEFT_RIGHT,
+                    Settings.System.SPIE_TRIGGER_GRAVITY_LEFT_RIGHT,
                     Gravity.CENTER_VERTICAL);
             mPieImeIsShowing = Settings.System.getFloat(mContext.getContentResolver(),
-                    Settings.System.PIE_SOFTKEYBOARD_IS_SHOWING, 0) == 1
+                    Settings.System.SPIE_SOFTKEYBOARD_IS_SHOWING, 0) == 1
                     && Settings.System.getFloat(mContext.getContentResolver(),
-                    Settings.System.PIE_ADJUST_TRIGGER_FOR_IME, 1) == 1;
-            attachPie();
+                    Settings.System.SPIE_ADJUST_TRIGGER_FOR_IME, 1) == 1;
+            attachSPie();
         }
     }
 
     private boolean isPieEnabled() {
         boolean expanded = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
-        int pie = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.PIE_CONTROLS, 0);
+        int slimpie = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.SPIE_CONTROLS, 0);
 
-        return (pie == 1 && expanded) || pie == 2;
+        return (slimpie == 1 && expanded) || slimpie == 2;
     }
 
-    private void attachPie() {
+    private void attachSPie() {
         if (isPieEnabled()) {
             // Create our container, if it does not exist already
             if (mPieContainer == null) {
