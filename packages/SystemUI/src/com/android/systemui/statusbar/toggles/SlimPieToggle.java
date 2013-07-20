@@ -42,15 +42,6 @@ public class SlimPieToggle extends StatefulToggle {
     }
 
     @Override
-    public boolean onLongClick(View v) {
-        Intent intent = new Intent("android.intent.action.MAIN");
-        intent.setClassName("com.aokp.romcontrol", "com.aokp.romcontrol.slim.PieControl");
-        intent.addCategory("android.intent.category.DEFAULT");
-        startActivity(intent);
-        return super.onLongClick(v);
-    }
-
-    @Override
     protected void updateView() {
         boolean enabled = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.SPIE_CONTROLS, 0) == 2;
