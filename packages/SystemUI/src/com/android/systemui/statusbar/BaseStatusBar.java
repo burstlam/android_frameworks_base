@@ -352,6 +352,7 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     protected void onPieConfigurationChanged(Configuration newConfig) {
         if (mPieControlPanel != null) mPieControlPanel.bumpConfiguration();
+        attachPie();
     }
 
     public QuickSettingsContainerView getQuickSettingsPanel() {
@@ -876,16 +877,6 @@ public abstract class BaseStatusBar extends SystemUI implements
                 || thisUserId == notificationUserId;
     }
 
-    @Override
-    protected void onConfigurationChanged(Configuration newConfig) {
-        final Locale newLocale = mContext.getResources().getConfiguration().locale;
-        if (! newLocale.equals(mLocale)) {
-            mLocale = newLocale;
-            mLayoutDirection = TextUtils.getLayoutDirectionFromLocale(mLocale);
-            refreshLayout(mLayoutDirection);
-        }
-    }
-
     protected View updateNotificationVetoButton(View row, StatusBarNotification n) {
         View vetoButton = row.findViewById(R.id.veto);
         if (n.isClearable()) {
@@ -1127,6 +1118,16 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     protected H createHandler() {
          return new H();
+    }
+
+    static int screenLayout() {
+        final int screenSize = Resources.getSystem().getConfiguration().screenLayout &
+                Configuration.SCREENLAYOUT_SIZE_MASK;
+        return screenSize;
+    }
+
+    protected boolean isScreenPortrait() {
+        return mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
     }
 
     static void sendCloseSystemWindows(Context context, String reason) {
@@ -2182,10 +2183,15 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
+        final Locale newLocale = mContext.getResources().getConfiguration().locale;
+        if (! newLocale.equals(mLocale)) {
+            mLocale = newLocale;
+            mLayoutDirection = TextUtils.getLayoutDirectionFromLocale(mLocale);
+            refreshLayout(mLayoutDirection);
+        }
         super.onConfigurationChanged(newConfig);
-
         if (DEBUG) Slog.d(TAG, "Configuration changed! Update pie triggers");
-        attachPie();
+        attachSPie();
     }
 
     private final class PieSettingsObserver extends ContentObserver {
@@ -2196,27 +2202,27 @@ public abstract class BaseStatusBar extends SystemUI implements
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_CONTROLS), false, this);
+                    Settings.System.SPIE_CONTROLS), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_GRAVITY), false, this);
+                    Settings.System.SPIE_GRAVITY), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_TRIGGER_GRAVITY_LEFT_RIGHT), false, this);
+                    Settings.System.SPIE_TRIGGER_GRAVITY_LEFT_RIGHT), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_TRIGGER_THICKNESS), false, this);
+                    Settings.System.SPIE_TRIGGER_THICKNESS), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_TRIGGER_HEIGHT), false, this);
+                    Settings.System.SPIE_TRIGGER_HEIGHT), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_TRIGGER_SHOW), false, this);
+                    Settings.System.SPIE_TRIGGER_SHOW), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_SOFTKEYBOARD_IS_SHOWING), false, this);
+                    Settings.System.SPIE_SOFTKEYBOARD_IS_SHOWING), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.EXPANDED_DESKTOP_STATE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.EXPANDED_DESKTOP_STYLE), false, this);
+                    Settings.System.EXPANDED_DESKTOP_MODE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAVIGATION_BAR_SHOW), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUSBAR_HIDDEN_NOW), false, this);
+                    Settings.System.HIDE_STATUSBAR), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAV_HIDE_ENABLE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -2230,36 +2236,36 @@ public abstract class BaseStatusBar extends SystemUI implements
         @Override
         public void onChange(boolean selfChange) {
             mPieTriggerSlots = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.PIE_GRAVITY, Position.LEFT.FLAG);
+                    Settings.System.SPIE_GRAVITY, Position.LEFT.FLAG);
             mPieShowTrigger = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.PIE_TRIGGER_SHOW, 0) == 1;
+                    Settings.System.SPIE_TRIGGER_SHOW, 0) == 1;
             mPieTriggerThickness = Settings.System.getFloat(mContext.getContentResolver(),
-                    Settings.System.PIE_TRIGGER_THICKNESS,
-                    mContext.getResources().getDimension(R.dimen.pie_trigger_thickness));
+                    Settings.System.SPIE_TRIGGER_THICKNESS,
+                    mContext.getResources().getDimension(R.dimen.pies_trigger_thickness));
             mPieTriggerHeight = Settings.System.getFloat(mContext.getContentResolver(),
-                    Settings.System.PIE_TRIGGER_HEIGHT,
+                    Settings.System.SPIE_TRIGGER_HEIGHT,
                     0.8f);
             mPieTriggerGravityLeftRight = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.PIE_TRIGGER_GRAVITY_LEFT_RIGHT,
+                    Settings.System.SPIE_TRIGGER_GRAVITY_LEFT_RIGHT,
                     Gravity.CENTER_VERTICAL);
             mPieImeIsShowing = Settings.System.getFloat(mContext.getContentResolver(),
-                    Settings.System.PIE_SOFTKEYBOARD_IS_SHOWING, 0) == 1
+                    Settings.System.SPIE_SOFTKEYBOARD_IS_SHOWING, 0) == 1
                     && Settings.System.getFloat(mContext.getContentResolver(),
-                    Settings.System.PIE_ADJUST_TRIGGER_FOR_IME, 1) == 1;
-            attachPie();
+                    Settings.System.SPIE_ADJUST_TRIGGER_FOR_IME, 1) == 1;
+            attachSPie();
         }
     }
 
     private boolean isPieEnabled() {
         boolean expanded = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
-        int pie = Settings.System.getInt(mContext.getContentResolver(),
+        int slimpie = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PIE_CONTROLS, 0);
 
-        return (pie == 1 && expanded) || pie == 2;
+        return (slimpie == 1 && expanded) || slimpie == 2;
     }
 
-    private void attachPie() {
+    private void attachSPie() {
         if (isPieEnabled()) {
             // Create our container, if it does not exist already
             if (mPieContainer == null) {
@@ -2335,13 +2341,13 @@ public abstract class BaseStatusBar extends SystemUI implements
 
             // get expanded desktop values
             int expandedMode = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.EXPANDED_DESKTOP_STYLE, 0);
+                    Settings.System.EXPANDED_DESKTOP_MODE, 0);
             boolean expanded = Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
 
             // get statusbar auto hide value
             boolean autoHideStatusBar = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.STATUSBAR_HIDDEN_NOW, 0) == 1;
+                    Settings.System.HIDE_STATUSBAR, 0) == 1;
 
             // get navigation bar values
             final int showByDefault = mContext.getResources().getBoolean(
