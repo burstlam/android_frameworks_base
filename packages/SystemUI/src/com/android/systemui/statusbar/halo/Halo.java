@@ -993,6 +993,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
 
     void clearTicker() {
         mEffect.mHaloIcon.setImageDrawable(null);
+        mEffect.msgNumberAlphaAnimator.cancel(true);
         mEffect.mHaloNumber.setAlpha(0f);
         mContentIntent = null;
         mCurrentNotficationEntry = null;
