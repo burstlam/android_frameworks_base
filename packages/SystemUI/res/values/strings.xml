@@ -630,6 +630,7 @@
     <string name="quick_settings_halo_off_label">Halo Off</string>
     <string name="quick_settings_slim_pie_on_label">SlimPie On</string>
     <string name="quick_settings_slim_pie_off_label">SlimPie Off</string>
+    <string name="quick_settings_customize_label">RomControl</string>
 
     <!--  RamBar -->
     <string name="memory">RAM</string>

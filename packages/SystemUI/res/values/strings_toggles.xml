@@ -58,4 +58,5 @@
     <string name="toggle_MUSIC">Music</string>
     <string name="toggle_HALO">Halo</string>
     <string name="toggle_SLIMPIE">Slim Pie</string>
+    <string name="toggle_CUSTOMIZE">Customize</string>
 </resources>

@@ -109,6 +109,7 @@ public class ToggleManager {
     public static final String MUSIC_TOGGLE = "MUSIC";
     public static final String HALO_TOGGLE = "HALO";
     public static final String SLIMPIE_TOGGLE = "SLIMPIE";
+    public static final String CUSTOMIZE_TOGGLE = "CUSTOMIZE";
 
     private int mStyle;
     private boolean mShowRebootOnLock = true;
@@ -188,6 +189,7 @@ public class ToggleManager {
             toggleMap.put(MUSIC_TOGGLE, MusicToggle.class);
             toggleMap.put(HALO_TOGGLE, HaloToggle.class);
             toggleMap.put(SLIMPIE_TOGGLE, SlimPieToggle.class);
+            toggleMap.put(CUSTOMIZE_TOGGLE, CustomizeToggle.class);
             // toggleMap.put(BT_TETHER_TOGGLE, null);
         }
         return toggleMap;
