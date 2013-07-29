@@ -2579,6 +2579,13 @@ public final class Settings {
         public static final String LOCKSCREEN_SHORTCUTS_LONGPRESS = "lockscreen_shortcuts_longpress";
 
         /**
+        * Whether music controls should be shown on the lockscreen if a supporting
+        * music player is active.
+        * @hide
+        */
+        public static final String LOCKSCREEN_MUSIC_CONTROLS = "lockscreen_music_controls";
+
+        /**
          * Whether to display notifications on screen when screen is off
          * @hide
          */
