@@ -1099,10 +1099,12 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                 }
             }
 
-            state = canvas.save();
-            canvas.translate(x, getHaloContentY());
-            mHaloContentView.draw(canvas);
-            canvas.restoreToCount(state);
+            if (getHaloContentAlpha() > 0.0f) {
+                state = canvas.save();
+                canvas.translate(x, getHaloContentY());
+                mHaloContentView.draw(canvas);
+                canvas.restoreToCount(state);
+            }
 
             // X
             float fraction = 1 - ((float)xPaint.getAlpha()) / 255;
