@@ -65,7 +65,7 @@
 		    android:textAppearance="@style/TextAppearance.StatusBar.Expanded.Date"
 		    android:layout_below="@id/lunardate"
 		    />
-            </RelativeLayout>
+        </RelativeLayout>
     </RelativeLayout>
 
     <Space
