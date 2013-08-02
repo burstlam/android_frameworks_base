@@ -98,6 +98,10 @@ public class TvStatusBar extends BaseStatusBar {
     }
 
     @Override
+    public void toggleStatusBar(boolean enable) {
+    }
+
+    @Override
     protected void onBarTouchEvent(MotionEvent ev) {
     }
 

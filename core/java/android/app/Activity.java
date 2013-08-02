@@ -49,6 +49,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Parcelable;
 import android.os.RemoteException;
+import android.os.ServiceManager;
 import android.os.StrictMode;
 import android.os.UserHandle;
 import android.provider.Settings;
@@ -86,6 +87,8 @@ import android.view.WindowManagerGlobal;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.AdapterView;
 import android.app.SwipeBackLayout;
+
+import com.android.internal.statusbar.IStatusBarService;
 
 import com.android.internal.R;
 
@@ -709,6 +712,9 @@ public class Activity extends ContextThemeWrapper
     /*package*/ Configuration mCurrentConfig;
     private SearchManager mSearchManager;
     private MenuInflater mMenuInflater;
+
+    private IStatusBarService mStatusBarService;
+    private Object mServiceAquireLock = new Object();
 
     static final class NonConfigurationInstances {
         Object activity;
@@ -2673,9 +2679,16 @@ public class Activity extends ContextThemeWrapper
                         mQuickPeekInitialY = ev.getY();
                         mQuickPeekAction = true;
                     } else if (mNtQsShadeActive) {
-                        Settings.System.putInt(getContentResolver(),
-                                Settings.System.TOGGLE_NOTIFICATION_AND_QS_SHADE, 0);
-                        mNtQsShadeActive = false;
+                        try {
+                            IStatusBarService statusbar = getStatusBarService();
+                            if (statusbar != null) {
+                                statusbar.toggleStatusBar(false);
+                            }
+                            mNtQsShadeActive = false;
+                        } catch (RemoteException e) {
+                            Slog.e(TAG, "RemoteException during toggle statusbar", e);
+                            mStatusBarService = null;
+                        }
                     }
                 }
                 onUserInteraction();
@@ -2685,10 +2698,17 @@ public class Activity extends ContextThemeWrapper
                     break;
                 }
                 if (Math.abs(ev.getY() - mQuickPeekInitialY) > getStatusBarHeight()) {
-                    Settings.System.putInt(getContentResolver(),
-                            Settings.System.TOGGLE_NOTIFICATION_AND_QS_SHADE, 1);
+                    try {
+                        IStatusBarService statusbar = getStatusBarService();
+                        if (statusbar != null) {
+                            statusbar.toggleStatusBar(true);
+                        }
                         mNtQsShadeActive = true;
                         mQuickPeekAction = false;
+                    } catch (RemoteException e) {
+                        Slog.e(TAG, "RemoteException during toggle statusbar", e);
+                        mStatusBarService = null;
+                    }
                 }
                 break;
             default:
@@ -2704,6 +2724,16 @@ public class Activity extends ContextThemeWrapper
 
     private int getStatusBarHeight() {
         return getResources().getDimensionPixelSize(com.android.internal.R.dimen.status_bar_height);
+    }
+
+    IStatusBarService getStatusBarService() {
+        synchronized (mServiceAquireLock) {
+            if (mStatusBarService == null) {
+                mStatusBarService = IStatusBarService.Stub.asInterface(
+                        ServiceManager.getService("statusbar"));
+            }
+            return mStatusBarService;
+        }
     }
 
     /**
