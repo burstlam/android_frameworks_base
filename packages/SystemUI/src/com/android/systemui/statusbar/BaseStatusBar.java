@@ -522,6 +522,13 @@ public abstract class BaseStatusBar extends SystemUI implements
             public void onChange(boolean selfChange) {
                 updateHalo();
             }});
+        // Listen for HALO Button Show Setting
+        mContext.getContentResolver().registerContentObserver(
+                Settings.System.getUriFor(Settings.System.HALO_BUTTON_SHOW), false, new ContentObserver(new Handler()) {
+            @Override
+            public void onChange(boolean selfChange) {
+                updateHalo();
+            }});
 
         updateHalo();
     }
@@ -535,6 +542,7 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     protected void updateHaloButton() {
         if (mHaloButton != null) {
+            mHaloButtonVisible = Settings.System.getInt(mContext.getContentResolver(), Settings.System.HALO_BUTTON_SHOW, 1) == 1;
             mHaloButton.setVisibility(mHaloButtonVisible && !mHaloActive ? View.VISIBLE : View.GONE);
         }
     }

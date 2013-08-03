@@ -2827,6 +2827,12 @@ public final class Settings {
         public static final String HALO_HIDE = "halo_hide";
 
         /**
+         * HALO Button show in Notification Drawer?,should default to 1 (yes, please show)
+         * @hide
+         */
+        public static final String HALO_BUTTON_SHOW = "halo_button_show";
+
+        /**
          * Pie text color
          * @hide
          */
