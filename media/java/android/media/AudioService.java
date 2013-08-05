@@ -682,8 +682,8 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
                     0,
                     mStreamStates[AudioSystem.STREAM_DTMF], 0);
         }
-        mVolumeKeysControlRingStream = Settings.System.getIntForUser(mContentResolver,
-                    Settings.System.VOLUME_KEYS_CONTROL_RING_STREAM, 0, UserHandle.USER_CURRENT) == 0;
+        mVolumeKeysControlRingStream = Settings.System.getInt(mContentResolver,
+                    Settings.System.VOLUME_KEYS_CONTROL_RING_STREAM, 1) == 1; 
     }
 
     private void readDockAudioSettings(ContentResolver cr)
@@ -710,9 +710,8 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
     private boolean safeVolumeEnabled(ContentResolver cr) {
         boolean safeMediaVolumeEnabled = mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_safe_media_volume_enabled);
-        boolean safeHeadsetVolumeEnabled = Settings.System.getIntForUser(cr,
-                Settings.System.SAFE_HEADSET_VOLUME, safeMediaVolumeEnabled ? 1 : 0,
-                UserHandle.USER_CURRENT_OR_SELF) != 0;
+        boolean safeHeadsetVolumeEnabled = Settings.System.getInt(cr,
+                Settings.System.SAFE_HEADSET_VOLUME, safeMediaVolumeEnabled ? 1 : 0) != 0;
         return safeHeadsetVolumeEnabled;
     }
 
@@ -780,8 +779,8 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
                     UserHandle.USER_CURRENT);
 
             readDockAudioSettings(cr);
-            mVolumeKeysControlRingStream = Settings.System.getIntForUser(mContentResolver,
-                    Settings.System.VOLUME_KEYS_CONTROL_RING_STREAM, 0, UserHandle.USER_CURRENT) == 0;
+            mVolumeKeysControlRingStream = Settings.System.getInt(mContentResolver,
+                    Settings.System.VOLUME_KEYS_CONTROL_RING_STREAM, 1) == 1;
             mSafeVolumeEnabled = new Boolean(safeVolumeEnabled(cr));
         }
         boolean linkNotificationWithVolume = Settings.System.getInt(mContentResolver,
@@ -3635,8 +3634,8 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
                     mSafeVolumeEnabled = safeVolumeEnabled(mContentResolver);
                     updateManualSafeMediaVolume();
                 } else if (uri.equals(Settings.System.getUriFor(Settings.System.VOLUME_KEYS_CONTROL_RING_STREAM))) {
-                    mVolumeKeysControlRingStream = Settings.System.getIntForUser(mContentResolver,
-                            Settings.System.VOLUME_KEYS_CONTROL_RING_STREAM, 0, UserHandle.USER_CURRENT) == 0;
+                    mVolumeKeysControlRingStream = Settings.System.getInt(mContentResolver,
+                            Settings.System.VOLUME_KEYS_CONTROL_RING_STREAM, 1) == 1;
                 }
             }
         }
