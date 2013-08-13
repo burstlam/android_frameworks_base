@@ -209,4 +209,12 @@
 
     <!-- Content description of the halo button in the notification panel for accessibility (not shown on the screen). [CHAR LIMIT=NONE] -->
     <string name="accessibility_halo">打开HALO</string>
+
+    <!-- App sidebar -->
+    <string name="default_folder_text">文件夹</string>
+    <string name="title_activity_sidebar_configuration">侧边栏内容设置</string>
+    <string name="action_save">保存</string>
+    <string name="toast_items_saved">侧边栏项目已保存.</string>
+    <string name="content_setup_instructions">长按右边的项目并拖拽到侧边栏以添加项目.\n\n将项目拖拽到任何已有的项目之上，可以建立文件夹.\n\n要删除，只需简单的将项目拖拽出侧边栏即可.</string>
+    <string name="content_setup_dismiss">继续</string>
 </resources>
