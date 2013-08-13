@@ -695,6 +695,10 @@ public class TabletStatusBar extends BaseStatusBar implements
         if (mNavBarAutoHide) {
             setupAutoHide();
         }
+        if (mRecreating) {
+            removeSidebarView();
+        }
+        addSidebarView();
         return sb;
     }
 
