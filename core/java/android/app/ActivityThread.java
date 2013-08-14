@@ -2176,17 +2176,6 @@ public final class ActivityThread {
         return mActivities.get(token).activity;
     }
 
-    protected void performFinishFloating() {
-        synchronized (mPackages) {
-            for (ActivityClientRecord ar : mActivities.values()) {
-                Activity a = ar.activity;
-                if (a != null && !a.mFinished && a.getWindow() != null && a.getWindow().mIsFloatingWindow) {
-                    a.finish();
-                }
-            }
-        }
-    }
-
     public final void sendActivityResult(
             IBinder token, String id, int requestCode,
             int resultCode, Intent data) {
@@ -2438,12 +2427,7 @@ public final class ActivityThread {
                     throw e;
 
                 } catch (Exception e) {
-                    if (!mInstrumentation.onException(r.activity, e)) {
-                        throw new RuntimeException(
-                                "Unable to pause activity "
-                                + r.intent.getComponent().toShortString()
-                                + ": " + e.toString(), e);
-                    }
+                    // Unable to resume activity
                 }
                 r.paused = true;
             }
@@ -2925,7 +2909,12 @@ public final class ActivityThread {
                 r.stopped = false;
                 r.state = null;
             } catch (Exception e) {
-                // Unable to resume activity
+                if (!mInstrumentation.onException(r.activity, e)) {
+                    throw new RuntimeException(
+                        "Unable to resume activity "
+                        + r.intent.getComponent().toShortString()
+                        + ": " + e.toString(), e);
+                }
             }
         }
         return r;
@@ -3405,7 +3394,7 @@ public final class ActivityThread {
             Log.w(TAG, "handleWindowVisibility: no activity for token " + token);
             return;
         }
-
+        
         if (!show && !r.stopped) {
             performStopActivityInner(r, null, show, false);
         } else if (show && r.stopped) {
