@@ -30,7 +30,9 @@ import android.graphics.Region;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.os.ResultReceiver;
+import android.os.ServiceManager;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.text.InputType;
@@ -63,6 +65,8 @@ import android.view.inputmethod.InputMethodSubtype;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+
+import com.android.internal.statusbar.IStatusBarService;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -306,6 +310,9 @@ public class InputMethodService extends AbstractInputMethodService {
 
     boolean mForcedAutoRotate;
     Handler mHandler;
+
+    private IStatusBarService mStatusBarService;
+    private Object mServiceAquireLock = new Object();
 
     final Insets mTmpInsets = new Insets();
     final int[] mTmpLocation = new int[2];
@@ -665,8 +672,14 @@ public class InputMethodService extends AbstractInputMethodService {
 
         //IME is not showing on first onCreate to be sure
         //toggle it off for PIE
-        Settings.System.putInt(getContentResolver(),
-                Settings.System.SPIE_SOFTKEYBOARD_IS_SHOWING, 0);
+        try {
+            IStatusBarService statusbar = getStatusBarService();
+            if (statusbar != null) {
+                statusbar.setImeShowStatus(false);
+            }
+        } catch (RemoteException e) {
+            mStatusBarService = null;
+        }
 
         initViews();
         mWindow.getWindow().setLayout(MATCH_PARENT, WRAP_CONTENT);
@@ -1436,8 +1449,14 @@ public class InputMethodService extends AbstractInputMethodService {
         }
 
         //IME softkeyboard is showing....toggle it
-        Settings.System.putInt(getContentResolver(),
-                Settings.System.SPIE_SOFTKEYBOARD_IS_SHOWING, 1);
+        IStatusBarService statusbar = getStatusBarService();
+        try {
+            if (statusbar != null) {
+                statusbar.setImeShowStatus(true);
+            }
+        } catch (RemoteException e) {
+            mStatusBarService = null;
+        }
 
         int mKeyboardRotationTimeout = Settings.System.getInt(getContentResolver(),
                 Settings.System.KEYBOARD_ROTATION_TIMEOUT, 0);
@@ -1447,9 +1466,14 @@ public class InputMethodService extends AbstractInputMethodService {
                 boolean isAutoRotate = (Settings.System.getInt(getContentResolver(),
                         Settings.System.ACCELEROMETER_ROTATION, 0) == 1);
                 if (!isAutoRotate) {
-                    mForcedAutoRotate = true;
-                    Settings.System.putInt(getContentResolver(),
-                            Settings.System.ACCELEROMETER_ROTATION, 1);
+                    try {
+                        if (statusbar != null) {
+                            statusbar.setAutoRotate(true);
+                            mForcedAutoRotate = true;
+                        }
+                    } catch (RemoteException e) {
+                        mStatusBarService = null;
+                    }
                 }
             }
         }
@@ -1535,10 +1559,15 @@ public class InputMethodService extends AbstractInputMethodService {
             onWindowHidden();
             mWindowWasVisible = false;
         }
-
         //IME softkeyboard is hiding....toggle it
-        Settings.System.putInt(getContentResolver(),
-                Settings.System.SPIE_SOFTKEYBOARD_IS_SHOWING, 0);
+        try {
+            IStatusBarService statusbar = getStatusBarService();
+            if (statusbar != null) {
+                statusbar.setImeShowStatus(false);
+            }
+        } catch (RemoteException e) {
+            mStatusBarService = null;
+        }
 
         int mKeyboardRotationTimeout = Settings.System.getInt(getContentResolver(),
                 Settings.System.KEYBOARD_ROTATION_TIMEOUT, 0);
@@ -1552,9 +1581,15 @@ public class InputMethodService extends AbstractInputMethodService {
 
     final Runnable restoreAutoRotation = new Runnable() {
         @Override public void run() {
-            Settings.System.putInt(getContentResolver(),
-                    Settings.System.ACCELEROMETER_ROTATION, 0);
-            mForcedAutoRotate = false;
+            try {
+                IStatusBarService statusbar = getStatusBarService();
+                if (statusbar != null) {
+                    statusbar.setAutoRotate(false);
+                }
+                mForcedAutoRotate = false;
+            } catch (RemoteException e) {
+                mStatusBarService = null;
+            }
         }
     };
 
@@ -2197,6 +2232,16 @@ public class InputMethodService extends AbstractInputMethodService {
             ic.performContextMenuAction(id);
         }
         return true;
+    }
+
+    IStatusBarService getStatusBarService() {
+        synchronized (mServiceAquireLock) {
+            if (mStatusBarService == null) {
+                mStatusBarService = IStatusBarService.Stub.asInterface(
+                        ServiceManager.getService("statusbar"));
+            }
+            return mStatusBarService;
+        }
     }
     
     /**
