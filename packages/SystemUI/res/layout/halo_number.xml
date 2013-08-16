@@ -8,12 +8,15 @@
     <TextView
         android:id="@+id/number"
         android:animateLayoutChanges="true"
-        android:layout_width="@dimen/halo_number_size"
-        android:layout_height="@dimen/halo_number_size"
-        android:gravity="center"
-        android:background="@drawable/halo_number_shape"
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:background="@drawable/halo_number"
         android:textColor="#fff"
         android:textStyle="bold"
-        android:textSize="@dimen/halo_number_text_size"/>
+        android:textSize="16sp"/>
 
 </LinearLayout>
