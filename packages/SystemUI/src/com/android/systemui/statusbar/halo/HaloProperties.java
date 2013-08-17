@@ -108,21 +108,12 @@ public class HaloProperties extends FrameLayout {
     private int mHaloMessageNumber = 0;
     private MessageType mHaloMessageType = MessageType.MESSAGE;
 
-<<<<<<< HEAD
     private boolean mLastContentStateLeft = true;
 
-    private static int mStyle;
-    private static final int BLUE = 0;
-    private static final int GREEN = 1;
-    private static final int WHITE = 2;
-    private static final int PURPLE = 3;
-    private static final int RED = 4;
-    private static final int YELLOW = 5;
-    private static final int PINK = 6;
-    private static final int BLACK = 7;
-=======
     private boolean mEnableColor;
->>>>>>> 00e8d02... HALO colors: a lil improvement
+    private int mCircleColor = 0;
+    private int mSpeechColor = 0;
+    private int mSpeechTextColor = 0;
 
     Handler mHandler;
 
@@ -461,37 +452,39 @@ public class HaloProperties extends FrameLayout {
         ContentResolver cr = mContext.getContentResolver();
         mEnableColor = Settings.System.getInt(cr,
                Settings.System.HALO_COLORS, 0) == 1;
-        int mCircleColor = Settings.System.getInt(cr,
+        mCircleColor = Settings.System.getInt(cr,
                Settings.System.HALO_CIRCLE_COLOR, 0xFF33B5E5);
-        int mBubbleColor = Settings.System.getInt(cr,
+        mSpeechColor = Settings.System.getInt(cr,
                Settings.System.HALO_BUBBLE_COLOR, 0xFF33B5E5);
-        int mTextColor = Settings.System.getInt(cr, 
+        mSpeechTextColor = Settings.System.getInt(cr, 
                Settings.System.HALO_BUBBLE_TEXT_COLOR, 0xFFFFFFFF);
 
         if (mEnableColor) {
            // Ring
-           mHaloBg.setBackgroundResource(R.drawable.halo_bg_custom);
-           mHaloBg.getBackground().setColorFilter(ColorFilterMaker.
-                   changeColorAlpha(mCircleColor, .32f, 0f));
+           mHaloBg.setColorFilter(mCircleColor, PorterDuff.Mode.SRC_IN);
 
            // Speech bubbles
-           mHaloTextViewL.setBackgroundResource(R.drawable.bubble_l_custom);
-           mHaloTextViewL.getBackground().setColorFilter(ColorFilterMaker.
-                    changeColorAlpha(mBubbleColor, .32f, 0f));
-           mHaloTextViewL.setTextColor(mTextColor);
-           mHaloTextViewR.setBackgroundResource(R.drawable.bubble_r_custom);
-           mHaloTextViewR.getBackground().setColorFilter(ColorFilterMaker.
-                    changeColorAlpha(mBubbleColor, .32f, 0f));
-           mHaloTextViewR.setTextColor(mTextColor);
+           mHaloSpeechL.setColorFilter(mSpeechColor, PorterDuff.Mode.SRC_IN);
+           mHaloSpeechR.setColorFilter(mSpeechColor, PorterDuff.Mode.SRC_IN);
+           mHaloSpeechLD.setColorFilter(mSpeechColor, PorterDuff.Mode.SRC_IN);
+           mHaloSpeechRD.setColorFilter(mSpeechColor, PorterDuff.Mode.SRC_IN);
+
+           // Speech text color
+           mHaloTextView.setTextColor(mSpeechTextColor);
         } else {
+           // Clear that color away! Just in case.
+
            // Ring
-           mHaloBg.setBackgroundResource(R.drawable.halo_bg);
+           mHaloBg.clearColorFilter();
 
            // Speech bubbles
-           mHaloTextViewL.setBackgroundResource(R.drawable.bubble_l);
-           mHaloTextViewL.setTextColor(getResources().getColor(R.color.halo_text_color));
-           mHaloTextViewR.setBackgroundResource(R.drawable.bubble_r);
-           mHaloTextViewR.setTextColor(getResources().getColor(R.color.halo_text_color));
+           mHaloSpeechL.clearColorFilter();
+           mHaloSpeechR.clearColorFilter();
+           mHaloSpeechLD.clearColorFilter();
+           mHaloSpeechRD.clearColorFilter();
+
+           // Return back to default color
+           mHaloTextView.setTextColor(getResources().getColor(R.color.halo_text_color));
         }
     }
 }
