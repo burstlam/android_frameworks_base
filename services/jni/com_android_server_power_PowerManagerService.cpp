@@ -25,6 +25,7 @@
 
 #include <limits.h>
 
+#include <stdlib.h>
 #include <android_runtime/AndroidRuntime.h>
 #include <utils/Timers.h>
 #include <utils/misc.h>
@@ -193,12 +194,42 @@ static void nativeShutdown(JNIEnv *env, jclass clazz) {
     android_reboot(ANDROID_RB_POWEROFF, 0, 0);
 }
 
+int setbootmode(char* bootmode) {
+   // open misc-partition
+   FILE* misc = fopen("/dev/block/platform/msm_sdcc.1/by-name/misc", "wb");
+   if (misc == NULL) {
+      printf("Error opening misc partition.\n");
+      return -1;
+   }
+
+   // write bootmode
+   fseek(misc, 0x1000, SEEK_SET);
+   if(fputs(bootmode, misc)<0) {
+      printf("Error writing bootmode to misc partition.\n");
+      return -1;
+   }
+
+   // close
+   fclose(misc);
+   return 0;
+}
+
 static void nativeReboot(JNIEnv *env, jclass clazz, jstring reason) {
     if (reason == NULL) {
+        ALOGD("reboot reason: NULL");
         android_reboot(ANDROID_RB_RESTART, 0, 0);
     } else {
         const char *chars = env->GetStringUTFChars(reason, NULL);
-        android_reboot(ANDROID_RB_RESTART2, 0, (char *) chars);
+        ALOGD("reboot reason: %s", chars);
+        if (strcmp(chars, "system0") == 0) {
+            setbootmode("boot-system0");
+            android_reboot(ANDROID_RB_RESTART, 0, 0);
+        } else if (strcmp(chars, "system1") == 0) {
+            setbootmode("boot-system1");
+            android_reboot(ANDROID_RB_RESTART, 0, 0);
+        } else {
+            android_reboot(ANDROID_RB_RESTART2, 0, (char *) chars);
+        }
         env->ReleaseStringUTFChars(reason, chars);  // In case it fails.
     }
     jniThrowIOException(env, errno);

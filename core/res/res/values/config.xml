@@ -1261,4 +1261,8 @@
         <item>com.android.inputmethod.latin</item>
     </string-array>
 
+    <!-- Boolean to configure if the device has two system partitions
+         This is only for Xiaomi devices -->
+     <bool name="config_dualsystem">false</bool>
+
 </resources>

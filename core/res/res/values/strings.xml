@@ -337,6 +337,10 @@
     <string name="reboot_fastboot">Fastboot</string>
     <!-- Button to reboot the phone into download, within the Reboot Options dialog -->
     <string name="reboot_download">Download</string>
+    <!-- Button to reboot the phone to system0, within the Reboot Options dialog -->
+    <string name="reboot_system0">System1</string>
+    <!-- Button to reboot the phone to system1, within the Reboot Options dialog -->
+    <string name="reboot_system1">System2</string>
 
     <!-- Reboot Progress Dialog. This is shown if the user chooses to reboot the phone. -->
     <string name="reboot_progress">Rebooting\u2026</string>

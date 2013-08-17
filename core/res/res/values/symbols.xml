@@ -1900,6 +1900,8 @@
   <java-symbol type="array" name="notification_light_package_mapping" />
   <java-symbol type="array" name="shutdown_reboot_actions" />
   <java-symbol type="array" name="shutdown_reboot_options" />
+  <java-symbol type="array" name="shutdown_reboot_actions_dualsystem" />
+  <java-symbol type="array" name="shutdown_reboot_options_dualsystem" />
   <java-symbol type="bool" name="config_multiColorBatteryLed" />
   <java-symbol type="string" name="reboot_progress" />
   <java-symbol type="string" name="reboot_system" />
@@ -1956,5 +1958,8 @@
   <!-- From Chromium-WebView -->
   <java-symbol type="attr" name="actionModeWebSearchDrawable" />
   <java-symbol type="string" name="websearch" />
+
+  <!-- Dualsystem -->
+  <java-symbol type="bool" name="config_dualsystem" />
 
 </resources>
