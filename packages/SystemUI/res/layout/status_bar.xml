@@ -50,6 +50,14 @@
         android:orientation="horizontal"
         >
 
+        <com.android.systemui.statusbar.phone.CarrierLabel
+            android:id="@+id/status_carrier_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textAppearance="@style/TextAppearance.StatusBar.Clock"
+            />
+
         <LinearLayout
             android:id="@+id/notification_icon_area"
             android:layout_width="0dip"

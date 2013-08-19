@@ -16,10 +16,12 @@
 
 package com.android.systemui.statusbar.phone;
 
+import android.os.UserHandle;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Slog;
@@ -98,7 +100,7 @@ public class CarrierLabel extends TextView {
         final boolean plmnValid = showPlmn && !TextUtils.isEmpty(plmn);
         final boolean spnValid = showSpn && !TextUtils.isEmpty(spn);
         if (plmnValid && spnValid) {
-            str = plmn + "|" + spn;
+            str = plmn;
         } else if (plmnValid) {
             str = plmn;
         } else if (spnValid) {
@@ -107,6 +109,12 @@ public class CarrierLabel extends TextView {
             str = "";
         }
         setText(str);
+        String customLabel = Settings.System.getStringForUser(getContext().getContentResolver(),
+                Settings.System.CUSTOM_CARRIER_LABEL, UserHandle.USER_CURRENT);
+        if(!TextUtils.isEmpty(customLabel))
+            setText(customLabel);
+        else
+            setText(str);
     }
 
 
