@@ -17,10 +17,13 @@
 package com.android.systemui.statusbar.phone;
 
 import android.os.UserHandle;
+import android.os.Handler;
+import android.content.ContentResolver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -42,6 +45,8 @@ import com.android.internal.R;
  */
 public class CarrierLabel extends TextView {
     private boolean mAttached;
+    Handler mHandler;
+    String mLastCarrier;
 
     public CarrierLabel(Context context) {
         this(context, null);
@@ -54,6 +59,9 @@ public class CarrierLabel extends TextView {
     public CarrierLabel(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         updateNetworkName(false, null, false, null);
+        mHandler = new Handler();
+        SettingsObserver settingsObserver = new SettingsObserver(mHandler);
+        settingsObserver.observe();
     }
 
     @Override
@@ -82,6 +90,7 @@ public class CarrierLabel extends TextView {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (TelephonyIntents.SPN_STRINGS_UPDATED_ACTION.equals(action)) {
+                mLastCarrier = intent.getStringExtra(TelephonyIntents.EXTRA_SPN);
                 updateNetworkName(intent.getBooleanExtra(TelephonyIntents.EXTRA_SHOW_SPN, false),
                         intent.getStringExtra(TelephonyIntents.EXTRA_SPN),
                         intent.getBooleanExtra(TelephonyIntents.EXTRA_SHOW_PLMN, false),
@@ -100,7 +109,7 @@ public class CarrierLabel extends TextView {
         final boolean plmnValid = showPlmn && !TextUtils.isEmpty(plmn);
         final boolean spnValid = showSpn && !TextUtils.isEmpty(spn);
         if (plmnValid && spnValid) {
-            str = plmn;
+            str = spn;
         } else if (plmnValid) {
             str = plmn;
         } else if (spnValid) {
@@ -108,16 +117,33 @@ public class CarrierLabel extends TextView {
         } else {
             str = "";
         }
-        setText(str);
         String customLabel = Settings.System.getStringForUser(getContext().getContentResolver(),
                 Settings.System.CUSTOM_CARRIER_LABEL, UserHandle.USER_CURRENT);
         if(!TextUtils.isEmpty(customLabel))
             setText(customLabel);
+        else if (TextUtils.isEmpty(str.trim()))
+            setText(mLastCarrier);
         else
             setText(str);
     }
 
+    class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
 
+        void observe() {
+            ContentResolver resolver = getContext().getContentResolver();
+            resolver.registerContentObserver(Settings.System
+                .getUriFor(Settings.System.CUSTOM_CARRIER_LABEL), false, this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+                updateNetworkName(true, Settings.System.getStringForUser(getContext().getContentResolver(),
+                    Settings.System.CUSTOM_CARRIER_LABEL, UserHandle.USER_CURRENT), false, null);
+        }
+    }
 }
 
 
