@@ -3833,7 +3833,7 @@ public class PackageManagerService extends IPackageManager.Stub {
         for (int user : users) {
             if (user != 0) {
                 res = mInstaller.createUserData(packageName,
-                        UserHandle.getUid(user, uid), user);
+                        UserHandle.getUid(user, uid), user, seinfo);
                 if (res < 0) {
                     return res;
                 }
@@ -4180,6 +4180,14 @@ public class PackageManagerService extends IPackageManager.Stub {
             
             if (mSettings.isDisabledSystemPackageLPr(pkg.packageName)) {
                 pkg.applicationInfo.flags |= ApplicationInfo.FLAG_UPDATED_SYSTEM_APP;
+            }
+
+            if (mFoundPolicyFile && !SELinuxMMAC.passInstallPolicyChecks(pkg) &&
+                SELinuxMMAC.getEnforcingMode()) {
+                Slog.w(TAG, "Installing application package " + pkg.packageName
+                       + " failed due to policy.");
+                mLastScanError = PackageManager.INSTALL_FAILED_POLICY_REJECTED_PERMISSION;
+                return null;
             }
 
             pkg.applicationInfo.uid = pkgSetting.appId;
@@ -7560,10 +7568,6 @@ public class PackageManagerService extends IPackageManager.Stub {
                 // Rename APK file based on packageName
                 final String apkName = getNextCodePath(oldCodePath, pkgName, ".apk");
                 final File newCodeFile = new File(installDir, apkName + ".apk");
-                // if this failed at some point, do it now
-                if (newCodeFile.exists()) {
-                    newCodeFile.delete();
-                }
                 if (!oldCodeFile.renameTo(newCodeFile)) {
                     return false;
                 }
