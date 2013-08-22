@@ -1512,6 +1512,8 @@
     <string name="reboot_system0">系统一</string>
     <!-- Button to reboot the phone to system1, within the Reboot Options dialog -->
     <string name="reboot_system1">系统二</string>
+    <!-- Button to hot boot the phone, within the Reboot Options dialog -->
+    <string name="hot_reboot">快速重启</string>
 
     <!-- Reboot Progress Dialog. This is shown if the user chooses to reboot the phone. -->
     <string name="reboot_progress">正在重启\u2026</string>
