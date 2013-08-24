@@ -37,6 +37,7 @@ public class Traffic extends TextView {
     private boolean mAttached;
     TrafficStats mTrafficStats;
     boolean showTraffic;
+    boolean TrafficMeter_autohide; 
     Handler mHandler;
     Handler mTrafficHandler;
     float speed;
@@ -53,6 +54,8 @@ public class Traffic extends TextView {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System
                     .getUriFor(Settings.System.STATUS_BAR_TRAFFIC), false, this);
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.STATUS_BAR_TRAFFIC_AUTOHIDE), false, this);
         }
 
         @Override
@@ -126,6 +129,14 @@ public class Traffic extends TextView {
                 } else {
                     setText(DecimalFormatfnum.format(speed) + "KB/s");
                 }
+
+                // Hide if there is no traffic
+                if ((TrafficMeter_autohide) && (speed == 0)) {
+                    setVisibility(View.GONE);
+                } else {
+                    setVisibility(View.VISIBLE);
+                } 
+
                 update();
                 super.handleMessage(msg);
             }
@@ -149,7 +160,7 @@ public class Traffic extends TextView {
 
     public void update() {
         mTrafficHandler.removeCallbacks(mRunnable);
-        mTrafficHandler.postDelayed(mRunnable, 3000);
+        mTrafficHandler.postDelayed(mRunnable, 2000);
     }
 
     Runnable mRunnable = new Runnable() {
@@ -172,11 +183,13 @@ public class Traffic extends TextView {
 
         showTraffic = (Settings.System.getInt(resolver,
                 Settings.System.STATUS_BAR_TRAFFIC, 1) == 1);
+        TrafficMeter_autohide = (Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_TRAFFIC_AUTOHIDE, 1) == 1);
         if (showTraffic && getConnectAvailable()) {
+            setVisibility(View.VISIBLE);
             if (mAttached) {
                 updateTraffic();
             }
-            setVisibility(View.VISIBLE);
         } else
             setVisibility(View.GONE);
     }

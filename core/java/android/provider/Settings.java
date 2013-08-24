@@ -2743,6 +2743,12 @@ public final class Settings {
         public static final String STATUS_BAR_TRAFFIC_COLOR = "status_bar_traffic_color";
 
         /**
+         * Hide network speed indicator when there is no traffic
+         * @hide
+         */
+        public static final String STATUS_BAR_TRAFFIC_AUTOHIDE = "status_bar_traffic_autohide";
+
+        /**
          * @hide
          */
         public static final String SYSTEM_POWER_ENABLE_CRT_OFF = "system_power_enable_crt_off";
