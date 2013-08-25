@@ -142,7 +142,7 @@ public abstract class BaseStatusBar extends SystemUI implements
     private WidgetView mWidgetView;
 
     private boolean mPieShowTrigger = false;
-    private boolean mDisableTriggers = false;
+    private boolean mForceBottomTrigger = false;
     private float mPieTriggerThickness;
     private float mPieTriggerHeight;
     private int mPieTriggerGravityLeftRight;
@@ -1761,7 +1761,7 @@ public abstract class BaseStatusBar extends SystemUI implements
                     mContext.getResources().getDimension(R.dimen.pie_trigger_thickness));
             mPieTriggerHeight = Settings.System.getFloat(mContext.getContentResolver(),
                     Settings.System.PIE_TRIGGER_HEIGHT,
-                    0.8f);
+                    0.7f);
             mPieTriggerGravityLeftRight = Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.PIE_TRIGGER_GRAVITY_LEFT_RIGHT,
                     Gravity.CENTER_VERTICAL);
@@ -1836,9 +1836,9 @@ public abstract class BaseStatusBar extends SystemUI implements
         }
     }
 
-    public void disableTriggers(boolean disableTriggers) {
+    public void keyguardTriggers(boolean forceBottomTrigger) {
         if (isPieEnabled()) {
-            mDisableTriggers = disableTriggers;
+            mForceBottomTrigger = forceBottomTrigger;
             setupTriggers(false);
         }
     }
@@ -1850,11 +1850,13 @@ public abstract class BaseStatusBar extends SystemUI implements
     }
 
     public void setupTriggers(boolean forceDisableBottomAndTopTrigger) {
-            if (mDisableTriggers) {
-                updatePieTriggerMask(0);
+            if (!isPieEnabled()) {
                 return;
             }
-            mForceDisableBottomAndTopTrigger = forceDisableBottomAndTopTrigger;
+            boolean bottomTriggerEnabled = false;
+            boolean topTriggerEnabled = false;
+            boolean leftTriggerEnabled = false;
+            boolean rightTriggerEnabled = false;
 
             // get expanded desktop values
             int expandedMode = Settings.System.getInt(mContext.getContentResolver(),
@@ -1902,78 +1904,59 @@ public abstract class BaseStatusBar extends SystemUI implements
                                     && navigationBarHeightLandscape);
 
             // let's set the triggers
-            if ((!expanded && hasNavigationBar && !autoHideStatusBar)
-                || mForceDisableBottomAndTopTrigger) {
-                if (disableRightTriggerForNavbar) {
-                    updatePieTriggerMask(Position.LEFT.FLAG);
-                } else {
-                    updatePieTriggerMask(Position.LEFT.FLAG
-                                    | Position.RIGHT.FLAG);
-                }
+            if (!forceDisableBottomAndTopTrigger && (mForceBottomTrigger
+                    && (!hasNavigationBar
+                        || disableRightTriggerForNavbar
+                        || (expandedMode == 1 || expandedMode == 3) && expanded))) {
+                bottomTriggerEnabled = true;
+            } else if (mForceBottomTrigger && hasNavigationBar) {
+                //do nothing all triggers are disabled and exit
+            } else if ((!expanded && hasNavigationBar && !autoHideStatusBar)
+                || forceDisableBottomAndTopTrigger) {
+                leftTriggerEnabled = true;
+                rightTriggerEnabled = true;
             } else if ((!expanded && !hasNavigationBar && !autoHideStatusBar)
                 || (expandedMode == 1 && expanded && !autoHideStatusBar)) {
-                if (!mPieImeIsShowing) {
-                    if (disableRightTriggerForNavbar) {
-                        updatePieTriggerMask(Position.LEFT.FLAG
-                                        | Position.BOTTOM.FLAG);
-                    } else {
-                        updatePieTriggerMask(Position.LEFT.FLAG
-                                        | Position.BOTTOM.FLAG
-                                        | Position.RIGHT.FLAG);
-                    }
-                } else {
-                    if (disableRightTriggerForNavbar) {
-                        updatePieTriggerMask(Position.LEFT.FLAG);
-                    } else {
-                        updatePieTriggerMask(Position.LEFT.FLAG
-                                        | Position.RIGHT.FLAG);
-                    }
-                }
+                leftTriggerEnabled = true;
+                rightTriggerEnabled = true;
+                bottomTriggerEnabled = true;
             } else if (expandedMode == 2 && expanded && hasNavigationBar
                         || !expanded && hasNavigationBar && autoHideStatusBar) {
-                if (disableRightTriggerForNavbar) {
-                    updatePieTriggerMask(Position.LEFT.FLAG
-                                    | Position.TOP.FLAG);
-                } else {
-                    updatePieTriggerMask(Position.LEFT.FLAG
-                                    | Position.RIGHT.FLAG
-                                    | Position.TOP.FLAG);
-                }
+                leftTriggerEnabled = true;
+                rightTriggerEnabled = true;
+                topTriggerEnabled = true;
             } else {
-                if (!mPieImeIsShowing) {
-                    if (disableRightTriggerForNavbar) {
-                        updatePieTriggerMask(Position.LEFT.FLAG
-                                        | Position.BOTTOM.FLAG
-                                        | Position.TOP.FLAG);
-                    } else {
-                        updatePieTriggerMask(Position.LEFT.FLAG
-                                        | Position.BOTTOM.FLAG
-                                        | Position.RIGHT.FLAG
-                                        | Position.TOP.FLAG);
-                    }
-                } else {
-                    if (disableRightTriggerForNavbar) {
-                        updatePieTriggerMask(Position.LEFT.FLAG
-                                        | Position.TOP.FLAG);
-                    } else {
-                        updatePieTriggerMask(Position.LEFT.FLAG
-                                        | Position.RIGHT.FLAG
-                                        | Position.TOP.FLAG);
-                    }
-                }
+                leftTriggerEnabled = true;
+                rightTriggerEnabled = true;
+                bottomTriggerEnabled = true;
+                topTriggerEnabled = true;
             }
+            if (disableRightTriggerForNavbar) {
+                    rightTriggerEnabled = false;
+            }
+            if (mPieImeIsShowing) {
+                    bottomTriggerEnabled = false;
+            }
+
+            int newMask;
+            newMask  = leftTriggerEnabled ? Position.LEFT.FLAG : 0;
+            newMask |= bottomTriggerEnabled ? Position.BOTTOM.FLAG : 0;
+            newMask |= rightTriggerEnabled ? Position.RIGHT.FLAG : 0;
+            newMask |= topTriggerEnabled ? Position.TOP.FLAG : 0;
+
+            updatePieTriggerMask(newMask, forceDisableBottomAndTopTrigger);
     }
 
-    private void updatePieTriggerMask(int newMask) {
+    private void updatePieTriggerMask(int newMask, boolean forceDisableBottomAndTopTrigger) {
         int oldState = mPieTriggerSlots & mPieTriggerMask;
+        boolean oldForceDisableBottomAndTopTrigger = mForceDisableBottomAndTopTrigger;
         mPieTriggerMask = newMask;
+        mForceDisableBottomAndTopTrigger = forceDisableBottomAndTopTrigger;
 
         // first we check, if it would make a change
         if ((mPieTriggerSlots & mPieTriggerMask) != oldState
-                || mForceDisableBottomAndTopTrigger) {
-            if (isPieEnabled()) {
-                refreshPieTriggers();
-            }
+                || mForceDisableBottomAndTopTrigger != oldForceDisableBottomAndTopTrigger) {
+            refreshPieTriggers();
         }
     }
 
