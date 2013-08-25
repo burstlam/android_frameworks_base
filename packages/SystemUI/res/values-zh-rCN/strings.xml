@@ -212,6 +212,24 @@
     <string name="quick_settings_usb_tether_connected_label">USB共享关闭</string>
     <string name="quick_settings_usb_tether_on_label">USB共享开启</string>
     <string name="quick_settings_usb_tether_off_label">未连接</string>
+    <string name="quick_settings_mobile_data_on">移动数据</string>
+    <string name="quick_settings_mobile_data_off">移动数据关闭</string>
+    <string name="quick_settings_power">电源</string>
+    <string name="quick_settings_ringer_on">声音</string>
+    <string name="quick_settings_ringer_off">无声</string>
+    <string name="quick_settings_vibration_on">震动</string>
+    <string name="quick_settings_vibration_off">震动关闭</string>
+    <string name="quick_settings_label_enabled">开启</string>
+    <string name="quick_settings_label_disabled">关闭</string>
+    <string name="quick_settings_reboot">重启系统</string>
+    <string name="quick_settings_reboot_recovery">重启到Recovery</string>
+    <string name="quick_settings_sync">同步</string>
+    <string name="quick_settings_sync_off">同步关闭</string>
+    <string name="quick_settings_torch">手电筒</string>
+    <string name="quick_settings_torch_off">手电筒关闭</string>
+    <string name="quick_settings_nfc">NFC</string>
+    <string name="quick_settings_nfc_off">NFC关闭</string>
+    <string name="quick_settings_fcharge">快速充电</string>
 
     <!-- App sidebar -->
     <string name="default_folder_text">文件夹</string>
