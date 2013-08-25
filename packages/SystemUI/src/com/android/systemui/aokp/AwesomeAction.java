@@ -240,6 +240,12 @@ public class AwesomeAction {
                     // wtf is this
                 }
                 break;
+            case ACTION_UPDATE:
+                Intent weatherintent = new Intent("com.aokp.romcontrol.INTENT_WEATHER_REQUEST");
+                weatherintent.putExtra("com.aokp.romcontrol.INTENT_EXTRA_TYPE", "updateweather");
+                weatherintent.putExtra("com.aokp.romcontrol.INTENT_EXTRA_ISMANUAL", true);
+                mContext.sendBroadcast(weatherintent);
+                break;
             case ACTION_APP:
                 try {
                     Intent intentapp = Intent.parseUri(action, 0);
