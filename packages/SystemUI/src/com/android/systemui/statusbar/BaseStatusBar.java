@@ -1380,8 +1380,8 @@ public abstract class BaseStatusBar extends SystemUI implements
                 Settings.System.HALO_SIZE, 1.0f, UserHandle.USER_CURRENT);
         int iconSize = (int)(mContext.getResources().getDimensionPixelSize(R.dimen.halo_bubble_size) * haloSize);
         int smallIconSize = (int)(mContext.getResources().getDimensionPixelSize(R.dimen.status_bar_icon_size) * haloSize);
-        int largeIconWidth = notification.notification.largeIcon != null ? (int)(notification.notification.largeIcon.getWidth() * haloSize) : 0;
-        int largeIconHeight = notification.notification.largeIcon != null ? (int)(notification.notification.largeIcon.getHeight() * haloSize) : 0;
+        int largeIconWidth = notification.getNotification().largeIcon != null ? (int)(notification.getNotification().largeIcon.getWidth() * haloSize) : 0;
+        int largeIconHeight = notification.getNotification().largeIcon != null ? (int)(notification.getNotification().largeIcon.getHeight() * haloSize) : 0;
         Bitmap roundIcon = Bitmap.createBitmap(iconSize, iconSize, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(roundIcon);
         canvas.drawARGB(0, 0, 0, 0);

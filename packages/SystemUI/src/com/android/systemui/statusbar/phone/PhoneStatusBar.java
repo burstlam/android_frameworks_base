@@ -1330,24 +1330,24 @@ public class PhoneStatusBar extends BaseStatusBar {
          * DISABLED due to missing API
         if (ENABLE_INTRUDERS && (
                    // TODO(dsandler): Only if the screen is on
-                notification.notification.intruderView != null)) {
+                notification.getNotification().intruderView != null)) {
             Slog.d(TAG, "Presenting high-priority notification");
             // special new transient ticker mode
             // 1. Populate mIntruderAlertView
 
-            if (notification.notification.intruderView == null) {
-                Slog.e(TAG, notification.notification.toString() + " wanted to intrude but intruderView was null");
+            if (notification.getNotification().intruderView == null) {
+                Slog.e(TAG, notification.getNotification().toString() + " wanted to intrude but intruderView was null");
                 return;
             }
 
             // bind the click event to the content area
-            PendingIntent contentIntent = notification.notification.contentIntent;
+            PendingIntent contentIntent = notification.getNotification().contentIntent;
             final View.OnClickListener listener = (contentIntent != null)
                     ? new NotificationClicker(contentIntent,
                             notification.pkg, notification.tag, notification.id)
                     : null;
 
-            mIntruderAlertView.applyIntruderContent(notification.notification.intruderView, listener);
+            mIntruderAlertView.applyIntruderContent(notification.getNotification().intruderView, listener);
 
             mCurrentlyIntrudingNotification = notification;
 
