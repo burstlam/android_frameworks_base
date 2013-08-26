@@ -44,6 +44,7 @@ import android.app.ActivityOptions;
 import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
+import android.app.Notification;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -1597,7 +1598,6 @@ public abstract class BaseStatusBar extends SystemUI implements
                 prepareHaloNotification(oldEntry, notification, true);
 
                 // Update the icon.
-                oldEntry.roundIcon = createRoundIcon(notification);
                 final StatusBarIcon ic = new StatusBarIcon(notification.getPackageName(),
                         notification.getUser(),
                         notification.getNotification().icon, notification.getNotification().iconLevel,
