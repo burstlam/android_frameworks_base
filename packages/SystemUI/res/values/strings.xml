@@ -573,6 +573,7 @@
     <string name="action_lastapp">Last App</string>
     <string name="action_none">Empty</string>
     <string name="action_qs">QuickSettings</string>
+    <string name="action_quicksettings">QuickSettings</string>
 
     <string name="widgets">Widgets</string>
     <string name="toggle_quiethours">QuietHours - Toggle</string>

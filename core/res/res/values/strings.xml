@@ -4216,6 +4216,7 @@
     <string name="action_ribbon">AOKP Ribbon</string>
     <string name="action_app">Custom App/Shortcut</string>
     <string name="action_qs">QuickSettings</string>
+    <string name="action_quicksettings">QuickSettings</string>
 
     <!-- Privacy Guard -->
     <string name="permlab_changePrivacyGuardState">enable or disable privacy guard</string>

@@ -232,7 +232,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private static final int KEY_ACTION_KILL_APP = 11;
     private static final int KEY_ACTION_LAST_APP = 12;
     private static final int KEY_ACTION_CUSTOM_APP = 13;
-    private static final int KEY_ACTION_QS = 14;
+    private static final int KEY_ACTION_QUICKSETTINGS = 14;
 
     // Masks for checking presence of hardware keys.
     // Must match values in core/res/res/values/config.xml
@@ -1160,7 +1160,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         mStatusBarService = null;
                     }
                     break;
-                case KEY_ACTION_QS:
+                case KEY_ACTION_QUICKSETTINGS:
                     try {
                         IStatusBarService statusbar = getStatusBarService();
                         if (statusbar != null) {
