@@ -63,6 +63,7 @@ import android.os.Handler;
 import android.os.RemoteException;
 import android.os.Vibrator;
 import android.os.ServiceManager;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.service.notification.INotificationListener;
 import android.service.notification.StatusBarNotification;
