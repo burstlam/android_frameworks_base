@@ -126,7 +126,6 @@ import com.android.systemui.statusbar.policy.Prefs;
 import com.android.systemui.aokp.AwesomeAction;
 import com.android.internal.util.aokp.AokpRibbonHelper;
 import com.android.systemui.aokp.AokpSwipeRibbon;
-import com.android.systemui.statusbar.policy.PieController.Position;
 import com.android.systemui.statusbar.powerwidget.PowerWidget;
 import com.android.systemui.statusbar.phone.ShortcutsWidget;
 
@@ -3340,6 +3339,10 @@ public class PhoneStatusBar extends BaseStatusBar {
                 repositionNavigationBar();
                 notifyNavigationBarScreenOn(true);
             }
+
+        // recreate pie navigation
+        recreatePie();
+
         }
     };
 
