@@ -25,7 +25,6 @@ LOCAL_PATH := $(call my-dir)
 # R.java file as a prerequisite.
 # TODO: find a more appropriate way to do this.
 framework_res_source_path := APPS/framework-res_intermediates/src
-
 include $(CLEAR_VARS)
 
 # FRAMEWORKS_BASE_SUBDIRS comes from build/core/pathmap.mk
@@ -55,6 +54,7 @@ LOCAL_SRC_FILES := $(filter-out \
 ## across process boundaries.
 ##
 ## READ ME: ########################################################
+
 LOCAL_SRC_FILES += \
 	core/java/android/accessibilityservice/IAccessibilityServiceConnection.aidl \
 	core/java/android/accessibilityservice/IAccessibilityServiceClient.aidl \
@@ -294,6 +294,7 @@ framework_built := $(call java-lib-deps,framework)
 # AIDL files to be preprocessed and included in the SDK,
 # relative to the root of the build tree.
 # ============================================================
+
 aidl_files := \
 	frameworks/base/core/java/android/accounts/IAccountManager.aidl \
 	frameworks/base/core/java/android/accounts/IAccountManagerResponse.aidl \
