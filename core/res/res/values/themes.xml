@@ -41,6 +41,7 @@ please see themes_device_defaults.xml.
          #Theme_Holo} or {@link #Theme_DeviceDefault}.</p>
     -->
     <style name="Theme">
+        <item name="android:windowIsTranslucent">true</item>
 
         <item name="colorForeground">@android:color/bright_foreground_dark</item>
         <item name="colorForegroundInverse">@android:color/bright_foreground_dark_inverse</item>
@@ -173,7 +174,7 @@ please see themes_device_defaults.xml.
         <item name="windowTitleStyle">@android:style/WindowTitle</item>
         <item name="windowTitleSize">25dip</item>
         <item name="windowTitleBackgroundStyle">@android:style/WindowTitleBackground</item>
-        <item name="android:windowAnimationStyle">@android:style/Animation.Activity</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>
         <item name="android:windowSoftInputMode">stateUnspecified|adjustUnspecified</item>
         <item name="windowActionBar">false</item>
         <item name="windowActionModeOverlay">false</item>
@@ -411,6 +412,7 @@ please see themes_device_defaults.xml.
          background will be a light color.
          <p>This is designed for API level 10 and lower.</p>-->
     <style name="Theme.Light">
+        <item name="android:windowIsTranslucent">true</item>
         <item name="windowBackground">@android:drawable/screen_background_selector_light</item>
         <item name="colorBackground">@android:color/background_light</item>
         <item name="colorForeground">@color/bright_foreground_light</item>
@@ -503,6 +505,7 @@ please see themes_device_defaults.xml.
          media players.   If you want the normal (dark background) theme
          do <em>not</em> use this, use {@link #Theme}. -->
     <style name="Theme.Black">
+        <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/black</item>
         <item name="android:colorBackground">@android:color/black</item>
     </style>
@@ -1021,7 +1024,7 @@ please see themes_device_defaults.xml.
         <item name="windowTitleStyle">@android:style/WindowTitle.Holo</item>
         <item name="windowTitleSize">25dip</item>
         <item name="windowTitleBackgroundStyle">@android:style/WindowTitleBackground.Holo</item>
-        <item name="android:windowAnimationStyle">@android:style/Animation.Holo.Activity</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>
         <item name="android:windowSoftInputMode">stateUnspecified|adjustUnspecified</item>
         <item name="windowActionBar">true</item>
         <item name="windowActionModeOverlay">false</item>
@@ -1213,6 +1216,7 @@ please see themes_device_defaults.xml.
          light; otherwise, it will be difficult to see the widgets.  This
          UI style also includes a full action bar by default. -->
     <style name="Theme.Holo.Light" parent="Theme.Light">
+        <item name="android:windowIsTranslucent">true</item>
         <item name="colorForeground">@android:color/bright_foreground_holo_light</item>
         <item name="colorForegroundInverse">@android:color/bright_foreground_inverse_holo_light</item>
         <item name="colorBackground">@android:color/background_holo_light</item>
@@ -1336,7 +1340,7 @@ please see themes_device_defaults.xml.
         <item name="windowTitleStyle">@android:style/WindowTitle.Holo</item>
         <item name="windowTitleSize">25dip</item>
         <item name="windowTitleBackgroundStyle">@android:style/WindowTitleBackground.Holo</item>
-        <item name="android:windowAnimationStyle">@android:style/Animation.Holo.Activity</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>
         <item name="android:windowSoftInputMode">stateUnspecified|adjustUnspecified</item>
         <item name="windowActionBar">true</item>
         <item name="windowActionModeOverlay">false</item>
