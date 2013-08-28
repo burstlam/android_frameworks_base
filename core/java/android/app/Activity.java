@@ -2006,8 +2006,8 @@ public class Activity extends ContextThemeWrapper
     public void setSwipeBackEnable(boolean enable) {
         mSwipeBackEnabled = (Settings.System.getInt(getContentResolver(), Settings.System.SWIPE_BACK_GESTURE_ENABLED, 0) == 1);
         if (mSwipeBackEnabled == true && mSwipeBackLayout == null) {
-            getWindow().setBackgroundDrawable(new ColorDrawable(0));
-            getWindow().getDecorView().setBackgroundDrawable(null);
+            // getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            // getWindow().getDecorView().setBackgroundDrawable(null);
             mSwipeBackLayout = new SwipeBackLayout(this);
             int mSwipeEdge = Settings.System.getInt(getContentResolver(), Settings.System.SWIPE_BACK_GESTURE_EDGE, 0);
             int mEdgeFlag;
