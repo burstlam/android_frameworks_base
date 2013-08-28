@@ -233,6 +233,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private static final int KEY_ACTION_LAST_APP = 12;
     private static final int KEY_ACTION_CUSTOM_APP = 13;
     private static final int KEY_ACTION_QUICKSETTINGS = 14;
+    private static final int KEY_ACTION_SCREENSHOT = 15;
 
     // Masks for checking presence of hardware keys.
     // Must match values in core/res/res/values/config.xml
@@ -1171,6 +1172,17 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         mStatusBarService = null;
                     }
                     break;
+                case KEY_ACTION_SCREENSHOT:
+                    try {
+                        IStatusBarService statusbar = getStatusBarService();
+                        if (statusbar != null) {
+                            statusbar.toggleScreenshot();
+                        }
+                    } catch (RemoteException e) {
+                        Slog.e(TAG, "RemoteException when toggling Screenshot", e);
+                        mStatusBarService = null;
+                    }
+                    break; 
                 case KEY_ACTION_EXPANDED:
                     boolean expandDesktopModeOn = Settings.System.getInt(
                             mContext.getContentResolver(),

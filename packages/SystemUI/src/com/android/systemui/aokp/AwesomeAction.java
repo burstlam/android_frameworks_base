@@ -179,6 +179,15 @@ public class AwesomeAction {
             case ACTION_POWER:
                 injectKeyDelayed(KeyEvent.KEYCODE_POWER);
                 break;
+            case ACTION_SCREENSHOT:
+                try {
+                    IStatusBarService.Stub.asInterface(
+                            ServiceManager.getService(mContext.STATUS_BAR_SERVICE)).toggleScreenshot();
+                } catch (RemoteException e) {
+                    // A RemoteException is like a cold
+                    // Let's hope we don't catch one!
+                }
+                break;
             case ACTION_IME:
                 mContext.sendBroadcast(new Intent("android.settings.SHOW_INPUT_METHOD_PICKER"));
                 break;
