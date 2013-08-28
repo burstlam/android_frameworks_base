@@ -1841,6 +1841,8 @@ please see themes_device_defaults.xml.
     <!--Default holographic (dark) for windows that want to have the user's selected
          wallpaper appear behind them and without an action bar. -->
     <style name="Theme.Holo.Wallpaper.NoTitleBar">
+        <item name="android:windowIsTranslucent">false</item>
         <item name="android:windowNoTitle">true</item>
     </style>
+
 </resources>
