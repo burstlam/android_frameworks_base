@@ -901,6 +901,8 @@ please see themes_device_defaults.xml.
          with trailing _dark or _light specifiers if they are not shared between both light and
          dark versions of the theme. -->
     <style name="Theme.Holo">
+        <item name="android:windowIsTranslucent">true</item>
+
         <item name="colorForeground">@android:color/bright_foreground_holo_dark</item>
         <item name="colorForegroundInverse">@android:color/bright_foreground_inverse_holo_dark</item>
         <item name="colorBackground">@android:color/background_holo_dark</item>
