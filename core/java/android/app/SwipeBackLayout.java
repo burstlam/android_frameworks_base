@@ -399,7 +399,7 @@ public class SwipeBackLayout extends FrameLayout {
                     mDraggingEdge = EDGE_BOTTOM;
                 }
                 if (mSwipeListener != null) {
-                    mSwipeListener.onEdgeTouch(mTouchEdge);
+                    mSwipeListener.onEdgeTouch(mDraggingEdge);
                 }
                 mIsScrollOverValid = true;
             }
