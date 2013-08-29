@@ -230,6 +230,7 @@ public class PieMenu extends FrameLayout {
     private boolean mUseLastApp;
     private boolean mUseKillTask;
     private boolean mUseAppWindow;
+    private boolean mUseScreenShot;
     private boolean mHapticFeedback;
     private boolean mNavbarOff;
     private boolean mSbarHide;
@@ -303,6 +304,8 @@ public class PieMenu extends FrameLayout {
                 Settings.System.PIE_KILL_TASK, 0) == 1;
         mUseAppWindow = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PIE_APP_WINDOW, 0) == 1;
+        mUseScreenShot = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PIE_SCREENSHOT, 0) == 1;
         mStatusMode = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PIE_MODE, 2);
         mNavbarOff = Settings.System.getInt(mContext.getContentResolver(),
@@ -680,6 +683,7 @@ public class PieMenu extends FrameLayout {
                 !(item.getName().equals(PieControl.LAST_APP_BUTTON) && !mUseLastApp) &&
                 !(item.getName().equals(PieControl.POWER_BUTTON) && !mUsePower) &&
                 !(item.getName().equals(PieControl.APP_WINDOW_BUTTON) && !mUseAppWindow) && 
+                !(item.getName().equals(PieControl.SCREENSHOT_BUTTON) && !mUseScreenShot) && 
                 !(item.getName().equals(PieControl.KILL_TASK_BUTTON) && !mUseKillTask);
 
     }

@@ -3544,6 +3544,12 @@ public final class Settings {
         public static final String PIE_SEARCH = "pie_search";
 
         /**
+         * Pie screenshot, should default to 0 (no, not show)
+         * @hide
+         */
+        public static final String PIE_SCREENSHOT = "pie_screenshot";
+
+        /**
          * Pie will not rotate. Should default to 1 (yes, do not rotate)
          * @hide
          */
