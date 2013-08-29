@@ -157,8 +157,9 @@ public class TransparencyManager {
                 }
                 if (mStatusbar != null) {
                     alpha    = 1;
-                    if (mIsKeyguardShowing && mAlphaMode == 1
-                        || mIsHomeShowing && !mIsKeyguardShowing) {
+                    if (mIsKeyguardShowing && mAlphaMode == 1) {
+                        alpha = 0;
+                    } else if (mIsHomeShowing && !mIsKeyguardShowing) {
                         alpha = mStatusbarInfo.alpha;
                     }
                     mStatusbar.setBackgroundAlpha(alpha, 0, 0,
