@@ -22,23 +22,35 @@ import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.input.InputManager;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
 import android.os.PowerManager;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemClock;
 import android.os.UserHandle;
 import android.os.Vibrator;
+import android.provider.Settings;
 import android.util.Log;
+import android.view.InputDevice;
 import android.view.IWindowManager;
+import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
+import android.view.WindowManagerGlobal;
+import android.widget.Toast;
 
 import com.android.internal.statusbar.IStatusBarService;
 
 import java.net.URISyntaxException;
 
 public class SlimActions {
+
+    private static final int MSG_INJECT_KEY_DOWN = 1066;
+    private static final int MSG_INJECT_KEY_UP = 1067;
 
     private SlimActions() {
     }
@@ -74,7 +86,20 @@ public class SlimActions {
                 }
             }
 
-            if (action.equals(ButtonsConstants.ACTION_POWER)) {
+            // process the actions
+            if (action.equals(ButtonsConstants.ACTION_HOME)) {
+                injectKeyDelayed(KeyEvent.KEYCODE_HOME, false);
+                return;
+            } else if (action.equals(ButtonsConstants.ACTION_BACK)) {
+                injectKeyDelayed(KeyEvent.KEYCODE_BACK, false);
+                return;
+            } else if (action.equals(ButtonsConstants.ACTION_SEARCH)) {
+                injectKeyDelayed(KeyEvent.KEYCODE_SEARCH, false);
+                return;
+            } else if (action.equals(ButtonsConstants.ACTION_MENU)) {
+                injectKeyDelayed(KeyEvent.KEYCODE_MENU, false);
+                return;
+            } else if (action.equals(ButtonsConstants.ACTION_POWER)) {
                 PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
                 pm.goToSleep(SystemClock.uptimeMillis());
                 return;
@@ -204,6 +229,30 @@ public class SlimActions {
                         }
                     }
                 }
+            } else if (action.equals(ButtonsConstants.ACTION_EXPANDED_DESKTOP)) {
+                    if (Settings.System.getInt(context.getContentResolver(),
+                            Settings.System.EXPANDED_DESKTOP_MODE, 0) == 0) {
+                        boolean hasNavBar = false;
+                        try {
+                            if (WindowManagerGlobal.getWindowManagerService().hasNavigationBar()) {
+                                hasNavBar = true;
+                            }
+                        } catch (RemoteException e) {
+                        }
+                        // Expanded desktop is going to turn on, default to 2 or 3 since
+                        // EXPANDED_DESKTOP_MODE has not been set
+                        Settings.System.putInt(context.getContentResolver(),
+                            Settings.System.EXPANDED_DESKTOP_MODE, hasNavBar ? 3 : 2);
+                        Toast.makeText(context,
+                            hasNavBar ? com.android.internal.R.string.expanded_mode_default_with_navbar_set
+                            : com.android.internal.R.string.expanded_mode_default_set,
+                            Toast.LENGTH_LONG).show();
+                    }
+                    Settings.System.putInt(
+                            context.getContentResolver(),
+                            Settings.System.EXPANDED_DESKTOP_STATE,
+                            Settings.System.getInt(context.getContentResolver(),
+                            Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1 ? 0 : 1);
             } else {
                 // we must have a custom uri
                 Intent intent = null;
@@ -242,6 +291,56 @@ public class SlimActions {
             context.startActivityAsUser(intent,
                     new UserHandle(UserHandle.USER_CURRENT));
         }
+    }
+
+    public static boolean isActionKeyEvent(String action) {
+        if (action.equals(ButtonsConstants.ACTION_HOME)
+                || action.equals(ButtonsConstants.ACTION_BACK)
+                || action.equals(ButtonsConstants.ACTION_SEARCH)
+                || action.equals(ButtonsConstants.ACTION_MENU)
+                || action.equals(ButtonsConstants.ACTION_NULL)) {
+            return true;
+        }
+        return false;
+    }
+
+    private static class H extends Handler {
+        public void handleMessage(Message m) {
+            final InputManager inputManager = InputManager.getInstance();
+            switch (m.what) {
+                case MSG_INJECT_KEY_DOWN:
+                    inputManager.injectInputEvent((KeyEvent) m.obj,
+                            InputManager.INJECT_INPUT_EVENT_MODE_ASYNC);
+                    break;
+                case MSG_INJECT_KEY_UP:
+                    inputManager.injectInputEvent((KeyEvent) m.obj,
+                            InputManager.INJECT_INPUT_EVENT_MODE_ASYNC);
+                    break;
+            }
+        }
+    }
+    private static H mHandler = new H();
+
+    private static void injectKeyDelayed(int keyCode, boolean longpress) {
+        long when = SystemClock.uptimeMillis();
+        int downflags = KeyEvent.FLAG_FROM_SYSTEM | KeyEvent.FLAG_VIRTUAL_HARD_KEY;
+        if (longpress) {
+            downflags |= KeyEvent.FLAG_LONG_PRESS;
+        }
+        mHandler.removeMessages(MSG_INJECT_KEY_DOWN);
+        mHandler.removeMessages(MSG_INJECT_KEY_UP);
+
+        KeyEvent down = new KeyEvent(when, when + 10, KeyEvent.ACTION_DOWN, keyCode, 0, 0,
+                KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
+                downflags,
+                InputDevice.SOURCE_KEYBOARD);
+        KeyEvent up = new KeyEvent(when, when + 30, KeyEvent.ACTION_UP, keyCode, 0, 0,
+                KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
+                KeyEvent.FLAG_FROM_SYSTEM | KeyEvent.FLAG_VIRTUAL_HARD_KEY,
+                InputDevice.SOURCE_KEYBOARD);
+
+        mHandler.sendMessageDelayed(Message.obtain(mHandler, MSG_INJECT_KEY_DOWN, down), 10);
+        mHandler.sendMessageDelayed(Message.obtain(mHandler, MSG_INJECT_KEY_UP, up), 30);
     }
 
 }

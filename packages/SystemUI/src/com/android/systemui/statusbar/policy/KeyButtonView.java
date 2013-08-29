@@ -31,6 +31,7 @@ import android.os.Handler;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.os.ServiceManager;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -45,6 +46,9 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.ImageView;
 
+import com.android.internal.util.slim.ButtonsConstants;
+import com.android.internal.util.slim.SlimActions;
+
 import com.android.systemui.R;
 
 import java.util.ArrayList;
@@ -57,6 +61,8 @@ public class KeyButtonView extends ImageView {
 
     long mDownTime;
     int mCode;
+    String mClickAction;
+    String mLongpressAction;
     int mTouchSlop;
     Drawable mGlowBG;
     static int mGlowBGColor = Integer.MIN_VALUE;
@@ -64,8 +70,8 @@ public class KeyButtonView extends ImageView {
     static int mDurationSpeedOn = 500;
     static int mDurationSpeedOff = 50;
     float mGlowAlpha = 0f, mGlowScale = 1f, mDrawingAlpha = 1f;
-    boolean mSupportsLongpress = true;
-    protected boolean mHandlingLongpress = false;
+    boolean mSupportsLongpress = false;
+    boolean mIsLongpressed = false;
     RectF mRect = new RectF(0f,0f,0f,0f);
     AnimatorSet mPressedAnim;
 
@@ -73,14 +79,10 @@ public class KeyButtonView extends ImageView {
 
     Runnable mCheckLongPress = new Runnable() {
         public void run() {
+            mIsLongpressed = true;
             if (isPressed()) {
-                setHandlingLongpress(true);
-                if (!performLongClick() && (mCode != 0)) {
-                    // we tried to do custom long click and failed
-                    // do long click on primary 'key'
-                    sendEvent(KeyEvent.ACTION_DOWN, KeyEvent.FLAG_LONG_PRESS);
-                    sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_LONG_CLICKED);
-                }
+                sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_LONG_CLICKED);
+                performLongClick();
             }
         }
     };
@@ -97,8 +99,6 @@ public class KeyButtonView extends ImageView {
 
         mCode = a.getInteger(R.styleable.KeyButtonView_keyCode, 0);
         
-        mSupportsLongpress = a.getBoolean(R.styleable.KeyButtonView_keyRepeat, true);
-
         mGlowBG = a.getDrawable(R.styleable.KeyButtonView_glowBackground);
         if (mGlowBG != null) {
             setDrawingAlpha(mButtonAlpha);
@@ -133,20 +133,29 @@ public class KeyButtonView extends ImageView {
         }
     }
 
-    public void setSupportsLongPress(boolean supports) {
-        mSupportsLongpress = supports;
-    }
-
-    public void setHandlingLongpress(boolean handling) {
-        mHandlingLongpress = handling;
-    }
-
     public void setCode(int code) {
         mCode = code;
     }
 
-    public int getCode() {
-        return mCode;
+    public void setClickAction(String action) {
+        mClickAction = action;
+        if (action.equals(ButtonsConstants.ACTION_HOME)) {
+            mSupportsLongpress = true;
+            setId(R.id.home);
+        } else if (action.equals(ButtonsConstants.ACTION_BACK)) {
+            setId(R.id.back);
+        } else if (action.equals(ButtonsConstants.ACTION_RECENTS)) {
+            setId(R.id.recent_apps);
+        }
+        setOnClickListener(mClickListener);
+    }
+
+    public void setLongpressAction(String action) {
+        if (!action.equals(ButtonsConstants.ACTION_NULL)) {
+            mLongpressAction = action;
+            mSupportsLongpress = true;
+            setOnLongClickListener(mLongPressListener);
+        }
     }
 
     public void setGlowBackground(int id) {
@@ -158,8 +167,8 @@ public class KeyButtonView extends ImageView {
             int defaultColor = mContext.getResources().getColor(
                     com.android.internal.R.color.white);
             ContentResolver resolver = mContext.getContentResolver();
-            mGlowBGColor = Settings.System.getInt(resolver,
-                    Settings.System.NAVIGATION_BAR_GLOW_TINT, defaultColor);
+            mGlowBGColor = Settings.System.getIntForUser(resolver,
+                    Settings.System.NAVIGATION_BAR_GLOW_TINT, defaultColor, UserHandle.USER_CURRENT);
 
             if (mGlowBGColor == Integer.MIN_VALUE) {
                 mGlowBGColor = defaultColor;
@@ -284,13 +293,12 @@ public class KeyButtonView extends ImageView {
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                //Slog.d("KeyButtonView", "press");
-                setHandlingLongpress(false);
                 mDownTime = SystemClock.uptimeMillis();
+                mIsLongpressed = false;
                 setPressed(true);
                 if (mCode != 0) {
                     sendEvent(KeyEvent.ACTION_DOWN, 0, mDownTime);
-                } else {
+                } else if (!SlimActions.isActionKeyEvent(mClickAction)) {
                     // Provide the same haptic feedback that the system offers for virtual keys.
                     performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                 }
@@ -319,18 +327,21 @@ public class KeyButtonView extends ImageView {
             case MotionEvent.ACTION_UP:
                 final boolean doIt = isPressed();
                 setPressed(false);
-                if (mCode != 0) {
-                    if ((doIt) && (!mHandlingLongpress)) {
-                        sendEvent(KeyEvent.ACTION_UP, 0);
-                        sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_CLICKED);
-                        playSoundEffect(SoundEffectConstants.CLICK);
+                if (!mIsLongpressed) {
+                    if (mCode != 0) {
+                        if (doIt) {
+                            sendEvent(KeyEvent.ACTION_UP, 0);
+                        } else {
+                            sendEvent(KeyEvent.ACTION_UP, KeyEvent.FLAG_CANCELED);
+                        }
                     } else {
-                        sendEvent(KeyEvent.ACTION_UP, KeyEvent.FLAG_CANCELED);
+                        // no key code, it is a custom click action
+                        if (doIt) {
+                            performClick();
+                        }
                     }
-                } else {
-                    // no key code, just a regular ImageView
-                    if ((doIt) && (!mHandlingLongpress)) {
-                        performClick();
+                    if (doIt) {
+                        sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_CLICKED);
                     }
                 }
                 if (mSupportsLongpress) {
@@ -341,6 +352,22 @@ public class KeyButtonView extends ImageView {
 
         return true;
     }
+
+    private OnClickListener mClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            SlimActions.processAction(mContext, mClickAction);
+            return;
+        }
+    };
+
+    private OnLongClickListener mLongPressListener = new OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            SlimActions.processAction(mContext, mLongpressAction);
+            return true;
+        }
+    };
 
     void sendEvent(int action, int flags) {
         sendEvent(action, flags, SystemClock.uptimeMillis());
@@ -392,15 +419,15 @@ public class KeyButtonView extends ImageView {
             resolver.registerContentObserver(
                     Settings.System.getUriFor(
                     Settings.System.NAVIGATION_BAR_BUTTON_ALPHA),
-                    false, this);
+                    false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(
                     Settings.System.getUriFor(
                     Settings.System.NAVIGATION_BAR_GLOW_TINT),
-                    false, this);
+                    false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(
                     Settings.System.getUriFor(
                     Settings.System.NAVIGATION_BAR_GLOW_DURATION[1]),
-                    false, this);
+                    false, this, UserHandle.USER_ALL);
             updateSettings();
         }
 
@@ -415,15 +442,15 @@ public class KeyButtonView extends ImageView {
 
         void updateSettings() {
             ContentResolver resolver = mContext.getContentResolver();
-            mDurationSpeedOff = Settings.System.getInt(resolver,
-                    Settings.System.NAVIGATION_BAR_GLOW_DURATION[0], 10);
-            mDurationSpeedOn = Settings.System.getInt(resolver,
-                    Settings.System.NAVIGATION_BAR_GLOW_DURATION[1], 100);
-            mButtonAlpha = (1 - (Settings.System.getFloat(
-                    resolver, Settings.System.NAVIGATION_BAR_BUTTON_ALPHA, 0.3f)));
+            mDurationSpeedOff = Settings.System.getIntForUser(resolver,
+                    Settings.System.NAVIGATION_BAR_GLOW_DURATION[0], 10, UserHandle.USER_CURRENT);
+            mDurationSpeedOn = Settings.System.getIntForUser(resolver,
+                    Settings.System.NAVIGATION_BAR_GLOW_DURATION[1], 100, UserHandle.USER_CURRENT);
+            mButtonAlpha = (1 - (Settings.System.getFloatForUser(
+                    resolver, Settings.System.NAVIGATION_BAR_BUTTON_ALPHA, 0.3f, UserHandle.USER_CURRENT)));
 
-            mGlowBGColor = Settings.System.getInt(resolver,
-                    Settings.System.NAVIGATION_BAR_GLOW_TINT, -2);
+            mGlowBGColor = Settings.System.getIntForUser(resolver,
+                    Settings.System.NAVIGATION_BAR_GLOW_TINT, -2, UserHandle.USER_CURRENT);
             if (mGlowBGColor == -2) {
                 mGlowBGColor = mContext.getResources().getColor(
                     com.android.internal.R.color.white);
