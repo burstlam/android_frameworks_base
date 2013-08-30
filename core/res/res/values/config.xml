@@ -1269,4 +1269,7 @@
          This is only for Xiaomi devices -->
      <bool name="config_dualsystem">false</bool>
 
+    <!-- True if the Irda service should be started at system start -->
+    <bool name="config_enableIrdaManagerService">false</bool>
+
 </resources>
