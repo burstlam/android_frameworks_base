@@ -1947,7 +1947,6 @@
   <java-symbol type="drawable" name="shadow_left" />
   <java-symbol type="drawable" name="shadow_right" />
   <java-symbol type="drawable" name="shadow_bottom" />
-  <java-symbol type="array" name="swipe_back_keep_activities" />
 
   <!-- Irda Service -->
   <java-symbol type="bool" name="config_enableIrdaManagerService" />
