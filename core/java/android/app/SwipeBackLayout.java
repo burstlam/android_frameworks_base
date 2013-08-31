@@ -2,13 +2,8 @@
 package android.app;
 
 import android.app.Activity;
-import android.app.ViewDragHelper;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.TypedArray;
-import android.content.pm.ActivityInfo;
-import android.content.pm.ResolveInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.Region;
@@ -21,7 +16,7 @@ import android.widget.FrameLayout;
 
 import com.android.internal.R;
 
-import java.util.List;
+import android.app.ViewDragHelper;
 
 public class SwipeBackLayout extends FrameLayout {
     /**
@@ -494,32 +489,11 @@ public class SwipeBackLayout extends FrameLayout {
             if (state == ViewDragHelper.STATE_IDLE) {
                 SwipeBackLayout.this.setLayerType(View.LAYER_TYPE_NONE, null);
                 if (mScrollPercent == 1) {
-                    if (!isMainActivity()) {
-                        mActivity.finish();
-                    } else {
-                        mActivity.moveTaskToBack(true);
-                    }
+                    mActivity.finish();
                 }
             } else if (state == ViewDragHelper.STATE_SETTLING) {
                 SwipeBackLayout.this.setLayerType(View.LAYER_TYPE_HARDWARE, null);
             }
-        }
-
-        private boolean isMainActivity() {
-            Intent intent = new Intent(Intent.ACTION_MAIN, null);
-            intent.addCategory(Intent.CATEGORY_LAUNCHER);
-
-            List<ResolveInfo> list =
-                mActivity.getPackageManager().queryIntentActivities(intent,
-                PackageManager.GET_ACTIVITIES);
-
-            for (int i = 0; i < list.size(); i++) {
-                if (list.get(i).activityInfo.applicationInfo.packageName.equals(mActivity.getPackageName())) {
-                    return true;
-                }
-            }
-
-            return false;
         }
     }
 }
