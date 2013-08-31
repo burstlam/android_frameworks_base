@@ -514,7 +514,7 @@ public class SwipeBackLayout extends FrameLayout {
                 PackageManager.GET_ACTIVITIES);
 
             for (int i = 0; i < list.size(); i++) {
-                if (list.get(i).activityInfo.applicationInfo.packageName.equals(mActivity.getPackageName())) {
+                if (list.get(i).activityInfo.applicationInfo.packageName.equals(mActivity.getPackageName()) && list.get(i).activityInfo.name.equals(mActivity.getClass().getName())) {
                     return true;
                 }
             }
