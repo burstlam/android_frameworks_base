@@ -1928,32 +1928,7 @@ public class Activity extends ContextThemeWrapper
             return v;
 
         mSwipeBackEnabled = (Settings.System.getInt(getContentResolver(), Settings.System.SWIPE_BACK_GESTURE_ENABLED, 0) == 1);
-        if (mSwipeBackEnabled == true && mSwipeBackLayout == null) {
-            getWindow().setBackgroundDrawable(new ColorDrawable(0));
-            getWindow().getDecorView().setBackgroundDrawable(null);
-            mSwipeBackLayout = new SwipeBackLayout(this);
-            int mSwipeEdge = Settings.System.getInt(getContentResolver(), Settings.System.SWIPE_BACK_GESTURE_EDGE, 0);
-            int mEdgeFlag;
-            switch (mSwipeEdge) {
-                case 0:
-                    mEdgeFlag = SwipeBackLayout.EDGE_LEFT;
-                    break;
-                case 1:
-                    mEdgeFlag = SwipeBackLayout.EDGE_RIGHT;
-                    break;
-                case 2:
-                    mEdgeFlag = SwipeBackLayout.EDGE_BOTTOM;
-                    break;
-                case 3:
-                    mEdgeFlag = SwipeBackLayout.EDGE_ALL;
-                    break;
-                default:
-                    mEdgeFlag = SwipeBackLayout.EDGE_LEFT;
-                    break;
-            }
-            mSwipeBackLayout.setEdgeTrackingEnabled(mEdgeFlag);
-            return mSwipeBackLayout.findViewById(id);
-        } else if (mSwipeBackEnabled == true) {
+        if (mSwipeBackEnabled == true) {
             return mSwipeBackLayout.findViewById(id);
         } else {
             return null;
@@ -1967,32 +1942,7 @@ public class Activity extends ContextThemeWrapper
      */
     public SwipeBackLayout getSwipeBackLayout() {
         mSwipeBackEnabled = (Settings.System.getInt(getContentResolver(), Settings.System.SWIPE_BACK_GESTURE_ENABLED, 0) == 1);
-        if (mSwipeBackEnabled == true && mSwipeBackLayout == null) {
-            getWindow().setBackgroundDrawable(new ColorDrawable(0));
-            getWindow().getDecorView().setBackgroundDrawable(null);
-            mSwipeBackLayout = new SwipeBackLayout(this);
-            int mSwipeEdge = Settings.System.getInt(getContentResolver(), Settings.System.SWIPE_BACK_GESTURE_EDGE, 0);
-            int mEdgeFlag;
-            switch (mSwipeEdge) {
-                case 0:
-                    mEdgeFlag = SwipeBackLayout.EDGE_LEFT;
-                    break;
-                case 1:
-                    mEdgeFlag = SwipeBackLayout.EDGE_RIGHT;
-                    break;
-                case 2:
-                    mEdgeFlag = SwipeBackLayout.EDGE_BOTTOM;
-                    break;
-                case 3:
-                    mEdgeFlag = SwipeBackLayout.EDGE_ALL;
-                    break;
-                default:
-                    mEdgeFlag = SwipeBackLayout.EDGE_LEFT;
-                    break;
-            }
-            mSwipeBackLayout.setEdgeTrackingEnabled(mEdgeFlag);
-            return mSwipeBackLayout;
-        } else if(mSwipeBackEnabled == true) {
+        if(mSwipeBackEnabled == true) {
             return mSwipeBackLayout;
         } else {
             return null;
