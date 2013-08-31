@@ -494,7 +494,7 @@ public class SwipeBackLayout extends FrameLayout {
             if (state == ViewDragHelper.STATE_IDLE) {
                 SwipeBackLayout.this.setLayerType(View.LAYER_TYPE_NONE, null);
                 if (mScrollPercent == 1) {
-                    if (!isMainActivity()) {
+                    if (!needToKeep()) {
                         mActivity.finish();
                     } else {
                         mActivity.moveTaskToBack(true);
@@ -505,7 +505,23 @@ public class SwipeBackLayout extends FrameLayout {
             }
         }
 
-        private boolean isMainActivity() {
+        private boolean needToKeep() {
+            int i;
+            String packageName = mActivity.getPackageName();
+            String className = mActivity.getClass().getName();
+            String fullName = packageName + "." + className;
+
+            // Check if it matches any of the apps needed to keep in arrays.xml
+            String keepApps[] = getResources().getStringArray(R.array.swipe_back_keep_activities);
+
+            for (i = 0; i < keepApps.length; i++) {
+                // Filter supports package name, class name, or full name
+                if (keepApps[i].equals(packageName) || keepApps[i].equals(className) || keepApps[i].equals(fullName)) {
+                    return true;
+                }
+            }
+
+            // Does not match filters. Check if it is the main activity.
             Intent intent = new Intent(Intent.ACTION_MAIN, null);
             intent.addCategory(Intent.CATEGORY_LAUNCHER);
 
@@ -513,12 +529,13 @@ public class SwipeBackLayout extends FrameLayout {
                 mActivity.getPackageManager().queryIntentActivities(intent,
                 PackageManager.GET_ACTIVITIES);
 
-            for (int i = 0; i < list.size(); i++) {
-                if (list.get(i).activityInfo.applicationInfo.packageName.equals(mActivity.getPackageName()) && list.get(i).activityInfo.name.equals(mActivity.getClass().getName())) {
+            for (i = 0; i < list.size(); i++) {
+                if (list.get(i).activityInfo.applicationInfo.packageName.equals(packageName) && list.get(i).activityInfo.name.equals(className)) {
                     return true;
                 }
             }
 
+            // Does not match anything. Kill the Activity.
             return false;
         }
     }
