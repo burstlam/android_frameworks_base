@@ -649,6 +649,21 @@ public class PhoneStatusBar extends BaseStatusBar {
             // no window manager? good luck with that
         }
 
+        try {
+            // position app sidebar on left if in landscape orientation and device has a navbar
+            if (mWindowManagerService.hasNavigationBar() &&
+                    mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                mWindowManager.updateViewLayout(mAppSidebar,
+                        getAppSidebarLayoutParams(AppSidebar.SIDEBAR_POSITION_LEFT));
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAppSidebar.setPosition(AppSidebar.SIDEBAR_POSITION_LEFT);
+                    }
+               }, 500);
+            }
+        } catch (RemoteException e) {
+        }
         if (mRecreating) {
             removeSidebarView();
         }
@@ -3330,7 +3345,6 @@ public class PhoneStatusBar extends BaseStatusBar {
                 if (DEBUG) {
                     Slog.v(TAG, "configuration changed: " + mContext.getResources().getConfiguration());
                 }
-                Configuration config = mContext.getResources().getConfiguration();
                 mDisplay.getSize(mCurrentDisplaySize);
 
                 updateResources();
@@ -3348,21 +3362,6 @@ public class PhoneStatusBar extends BaseStatusBar {
                             && (mCurrentUIMode == 0));
                     hideNavBar(); // Reset the Gesture window to the new orientation.
                 }
-                try {
-                    // position app sidebar on left if in landscape orientation and device has a navbar
-                    if (mWindowManagerService.hasNavigationBar() &&
-                            config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                        mWindowManager.updateViewLayout(mAppSidebar,
-                                getAppSidebarLayoutParams(AppSidebar.SIDEBAR_POSITION_LEFT));
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mAppSidebar.setPosition(AppSidebar.SIDEBAR_POSITION_LEFT);
-                            }
-                        }, 500);
-                    }
-                } catch (RemoteException e) {
-                } 
             }
             else if (Intent.ACTION_SCREEN_ON.equals(action)) {
                 // work around problem where mDisplay.getRotation() is not stable while screen is off (bug 7086018)
