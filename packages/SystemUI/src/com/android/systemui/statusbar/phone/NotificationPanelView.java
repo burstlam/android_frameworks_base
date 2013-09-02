@@ -140,6 +140,10 @@ public class NotificationPanelView extends PanelView {
             boolean flip = false;
             boolean swipeFlipJustFinished = false;
             boolean swipeFlipJustStarted = false;
+            int noNotificationPulldownMode = Settings.System.getInt(getContext().getContentResolver(),
+                                    Settings.System.QS_NO_NOTIFICATION_PULLDOWN, 0);
+            int quickPulldownMode = Settings.System.getInt(getContext().getContentResolver(),
+                                    Settings.System.FAST_TOGGLE, 0);
             switch (event.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:
                     if (mStatusBar.mHideSettingsPanel)
@@ -157,16 +161,14 @@ public class NotificationPanelView extends PanelView {
                         break;
                     }
                     if (event.getX(0) > getWidth() * (1.0f - STATUS_BAR_SETTINGS_RIGHT_PERCENTAGE) &&
-                            Settings.System.getInt(getContext().getContentResolver(),
-                                    Settings.System.FAST_TOGGLE, 0) == 1) {
+                            quickPulldownMode == 1) {
                         flip = true;
                     } else if (event.getX(0) < getWidth() * (1.0f - STATUS_BAR_SETTINGS_LEFT_PERCENTAGE) &&
-                            Settings.System.getInt(getContext().getContentResolver(),
-                                    Settings.System.FAST_TOGGLE, 0) == 2) {
+                            quickPulldownMode == 2) {
                         flip = true;
-                    } else if (!mStatusBar.hasClearableNotifications() &&
-                            Settings.System.getInt(getContext().getContentResolver(),
-                                    Settings.System.FAST_TOGGLE, 0) == 3) {
+                    } else if (!mStatusBar.hasClearableNotifications() && noNotificationPulldownMode == 1) {
+                        flip = true;
+                    } else if (!mStatusBar.hasVisibleNotifications() && noNotificationPulldownMode == 2) {
                         flip = true;
                     }
                     break;

@@ -4362,6 +4362,13 @@ public final class Settings {
         public static final String FAST_TOGGLE = "fast_toggle";
 
         /**
+         * Quick Settings Quick Pulldown
+         *
+         * @hide
+         */
+        public static final String QS_NO_NOTIFICATION_PULLDOWN = "qs_no_notification_pulldown";
+
+        /**
          * Ability to change color per app
          * 0 = P.A.C. is off, it will switch everything color related back to stock and ignore calls
          * 1 = P.A.C. is on, it will listen to calls again
