@@ -49,4 +49,7 @@
     <string name="pie_phone_status_no_service">No service</string>
     <string name="pie_phone_status_airplane_mode">Airplane mode on</string>
     <string name="pie_phone_status_emergency_only">Emergency calls only</string>
+
+    <!-- Title shown in recents popup for adding an application to the split view -->
+    <string name="status_bar_recent_add_to_split_view">Add to Split View</string>
 </resources>
