@@ -36,6 +36,7 @@ import com.android.internal.widget.ActionBarContextView;
 import com.android.internal.widget.ActionBarOverlayLayout;
 import com.android.internal.widget.ActionBarView;
 
+import android.app.Activity;
 import android.app.KeyguardManager;
 import android.content.ComponentName;
 import android.content.ContentResolver;
