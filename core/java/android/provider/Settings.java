@@ -3988,10 +3988,13 @@ public final class Settings {
         public static final String LOCKSCREEN_LONG_CAMERA_ACTION = "lockscreen_long_camera_action";
 
          /**
-          * Always show the battery status on the lockscreen
+          * Lockscreen battery status visibility mode
+          * 0 = show if charging
+          * 1 = always show
+          * 2 = never show
           * @hide
           */
-        public static final String LOCKSCREEN_ALWAYS_SHOW_BATTERY = "lockscreen_always_show_battery";
+        public static final String LOCKSCREEN_BATTERY_VISIBILITY = "lockscreen_always_show_battery";
 
         /**
          * Show the pending notification counts as overlays on the status bar
@@ -4719,7 +4722,7 @@ public final class Settings {
             POWER_MENU_SOUND_ENABLED,
             POWER_MENU_USER_ENABLED,
             LOCKSCREEN_VIBRATE_ENABLED,
-            LOCKSCREEN_ALWAYS_SHOW_BATTERY,
+            LOCKSCREEN_BATTERY_VISIBILITY,
             PHONE_BLACKLIST_ENABLED,
             PHONE_BLACKLIST_NOTIFY_ENABLED,
             PHONE_BLACKLIST_PRIVATE_NUMBER_MODE,
