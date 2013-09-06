@@ -1207,13 +1207,14 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
     private static class NavBarAction implements Action, View.OnClickListener {
 
-        private final int[] ITEM_IDS = { R.id.navbartoggle, R.id.navbarstatus, R.id.navbarhide, R.id.piecontrol, R.id.navbarback };
+        private final int[] ITEM_IDS = { R.id.navbartoggle, R.id.navbarstatus, R.id.navbarhide, R.id.piecontrol, R.id.spiecontrol, R.id.navbarback };
 
         public Context mContext;
         public boolean mStatusBarVisible;
         public boolean mNavbarVisible;
         public boolean mNavbarHide;
         public boolean mPieControl;
+        public boolean mSPieControl;
         private final Handler mHandler;
         private int mInjectKeycode;
         long mDownTime;
@@ -1232,12 +1233,14 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                     Settings.System.STATUSBAR_HIDDEN_NOW, false);
             mPieControl = Settings.System.getBoolean(mContext.getContentResolver(),
                     Settings.System.PIE_CONTROLS, false);
+            mSPieControl = Settings.System.getBoolean(mContext.getContentResolver(),
+                    Settings.System.SPIE_CONTROLS, false);
             mNavbarHide = Settings.System.getBoolean(mContext.getContentResolver(),
                     Settings.System.NAV_HIDE_ENABLE, false);
 
             View v = inflater.inflate(R.layout.global_actions_navbar_mode, parent, false);
 
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 6; i++) {
                 View itemView = v.findViewById(ITEM_IDS[i]);
 
                 if (mKeyguardShowing ){
@@ -1247,7 +1250,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                     }
                 }
 
-                itemView.setSelected((i==0)&&(mNavbarVisible)||(i==1)&&(mStatusBarVisible)||(i==2)&&(mNavbarHide)||(i==3)&&(mPieControl));
+                itemView.setSelected((i==0)&&(mNavbarVisible)||(i==1)&&(mStatusBarVisible)||(i==2)&&(mNavbarHide)||(i==3)&&(mPieControl)||(i==4)&&(mSPieControl));
                 // Set up click handler
                 itemView.setTag(i);
                 itemView.setOnClickListener(this);
@@ -1327,6 +1330,15 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 break;
 
             case 4:
+                mSPieControl = !mSPieControl;
+                Settings.System.putBoolean(mContext.getContentResolver(),
+                    Settings.System.SPIE_CONTROLS,
+                         mSPieControl );
+                v.setSelected(mSPieControl);
+                mHandler.sendEmptyMessage(MESSAGE_DISMISS);
+                break;
+
+            case 5:
                 injectKeyDelayed(KeyEvent.KEYCODE_BACK,SystemClock.uptimeMillis());
                 break;
             }

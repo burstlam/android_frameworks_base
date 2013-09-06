@@ -28,7 +28,7 @@ public class SlimPieToggle extends StatefulToggle {
     @Override
     protected void doEnable() {
         Settings.System.putInt(mContext.getContentResolver(),
-                Settings.System.SPIE_CONTROLS, 2);
+                Settings.System.SPIE_CONTROLS, 1);
         Settings.System.putBoolean(mContext.getContentResolver(),
                 Settings.System.NAV_HIDE_ENABLE, true);
     }

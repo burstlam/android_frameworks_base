@@ -2164,7 +2164,7 @@ public abstract class BaseStatusBar extends SystemUI implements
         int slimpie = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.SPIE_CONTROLS, 0);
 
-        return (slimpie == 1 && expanded) || slimpie == 2;
+        return (slimpie == 2 && expanded) || slimpie == 1;
     }
 
     private void attachSPie() {
