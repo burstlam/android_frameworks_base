@@ -239,15 +239,13 @@ class SaveImageInBackgroundTask extends AsyncTask<SaveImageInBackgroundData, Voi
 
             // Trash Image
             Intent trashIntent = new Intent();
-            trashIntent.setClass(context, TrashScreenshot.class);
-            trashIntent.putExtra(TrashScreenshot.SCREENSHOT_URI, uri.toString());
-            trashIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK 
-                    | Intent.FLAG_ACTIVITY_NEW_TASK);
+            trashIntent.setClass(params.context, TrashScreenshot.class);
+            trashIntent.putExtra(TrashScreenshot.SCREENSHOT_URI, params.imageUri.toString());
 
             mNotificationBuilder.addAction(R.drawable.ic_menu_trash,
                      r.getString(com.android.internal.R.string.trash),
-                     PendingIntent.getBroadcast(context, 0, trashIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT));
+                     PendingIntent.getBroadcast(params.context, 0, trashIntent,
+                        PendingIntent.FLAG_CANCEL_CURRENT));
 
             // Create the intent to show the screenshot in gallery
             Intent launchIntent = new Intent(Intent.ACTION_VIEW);
