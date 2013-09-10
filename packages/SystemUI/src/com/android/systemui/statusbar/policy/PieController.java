@@ -111,6 +111,7 @@ public class PieController implements BaseStatusBar.NavigationBarCallback,
     private final static String ACTION_IME = "**ime**";
     private final static String ACTION_LAST_APP = "**lastapp**";
     private final static String ACTION_KILL = "**kill**";
+    private final static String ACTION_TORCH = "**torch**";
     /*private final static String ACTION_WIDGETS = "**widgets**";*/
     private final static String ACTION_NULL = "**null**";
 
@@ -710,6 +711,8 @@ public class PieController implements BaseStatusBar.NavigationBarCallback,
                 return mContext.getResources().getDrawable(R.drawable.ic_sysbar_notifications);
             } else if (uri.equals(ACTION_QS)) {
                 return mContext.getResources().getDrawable(R.drawable.ic_sysbar_qs);
+            } else if (uri.equals(ACTION_TORCH)) {
+                return mContext.getResources().getDrawable(R.drawable.ic_sysbar_torch);
             }
         }
         return mContext.getResources().getDrawable(R.drawable.ic_sysbar_null);
@@ -977,6 +980,13 @@ public class PieController implements BaseStatusBar.NavigationBarCallback,
             } catch (RemoteException e) {
                 // wtf is this
             }
+            return;
+        } else if (type.equals(ACTION_TORCH)) {
+            Intent intentTorch = new Intent("android.intent.action.MAIN");
+            intentTorch.setComponent(ComponentName.unflattenFromString("com.aokp.Torch/.TorchActivity"));
+            intentTorch.addCategory("android.intent.category.LAUNCHER");
+            intentTorch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(intentTorch);
             return;
         } else {  // we must have a custom uri
             try {
