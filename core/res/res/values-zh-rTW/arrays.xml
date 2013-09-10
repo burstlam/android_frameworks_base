@@ -130,7 +130,8 @@
     </string-array>
 
     <string-array name="lunar_festival">
-        <item>臘月廿九|臘月三十 除夕</item>
+        <item>臘月廿九 除夕</item>
+        <item>臘月三十 除夕</item>
         <item>正月初一 春節</item>
         <item>正月十五 元宵節</item>
         <item>五月初五 端午節</item>
