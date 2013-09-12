@@ -718,6 +718,5 @@ public class HaloProperties extends FrameLayout implements BatteryStateChangeCal
             string = string.substring(0, length - 1);
         }
         return string;
->>>>>>> b443699... HALO Mods (1/2)
     }
 }
