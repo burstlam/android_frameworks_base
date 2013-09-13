@@ -3248,6 +3248,21 @@ public final class Settings {
          */
         public static final String QS_DYNAMIC_WIFI = "qs_dyanmic_wifi";
 
+        /**
+         * @hide
+         */
+        public static final String START_SCREEN_STATE_SERVICE = "start_screen_state_service";
+
+        /**
+         * @hide
+         */
+        public static final String SCREEN_STATE_TWOG = "screen_state_twog";
+
+        /**
+         * @hide
+         */
+        public static final String SCREEN_STATE_GPS = "screen_state_gps";
+        
          /**
          * Quick Settings Quick Pulldown
          *
