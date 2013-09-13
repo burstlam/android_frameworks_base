@@ -4119,6 +4119,11 @@ public final class Settings {
         public static final String SCREEN_STATE_GPS = "screen_state_gps";
 
         /**
+         * @hide
+         */
+        public static final String SCREEN_STATE_MOBILE_DATA = "screen_state_mobile_data";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
