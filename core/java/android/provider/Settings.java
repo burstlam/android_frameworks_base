@@ -3262,6 +3262,11 @@ public final class Settings {
          * @hide
          */
         public static final String SCREEN_STATE_GPS = "screen_state_gps";
+
+        /**
+         * @hide
+         */
+        public static final String SCREEN_STATE_MOBILE_DATA = "screen_state_mobile_data";
         
          /**
          * Quick Settings Quick Pulldown
