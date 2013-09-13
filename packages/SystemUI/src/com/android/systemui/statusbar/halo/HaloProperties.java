@@ -542,6 +542,7 @@ public class HaloProperties extends FrameLayout implements BatteryStateChangeCal
            // Return back to default color
            mHaloTextView.setTextColor(getResources().getColor(R.color.halo_text_color));
         }
+    }
 
     public interface OnClockChangedListener {
         public abstract void onChange(String s);
