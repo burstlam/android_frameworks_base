@@ -66,7 +66,7 @@ public class TwoGToggle extends ScreenStateToggle {
             public void run() {
                 TelephonyManager tm = (TelephonyManager) mContext
                         .getSystemService(Context.TELEPHONY_SERVICE);
-                Log.d(TAG, "toggle2G = true");
+                Log.d(TAG, "2G = true");
                 tm.toggle2G(true);
             }
         };
@@ -77,7 +77,7 @@ public class TwoGToggle extends ScreenStateToggle {
             public void run() {
                 TelephonyManager tm = (TelephonyManager) mContext
                         .getSystemService(Context.TELEPHONY_SERVICE);
-                Log.d(TAG, "toggle2G = false");
+                Log.d(TAG, "2G = false");
                 tm.toggle2G(false);
             }
         };
