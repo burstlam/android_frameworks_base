@@ -709,15 +709,8 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
     int mvPosition;
     boolean mIsTap = false;
     boolean mIsGridView = false;
-
-    /**
-     * for ListView Animations
-     */
     private boolean mIsWidget;
-    private boolean mIsScrolling;
-    private int mWidth, mHeight = 0;
     private int mPositionV;
-    private boolean mIsTap = false;
 
     /**
      * Interface definition for a callback to be invoked when the list or grid

@@ -2830,7 +2830,7 @@ public final class Settings {
          * HALO being minimal.
          * @hide
          */
-        public static final String HALO_STYLE = "halo_style";
+        public static final String HALO_COLORS = "halo_colors";
 
         /**
          * HALO speech bubble color

@@ -1358,6 +1358,10 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
         mEffect.invalidate();
     }
 
+    void tick(NotificationData.Entry entry, int delay, int duration, boolean alwaysFlip, boolean showContent) {
+        tick(entry, delay, duration, alwaysFlip, showContent, false);
+    }
+
     void tick(NotificationData.Entry entry, int delay, int duration, boolean alwaysFlip, boolean showContent, boolean flipContent) {
         if (entry == null) {
             clearTicker();
@@ -1398,7 +1402,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
 
         // Set Number
         HaloProperties.MessageType msgType;
-        if (entry.notification.getPackageName().equals("com.mokee.halo")) {
+        if (entry.notification.getPackageName().equals("com.paranoid.halo")) {
             msgType = HaloProperties.MessageType.PINNED;
         } else if (!entry.notification.isClearable()) {
             msgType = HaloProperties.MessageType.PINNED;
