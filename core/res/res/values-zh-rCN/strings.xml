@@ -818,6 +818,10 @@
     <string name="lockscreen_failed_attempts_now_wiping" product="default" msgid="3025504721764922246">"您已经 <xliff:g id="NUMBER">%d</xliff:g> 次错误地尝试解锁手机。手机现在将重置为出厂默认设置。"</string>
     <string name="lockscreen_too_many_failed_attempts_countdown" msgid="6251480343394389665">"<xliff:g id="NUMBER">%d</xliff:g> 秒后重试。"</string>
     <string name="lockscreen_forgot_pattern_button_text" msgid="2626999449610695930">"忘记了图案？"</string>
+    <!-- Message shown in gesture unlock after some number of unsuccessful attempts -->
+    <string name="kg_forgot_gesture_button_text">忘记手势？</string>
+    <!-- Message shown when user enters wrong pattern -->
+    <string name="kg_wrong_gesture">手势错误</string>
     <string name="lockscreen_glogin_forgot_pattern" msgid="2588521501166032747">"帐户解锁"</string>
     <string name="lockscreen_glogin_too_many_attempts" msgid="2751368605287288808">"图案尝试次数过多"</string>
     <string name="lockscreen_glogin_instructions" msgid="3931816256100707784">"要解除锁定，请使用您的 Google 帐户登录。"</string>
