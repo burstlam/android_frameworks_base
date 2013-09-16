@@ -6781,6 +6781,11 @@ public final class Settings {
         public static final String STAY_ON_WHILE_PLUGGED_IN = "stay_on_while_plugged_in";
 
         /**
+         * @hide
+         */        
+        public static final String DIM_SCREEN_WHILE_PLUGGED_IN = "dim_screen_while_plugged_in";
+        
+        /**
          * When the user has enable the option to have a "bug report" command
          * in the power menu.
          * @hide
@@ -7891,6 +7896,7 @@ public final class Settings {
         public static final String[] SETTINGS_TO_BACKUP = {
             BUGREPORT_IN_POWER_MENU,
             STAY_ON_WHILE_PLUGGED_IN,
+            DIM_SCREEN_WHILE_PLUGGED_IN,
             MODE_RINGER,
             AUTO_TIME,
             AUTO_TIME_ZONE,
