@@ -233,6 +233,9 @@
     <string name="halo_signal_bars_2">两格</string>
     <string name="halo_signal_bars_1">一格</string>
     <string name="halo_signal_bars_none">无</string>
+    
+    <!--ScreenShot Trash-->
+    <string name="trash">放弃</string>
 
     <!-- App sidebar -->
     <string name="default_folder_text">文件夹</string>
