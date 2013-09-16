@@ -27,4 +27,6 @@
     <string name="content_setup_instructions">长按右边的项目并拖拽到侧边栏以添加项目.\n\n将项目拖拽到任何已有的项目之上，可以建立文件夹.\n\n要删除，只需简单的将项目拖拽出侧边栏即可.</string>
     <string name="content_setup_dismiss">继续</string>
 
+    <!--ScreenShot Trash-->
+    <string name="trash">放弃</string>
 </resources>
