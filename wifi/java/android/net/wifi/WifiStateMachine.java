@@ -1835,13 +1835,6 @@ public class WifiStateMachine extends StateMachine {
         mWifiP2pChannel.sendMessage(msg);
     }
 
-    void stopDhcp() {
-        if (mDhcpStateMachine != null) {
-            /* In case we were in middle of DHCP operation restore back powermode */
-            handlePostDhcpSetup();
-            mDhcpStateMachine.sendMessage(DhcpStateMachine.CMD_STOP_DHCP);
-        }
-    }
 
     void startDhcp() {
         if (mDhcpStateMachine == null) {

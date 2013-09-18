@@ -6078,7 +6078,6 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
                 Log.e(TAG, "Error connecting RCD to RCC in RCC registration",e);
             }
         }
-        return false;
     }
 
     /**

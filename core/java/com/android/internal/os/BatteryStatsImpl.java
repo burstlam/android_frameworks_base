@@ -2748,7 +2748,6 @@ public final class BatteryStatsImpl extends BatteryStats {
                     mAudioTurnedOnTimer.stopRunningLocked(BatteryStatsImpl.this);
                 }
             }
-            return mVideoTurnedOnTimer;
         }
 
         public StopwatchTimer createVideoTurnedOnTimerLocked() {

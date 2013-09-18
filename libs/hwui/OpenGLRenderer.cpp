@@ -1637,49 +1637,6 @@ Rect* OpenGLRenderer::getClipRect() {
     return mSnapshot->clipRect;
 }
 
-    SkPath path;
-    path.addRect(left, top, right, bottom);
-
-    return clipPath(&path, op);
-}
-
-bool OpenGLRenderer::clipPath(SkPath* path, SkRegion::Op op) {
-    SkMatrix transform;
-    currentTransform().copyTo(transform);
-
-    SkPath transformed;
-    path->transform(transform, &transformed);
-
-    SkRegion clip;
-    if (!mSnapshot->clipRegion->isEmpty()) {
-        clip.setRegion(*mSnapshot->clipRegion);
-    } else {
-        Rect* bounds = mSnapshot->clipRect;
-        clip.setRect(bounds->left, bounds->top, bounds->right, bounds->bottom);
-    }
-
-    SkRegion region;
-    region.setPath(transformed, clip);
-
-    bool clipped = mSnapshot->clipRegionTransformed(region, op);
-    if (clipped) {
-        dirtyClip();
-    }
-    return !mSnapshot->clipRect->isEmpty();
-}
-
-bool OpenGLRenderer::clipRegion(SkRegion* region, SkRegion::Op op) {
-    bool clipped = mSnapshot->clipRegionTransformed(*region, op);
-    if (clipped) {
-        dirtyClip();
-    }
-    return !mSnapshot->clipRect->isEmpty();
-}
-
-Rect* OpenGLRenderer::getClipRect() {
-    return mSnapshot->clipRect;
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 // Drawing commands
 ///////////////////////////////////////////////////////////////////////////////

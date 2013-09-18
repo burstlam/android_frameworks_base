@@ -33,8 +33,6 @@ public class PackageUserState {
 
     public String lastDisableAppCaller;
 
-    public String lastDisableAppCaller;
-
     public HashSet<String> disabledComponents;
     public HashSet<String> enabledComponents;
 

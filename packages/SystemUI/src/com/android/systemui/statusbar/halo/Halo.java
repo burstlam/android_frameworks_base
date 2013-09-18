@@ -229,7 +229,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
 	    
             mEnableColor =
                     Settings.System.getIntForUser(mContext.getContentResolver(), 
-					Settings.System.HALO_COLOR, 0, UserHandle.USER_CURRENT) == 1;
+					Settings.System.HALO_COLORS, 0, UserHandle.USER_CURRENT) == 1;
             if (!selfChange) {
                 mEffect.wake();
                 mEffect.ping(mPaintHolo, HaloEffect.WAKE_TIME);
@@ -301,7 +301,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                 Settings.System.HALO_HIDE, 0, UserHandle.USER_CURRENT) == 1;
         mEnableColor =
                 Settings.System.getIntForUser(mContext.getContentResolver(), 
-                Settings.System.HALO_COLOR, 0, UserHandle.USER_CURRENT) == 1;
+                Settings.System.HALO_COLORS, 0, UserHandle.USER_CURRENT) == 1;
         mHaloSize = Settings.System.getFloatForUser(mContext.getContentResolver(),
                 Settings.System.HALO_SIZE, 1.0f, UserHandle.USER_CURRENT);
         mHapticFeedback = Settings.System.getIntForUser(mContext.getContentResolver(),
