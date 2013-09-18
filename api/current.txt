@@ -2699,6 +2699,7 @@ package android.app {
     method public void finishActivity(int);
     method public void finishActivityFromChild(android.app.Activity, int);
     method public void finishAffinity();
+    method public void finishFloating();
     method public void finishFromChild(android.app.Activity);
     method public android.app.ActionBar getActionBar();
     method public final android.app.Application getApplication();
@@ -2718,6 +2719,7 @@ package android.app {
     method public android.content.Intent getParentActivityIntent();
     method public android.content.SharedPreferences getPreferences(int);
     method public int getRequestedOrientation();
+    method public android.app.SwipeBackLayout getSwipeBackLayout();
     method public int getTaskId();
     method public final java.lang.CharSequence getTitle();
     method public final int getTitleColor();
@@ -2829,6 +2831,7 @@ package android.app {
     method public final void setResult(int);
     method public final void setResult(int, android.content.Intent);
     method public final void setSecondaryProgress(int);
+    method public void setSwipeBackEnable(boolean);
     method public void setTitle(java.lang.CharSequence);
     method public void setTitle(int);
     method public void setTitleColor(int);
@@ -3737,6 +3740,15 @@ package android.app {
     field public android.content.pm.ResolveInfo resolveInfo;
   }
 
+  public class LayerActivity extends android.app.Activity {
+    ctor public LayerActivity();
+    method public void onCreate(android.os.Bundle);
+    method public void onRestart();
+    method public void onResume();
+    method public void onStart();
+    method public void onStop();
+  }
+
   public class ListActivity extends android.app.Activity {
     ctor public ListActivity();
     method public android.widget.ListAdapter getListAdapter();
@@ -4154,6 +4166,34 @@ package android.app {
     field public static final int START_STICKY_COMPATIBILITY = 0; // 0x0
   }
 
+  public class SwipeBackLayout extends android.widget.FrameLayout {
+    ctor public SwipeBackLayout(android.content.Context);
+    ctor public SwipeBackLayout(android.content.Context, android.util.AttributeSet);
+    ctor public SwipeBackLayout(android.content.Context, android.util.AttributeSet, int);
+    method public void attachToActivity(android.app.Activity);
+    method public void setEdgeSize(int);
+    method public void setEdgeTrackingEnabled(int);
+    method public void setEnableGesture(boolean);
+    method public void setScrimColor(int);
+    method public void setScrollThresHold(float);
+    method public void setShadow(android.graphics.drawable.Drawable, int);
+    method public void setShadow(int, int);
+    method public void setSwipeListener(android.app.SwipeBackLayout.SwipeListener);
+    field public static final int EDGE_ALL = 11; // 0xb
+    field public static final int EDGE_BOTTOM = 8; // 0x8
+    field public static final int EDGE_LEFT = 1; // 0x1
+    field public static final int EDGE_RIGHT = 2; // 0x2
+    field public static final int STATE_DRAGGING = 1; // 0x1
+    field public static final int STATE_IDLE = 0; // 0x0
+    field public static final int STATE_SETTLING = 2; // 0x2
+  }
+
+  public static abstract interface SwipeBackLayout.SwipeListener {
+    method public abstract void onEdgeTouch(int);
+    method public abstract void onScrollOverThreshold();
+    method public abstract void onScrollStateChange(int, float);
+  }
+
   public deprecated class TabActivity extends android.app.ActivityGroup {
     ctor public TabActivity();
     method public android.widget.TabHost getTabHost();
@@ -4174,6 +4214,7 @@ package android.app {
     method public android.content.Intent[] getIntents();
     method public android.app.PendingIntent getPendingIntent(int, int);
     method public android.app.PendingIntent getPendingIntent(int, int, android.os.Bundle);
+    method public void setTaskOnHome(boolean);
     method public void startActivities();
     method public void startActivities(android.os.Bundle);
   }
@@ -4233,6 +4274,67 @@ package android.app {
     field public static final int MODE_NIGHT_AUTO = 0; // 0x0
     field public static final int MODE_NIGHT_NO = 1; // 0x1
     field public static final int MODE_NIGHT_YES = 2; // 0x2
+  }
+
+  public class ViewDragHelper {
+    method public void abort();
+    method protected boolean canScroll(android.view.View, boolean, int, int, int, int);
+    method public void cancel();
+    method public void captureChildView(android.view.View, int);
+    method public boolean checkTouchSlop(int);
+    method public boolean checkTouchSlop(int, int);
+    method public boolean continueSettling(boolean);
+    method public static android.app.ViewDragHelper create(android.view.ViewGroup, android.app.ViewDragHelper.Callback);
+    method public static android.app.ViewDragHelper create(android.view.ViewGroup, float, android.app.ViewDragHelper.Callback);
+    method public android.view.View findTopChildUnder(int, int);
+    method public void flingCapturedView(int, int, int, int);
+    method public int getActivePointerId();
+    method public android.view.View getCapturedView();
+    method public int getEdgeSize();
+    method public float getMinVelocity();
+    method public int getTouchSlop();
+    method public int getViewDragState();
+    method public boolean isCapturedViewUnder(int, int);
+    method public boolean isEdgeTouched(int);
+    method public boolean isEdgeTouched(int, int);
+    method public boolean isPointerDown(int);
+    method public boolean isViewUnder(android.view.View, int, int);
+    method public void processTouchEvent(android.view.MotionEvent);
+    method public void setEdgeSize(int);
+    method public void setEdgeTrackingEnabled(int);
+    method public void setMinVelocity(float);
+    method public boolean settleCapturedViewAt(int, int);
+    method public boolean shouldInterceptTouchEvent(android.view.MotionEvent);
+    method public boolean smoothSlideViewTo(android.view.View, int, int);
+    field public static final int DIRECTION_ALL = 3; // 0x3
+    field public static final int DIRECTION_HORIZONTAL = 1; // 0x1
+    field public static final int DIRECTION_VERTICAL = 2; // 0x2
+    field public static final int EDGE_ALL = 15; // 0xf
+    field public static final int EDGE_BOTTOM = 8; // 0x8
+    field public static final int EDGE_LEFT = 1; // 0x1
+    field public static final int EDGE_RIGHT = 2; // 0x2
+    field public static final int EDGE_TOP = 4; // 0x4
+    field public static final int INVALID_POINTER = -1; // 0xffffffff
+    field public static final int STATE_DRAGGING = 1; // 0x1
+    field public static final int STATE_IDLE = 0; // 0x0
+    field public static final int STATE_SETTLING = 2; // 0x2
+  }
+
+  public static abstract class ViewDragHelper.Callback {
+    ctor public ViewDragHelper.Callback();
+    method public int clampViewPositionHorizontal(android.view.View, int, int);
+    method public int clampViewPositionVertical(android.view.View, int, int);
+    method public int getOrderedChildIndex(int);
+    method public int getViewHorizontalDragRange(android.view.View);
+    method public int getViewVerticalDragRange(android.view.View);
+    method public void onEdgeDragStarted(int, int);
+    method public boolean onEdgeLock(int);
+    method public void onEdgeTouched(int, int);
+    method public void onViewCaptured(android.view.View, int);
+    method public void onViewDragStateChanged(int);
+    method public void onViewPositionChanged(android.view.View, int, int, int, int);
+    method public void onViewReleased(android.view.View, float, float);
+    method public abstract boolean tryCaptureView(android.view.View, int);
   }
 
   public final class WallpaperInfo implements android.os.Parcelable {
@@ -4397,6 +4499,7 @@ package android.app.admin {
     field public static final int PASSWORD_QUALITY_ALPHANUMERIC = 327680; // 0x50000
     field public static final int PASSWORD_QUALITY_BIOMETRIC_WEAK = 32768; // 0x8000
     field public static final int PASSWORD_QUALITY_COMPLEX = 393216; // 0x60000
+    field public static final int PASSWORD_QUALITY_GESTURE_WEAK = 524288; // 0x80000
     field public static final int PASSWORD_QUALITY_NUMERIC = 131072; // 0x20000
     field public static final int PASSWORD_QUALITY_SOMETHING = 65536; // 0x10000
     field public static final int PASSWORD_QUALITY_UNSPECIFIED = 0; // 0x0
@@ -6239,6 +6342,7 @@ package android.content {
     field public static final int FLAG_ACTIVITY_TASK_ON_HOME = 16384; // 0x4000
     field public static final int FLAG_DEBUG_LOG_RESOLUTION = 8; // 0x8
     field public static final int FLAG_EXCLUDE_STOPPED_PACKAGES = 16; // 0x10
+    field public static final int FLAG_FLOATING_WINDOW = 8192; // 0x2000
     field public static final int FLAG_FROM_BACKGROUND = 4; // 0x4
     field public static final int FLAG_GRANT_READ_URI_PERMISSION = 1; // 0x1
     field public static final int FLAG_GRANT_WRITE_URI_PERMISSION = 2; // 0x2
@@ -8450,6 +8554,8 @@ package android.gesture {
     field public static final int GESTURE_STROKE_TYPE_SINGLE = 0; // 0x0
     field public static final int ORIENTATION_HORIZONTAL = 0; // 0x0
     field public static final int ORIENTATION_VERTICAL = 1; // 0x1
+    field protected boolean mClearPerformedGesture;
+    field protected boolean mInputEnabled;
   }
 
   public static abstract interface GestureOverlayView.OnGestureListener {
@@ -8842,6 +8948,14 @@ package android.graphics {
 
   public class ColorFilter {
     ctor public ColorFilter();
+  }
+
+  public class ColorFilterMaker {
+    ctor public ColorFilterMaker();
+    method public static android.graphics.ColorFilter changeBWColor(int, float);
+    method public static android.graphics.ColorFilter changeColor(int, float);
+    method public static android.graphics.ColorFilter changeColorAlpha(int, float, float);
+    method public static android.graphics.ColorFilter changeHue(int, int);
   }
 
   public class ColorMatrix {
@@ -10129,7 +10243,6 @@ package android.hardware {
     method public int getJpegQuality();
     method public int getJpegThumbnailQuality();
     method public android.hardware.Camera.Size getJpegThumbnailSize();
-    method public java.lang.String getPowerMode();
     method public int getMaxExposureCompensation();
     method public int getMaxNumDetectedFaces();
     method public int getMaxNumFocusAreas();
@@ -10139,6 +10252,7 @@ package android.hardware {
     method public int getMinExposureCompensation();
     method public int getPictureFormat();
     method public android.hardware.Camera.Size getPictureSize();
+    method public java.lang.String getPowerMode();
     method public android.hardware.Camera.Size getPreferredPreviewSizeForVideo();
     method public int getPreviewFormat();
     method public void getPreviewFpsRange(int[]);
@@ -20089,6 +20203,7 @@ package android.provider {
     field public static final java.lang.String DTMF_TONE_WHEN_DIALING = "dtmf_tone";
     field public static final java.lang.String END_BUTTON_BEHAVIOR = "end_button_behavior";
     field public static final java.lang.String FONT_SCALE = "font_scale";
+    field public static final java.lang.String HALO_COLORS = "halo_colors";
     field public static final java.lang.String HAPTIC_FEEDBACK_ENABLED = "haptic_feedback_enabled";
     field public static final deprecated java.lang.String HTTP_PROXY = "http_proxy";
     field public static final deprecated java.lang.String INSTALL_NON_MARKET_APPS = "install_non_market_apps";
@@ -26986,6 +27101,7 @@ package android.view {
     field public static final int PROGRESS_START = 0; // 0x0
     field public static final int PROGRESS_VISIBILITY_OFF = -2; // 0xfffffffe
     field public static final int PROGRESS_VISIBILITY_ON = -1; // 0xffffffff
+    field public boolean mIsFloatingWindow;
   }
 
   public static abstract interface Window.Callback {
@@ -28684,6 +28800,7 @@ package android.widget {
     method public void setFastScrollEnabled(boolean);
     method public void setFilterText(java.lang.String);
     method public void setFriction(float);
+    method public void setGridView(boolean);
     method public void setItemChecked(int, boolean);
     method public void setMultiChoiceModeListener(android.widget.AbsListView.MultiChoiceModeListener);
     method public void setOnScrollListener(android.widget.AbsListView.OnScrollListener);
