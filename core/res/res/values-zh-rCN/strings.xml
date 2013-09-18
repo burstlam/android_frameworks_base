@@ -1551,5 +1551,4 @@
          be a confirmation dialog.  This is the message. -->
     <string name="shutdown_confirm_reboot" product="default">你的手机将要重启.</string>
 
-
 </resources>

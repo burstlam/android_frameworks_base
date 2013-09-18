@@ -218,6 +218,7 @@ LOCAL_SHARED_LIBRARIES := \
 	libharfbuzz_ng \
 	libz
 
+
 ifeq ($(TARGET_ARCH), arm)
   ifeq ($(ARCH_ARM_HAVE_NEON),true)
     TARGET_arm_CFLAGS += -DUSE_NEON_BITMAP_OPTS -mvectorize-with-neon-quad

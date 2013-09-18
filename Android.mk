@@ -253,7 +253,6 @@ LOCAL_SRC_FILES += \
 	fmradio/java/com/stericsson/hardware/fm/IOnStereoListener.aidl \
 	fmradio/java/com/stericsson/hardware/fm/IOnExtraCommandListener.aidl \
 	fmradio/java/com/stericsson/hardware/fm/IOnAutomaticSwitchListener.aidl
-
 #
 
 
