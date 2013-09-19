@@ -115,6 +115,7 @@ import com.android.systemui.statusbar.policy.BluetoothController;
 import com.android.systemui.statusbar.policy.DateView;
 import com.android.systemui.statusbar.policy.IntruderAlertView;
 import com.android.systemui.statusbar.policy.LocationController;
+import com.android.systemui.statusbar.policy.LunarDateView;
 import com.android.systemui.statusbar.policy.MSimNetworkController;
 import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.NotificationRowLayout;
@@ -284,6 +285,9 @@ public class PhoneStatusBar extends BaseStatusBar {
 
     // the date view
     DateView mDateView;
+
+    // the lunar date View
+    LunarDateView mLunarDateView;
 
     // for immersive activities
     private IntruderAlertView mIntruderAlertView;
@@ -565,6 +569,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         mClearButton.setVisibility(View.GONE);
         mClearButton.setEnabled(false);
         mDateView = (DateView)mStatusBarWindow.findViewById(R.id.date);
+        mLunarDateView = (LunarDateView)mStatusBarWindow.findViewById(R.id.lunardate);
 
         mHasSettingsPanel = res.getBoolean(R.bool.config_hasSettingsPanel);
         mHasFlipSettings = res.getBoolean(R.bool.config_hasFlipSettingsPanel);
