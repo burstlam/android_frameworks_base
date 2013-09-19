@@ -117,6 +117,7 @@ import com.android.systemui.statusbar.policy.BluetoothController;
 import com.android.systemui.statusbar.policy.DateView;
 import com.android.systemui.statusbar.policy.IntruderAlertView;
 import com.android.systemui.statusbar.policy.LocationController;
+import com.android.systemui.statusbar.policy.LunarDateView;
 import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.NotificationRowLayout;
 import com.android.systemui.statusbar.policy.OnSizeChangedListener;
@@ -264,6 +265,9 @@ public class PhoneStatusBar extends BaseStatusBar {
     boolean mExpandedVisible;
     private boolean mNotificationPanelIsOpen = false;
     private boolean mQSPanelIsOpen = false;
+
+    // the lunar date View
+    LunarDateView mLunarDateView;
 
     // for immersive activities
     private IntruderAlertView mIntruderAlertView;
@@ -661,6 +665,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         mClearButton.setAlpha(0f);
         mClearButton.setVisibility(View.GONE);
         mClearButton.setEnabled(false);
+        mLunarDateView = (LunarDateView)mStatusBarWindow.findViewById(R.id.lunardate);
 
         if (mStatusBarView.hasFullWidthNotifications()) {
             mHideSettingsPanel = Settings.System.getInt(mContext.getContentResolver(),
