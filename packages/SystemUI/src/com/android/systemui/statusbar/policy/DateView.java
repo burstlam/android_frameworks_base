@@ -104,6 +104,7 @@ public class DateView extends TextView implements OnClickListener, OnLongClickLi
     }
 
     protected void updateClock() {
+        /*
         final String weekdayFormat = getContext().getString(R.string.system_ui_weekday_pattern);
         final String dateFormat = getContext().getString(R.string.system_ui_date_pattern);
         final Locale l = Locale.getDefault();
@@ -115,8 +116,10 @@ public class DateView extends TextView implements OnClickListener, OnLongClickLi
         builder.append(new SimpleDateFormat(weekdayFmt, l).format(now));
         builder.append("\n");
         builder.append(new SimpleDateFormat(dateFmt, l).format(now));
-
         setText(builder.toString());
+        */
+        final String dateFormat = getContext().getString(R.string.abbrev_wday_month_day_no_year);
+        setText(DateFormat.format(dateFormat, new Date()));
     }
 
     private boolean isVisible() {
