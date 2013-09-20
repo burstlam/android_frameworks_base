@@ -22,11 +22,9 @@ import java.util.ArrayList;
 import android.animation.ObjectAnimator;
 import android.app.SearchManager;
 import android.app.admin.DevicePolicyManager;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -48,8 +46,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.StateListDrawable;
-import android.os.Handler;
-import android.os.Message;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
@@ -58,18 +54,14 @@ import android.util.Slog;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.Gravity;
-import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import com.android.internal.R;
 import com.android.internal.telephony.IccCardConstants.State;
-import com.android.internal.util.cm.GlowPadTorchHelper; 
-import com.android.internal.view.RotationPolicy;
 import com.android.internal.widget.LockPatternUtils;
 import com.android.internal.widget.multiwaveview.GlowPadView;
 import com.android.internal.widget.multiwaveview.GlowPadView.OnTriggerListener;
-
+import com.android.internal.R;
 import com.android.internal.widget.multiwaveview.TargetDrawable;
 
 public class KeyguardSelectorView extends LinearLayout implements KeyguardSecurityView {
@@ -86,7 +78,6 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
     private boolean mIsBouncing;
     private boolean mCameraDisabled;
     private boolean mSearchDisabled;
-    private boolean mUnlockBroadcasted = false;
     private LockPatternUtils mLockPatternUtils;
     private SecurityMessageDisplay mSecurityMessageDisplay;
     private Drawable mBouncerFrame;
@@ -94,40 +85,10 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
     private int mTargetOffset;
     private boolean mIsScreenLarge;
     private int mCreationOrientation;
-    private UnlockReceiver mUnlockReceiver;
-    private IntentFilter filter;
-    private boolean mReceiverRegistered = false;
-
-    private int mGlowTorch;
-    private boolean mUserRotation;
-    private boolean mGlowTorchOn;
-    private boolean mGlowPadLock;
-    private boolean mLongPress = false;
-
-    private class H extends Handler {
-        public void handleMessage(Message m) {
-            switch (m.what) {
-            }
-        }
-    }
-    private H mHandler = new H();
 
     OnTriggerListener mOnTriggerListener = new OnTriggerListener() {
 
-    final Runnable SetLongPress = new Runnable () {
-            public void run() {
-                if (!mLongPress) {
-                    GlowPadTorchHelper.vibrate(mContext);
-                    mLongPress = true;
-                }
-            }
-        };
-
         public void onTrigger(View v, int target) {
-            if (mReceiverRegistered) {
-                mContext.unregisterReceiver(mUnlockReceiver);
-                mReceiverRegistered = false;
-            }
             if (mStoredTargets == null) {
                 final int resId = mGlowPadView.getResourceIdForTarget(target);
                 switch (resId) {
@@ -146,7 +107,6 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
                 case com.android.internal.R.drawable.ic_lockscreen_camera:
                     mActivityLauncher.launchCamera(null, null);
                     mCallback.userActivity(0);
-                    mCallback.dismiss(false);
                     break;
 
                 case com.android.internal.R.drawable.ic_lockscreen_unlock_phantom:
@@ -174,44 +134,22 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
         }
 
         public void onReleased(View v, int handle) {
-            fireTorch(); 
             if (!mIsBouncing) {
                 doTransition(mFadeView, 1.0f);
-            }
-            if (!mGlowPadLock && mLongPress) {
-                mGlowPadLock = true;
-                if (mReceiverRegistered) {
-                    mContext.unregisterReceiver(mUnlockReceiver);
-                    mReceiverRegistered = false;
-                }
             }
         }
 
         public void onGrabbed(View v, int handle) {
             mCallback.userActivity(0);
             doTransition(mFadeView, 0.0f);
-            if (mGlowTorch == 1) {
-                mHandler.removeCallbacks(checkTorch);
-                mHandler.postDelayed(startTorch, GlowPadTorchHelper.TORCH_TIMEOUT);
-            }
         }
 
         public void onGrabbedStateChange(View v, int handle) {
-            mHandler.removeCallbacks(SetLongPress);
-            mLongPress = false;
+
         }
 
         public void onTargetChange(View v, int target) {
-            if (target == -1) {
-                mHandler.removeCallbacks(SetLongPress);
-                mLongPress = false;
-                if (mGlowTorchOn) {
-                    mCallback.userActivity(0);
-                }
-            } else {
-                fireTorch();
-                mHandler.postDelayed(SetLongPress, ViewConfiguration.getLongPressTimeout());
-            }
+
         }
 
         public void onFinishFinalAnimation() {
@@ -304,10 +242,6 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
         mGlowPadView.setOnTriggerListener(mOnTriggerListener);
         updateTargets();
 
-        mGlowTorch = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.LOCKSCREEN_GLOW_TORCH, 0);
-        mGlowTorchOn = false;
-
         mSecurityMessageDisplay = new KeyguardMessageArea.Helper(this);
         View bouncerFrameView = findViewById(R.id.keyguard_selector_view_frame);
         mBouncerFrame = bouncerFrameView.getBackground();
@@ -323,15 +257,6 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
             LinearLayout ecaContainer = (LinearLayout) findViewById(R.id.keyguard_selector_fade_container);
             ecaContainer.bringToFront();
         }
-
-        mUnlockBroadcasted = false;
-        filter = new IntentFilter();
-        filter.addAction(UnlockReceiver.ACTION_UNLOCK_RECEIVER);
-        if (mUnlockReceiver == null) {
-            mUnlockReceiver = new UnlockReceiver();
-        }
-        mContext.registerReceiver(mUnlockReceiver, filter);
-        mReceiverRegistered = true;
     }
 
     public void setCarrierArea(View carrierArea) {
@@ -390,34 +315,6 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
         mGlowPadView.ping();
     }
 
-    private void fireTorch() {
-        mHandler.removeCallbacks(startTorch);
-        if (mGlowTorch == 1 && mGlowTorchOn) {
-            mGlowTorchOn = false;
-            GlowPadTorchHelper.killTorch(mContext);
-            RotationPolicy.setRotationLock(mContext, mUserRotation);
-            mHandler.postDelayed(checkTorch, GlowPadTorchHelper.TORCH_CHECK);
-        }
-    }
-
-    final Runnable startTorch = new Runnable () {
-        public void run() {
-            if (!mGlowTorchOn) {
-                mUserRotation = RotationPolicy.isRotationLocked(mContext);
-                RotationPolicy.setRotationLock(mContext, true);
-                mGlowTorchOn = GlowPadTorchHelper.startTorch(mContext);
-            }
-        }
-    };
-
-    final Runnable checkTorch = new Runnable () {
-        public void run() {
-            if (GlowPadTorchHelper.torchActive(mContext) == 1) {
-                GlowPadTorchHelper.torchOff(mContext, true);
-            }
-        }
-    };
-
     private void updateTargets() {
         int currentUserHandle = mLockPatternUtils.getCurrentUser();
         DevicePolicyManager dpm = mLockPatternUtils.getDevicePolicyManager();
@@ -431,8 +328,6 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
         boolean cameraPresent = mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA);
         boolean searchTargetPresent =
             isTargetPresent(com.android.internal.R.drawable.ic_action_assist_generic);
-        mLongPress = false;
-        mGlowPadLock = false;
 
         if (cameraDisabledByAdmin) {
             Log.v(TAG, "Camera disabled by Device Policy");
@@ -634,9 +529,6 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
     @Override
     public void onPause() {
         KeyguardUpdateMonitor.getInstance(getContext()).removeCallback(mInfoCallback);
-        if (mUnlockReceiver != null) {
-            mContext.unregisterReceiver(mUnlockReceiver);
-        }
     }
 
     @Override
@@ -661,24 +553,5 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
         mIsBouncing = false;
         KeyguardSecurityViewHelper.
                 hideBouncer(mSecurityMessageDisplay, mFadeView, mBouncerFrame, duration);
-    }
-
-    public class UnlockReceiver extends BroadcastReceiver {
-        public static final String ACTION_UNLOCK_RECEIVER = "com.android.lockscreen.ACTION_UNLOCK_RECEIVER";
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action.equals(ACTION_UNLOCK_RECEIVER)) {
-                if (!mUnlockBroadcasted) {
-                    mUnlockBroadcasted = true;
-                    mCallback.userActivity(0);
-                    mCallback.dismiss(false);
-                }
-            }
-            if (mReceiverRegistered) {
-                mContext.unregisterReceiver(mUnlockReceiver);
-                mReceiverRegistered = false;
-            }
-        }
     }
 }
