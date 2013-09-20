@@ -97,10 +97,12 @@ public class DctConstants {
     public static final int EVENT_DISCONNECT_DC_RETRYING = BASE + 34;
     public static final int EVENT_DATA_SETUP_COMPLETE_ERROR = BASE + 35;
     public static final int CMD_SET_ENABLE_FAIL_FAST_MOBILE_DATA = BASE + 36;
-    public static final int EVENT_TETHERED_MODE_STATE_CHANGED = BASE + 37;
-    public static final int EVENT_READ_MODEM_PROFILES = BASE + 38;
-    public static final int EVENT_GET_DATA_CALL_PROFILE_DONE = BASE + 39;
-    public static final int EVENT_MODEM_DATA_PROFILE_READY = BASE + 40;
+    public static final int CMD_ENABLE_MOBILE_PROVISIONING = BASE + 37;
+    public static final int CMD_IS_PROVISIONING_APN = BASE + 38;
+    public static final int EVENT_TETHERED_MODE_STATE_CHANGED = BASE + 39;
+    public static final int EVENT_READ_MODEM_PROFILES = BASE + 40;
+    public static final int EVENT_GET_DATA_CALL_PROFILE_DONE = BASE + 41;
+    public static final int EVENT_MODEM_DATA_PROFILE_READY = BASE + 42;
 
     /***** Constants *****/
 
@@ -124,4 +126,5 @@ public class DctConstants {
     public static String EXTRA_MESSENGER = "EXTRA_MESSENGER";
 
     public static final String APN_TYPE_KEY = "apnType";
+    public static final String PROVISIONING_URL_KEY = "provisioningUrl";
 }
