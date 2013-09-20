@@ -4154,6 +4154,18 @@ public final class Settings {
         public static final String STATUS_BAR_SHOW_TRAFFIC = "status_bar_show_traffic";
 
         /**
+         * StatusBar Network Traffic Color
+         * @hide
+         */
+        public static final String STATUS_BAR_TRAFFIC_COLOR = "status_bar_traffic_color";
+
+        /**
+         * Hide network speed indicator when there is no traffic
+         * @hide
+         */
+        public static final String STATUS_BAR_TRAFFIC_AUTOHIDE = "status_bar_traffic_autohide";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
