@@ -1498,11 +1498,13 @@
     <string name="revoke" msgid="5404479185228271586">"撤銷"</string>
 
     <!-- Chinese Lunar Calendar Start -->
-    <string name="status_year"  translatable="false">年</string>  
+    <string name="status_year"  translatable="false">年</string>
     <string name="status_month"  translatable="false">月</string>
     <string name="status_day"  translatable="false">日</string>
     <string name="status_leap"  translatable="false">閏</string>
-    <string name="status_chushi"  translatable="false">初十</string>  
+    <string name="status_chushi"  translatable="false">初十</string>
+    <string name="status_ershi"  translatable="false">二十</string>
+    <string name="status_sanshi"  translatable="false">三十</string>
     <string name="status_format1"  translatable="false">yyyy年MM月dd日</string>
     <string name="status_format2"  translatable="false">1900年1月31日</string>
 </resources>
