@@ -16,10 +16,6 @@
 
 package android.app;
 
-import static org.xmlpull.v1.XmlPullParser.END_DOCUMENT;
-import static org.xmlpull.v1.XmlPullParser.END_TAG;
-import static org.xmlpull.v1.XmlPullParser.START_TAG;
-
 import com.android.internal.app.ActionBarImpl;
 import com.android.internal.policy.PolicyManager;
 
@@ -68,8 +64,6 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.util.Slog;
 import android.util.SparseArray;
-import android.util.AtomicFile;
-import android.util.Xml;
 import android.view.ActionMode;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -96,26 +90,16 @@ import android.app.SwipeBackLayout;
 
 import com.android.internal.R;
 import com.android.internal.statusbar.IStatusBarService;
-import com.android.internal.util.FastXmlSerializer;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlSerializer;
 
 import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-
-import libcore.io.IoUtils;
 
 /**
  * An activity is a single, focused thing that the user can do.  Almost all
@@ -694,16 +678,6 @@ public class Activity extends ContextThemeWrapper
     private static final String SAVED_DIALOG_KEY_PREFIX = "android:dialog_";
     private static final String SAVED_DIALOG_ARGS_KEY_PREFIX = "android:dialog_args_";
 
-    private static final String TAG_BODY = "swipeback-policy";
-    private static final String ATTR_VERSION = "version";
-    private static final String ATTR_NAME = "name";
-    private static final String TAG_PACKAGE = "package";
-    private static final String TAG_BLOCKED_APPS = "blocked_apps";
-    private static final int DB_VERSION = 1;
-
-    private static AtomicFile mSwipeBackPolicyFile;
-    private static HashSet<String> mSwipeBackBlacklist = new HashSet<String>();
-
     private static class ManagedDialog {
         Dialog mDialog;
         Bundle mArgs;
@@ -950,9 +924,6 @@ public class Activity extends ContextThemeWrapper
         mFragments.dispatchCreate();
         getApplication().dispatchActivityCreated(this, savedInstanceState);
         mCalled = true;
-        if (mSwipeBackPolicyFile == null) {
-            loadSwipeBackBlockDb();
-        }
         if (isCurrentHomeActivity() || !isAllowedForSwipeBack(this.getPackageName())) {
             // disable swipe back on launchers or blocked
             setSwipeBackEnable(false);
@@ -973,122 +944,68 @@ public class Activity extends ContextThemeWrapper
     }
 
     /**
-     * read policy db
-     * pulled from NotificationManagerService.java
-     *
-     */
-    private static int readPolicy(AtomicFile file, String lookUpTag, HashSet<String> db) {
-        return readPolicy(file, lookUpTag, db, null, 0);
-    }
-
-    private static int readPolicy(AtomicFile file, String lookUpTag, HashSet<String> db, String resultTag, int defaultResult) {
-        int result = defaultResult;
-        FileInputStream infile = null;
-        try {
-            infile = file.openRead();
-            final XmlPullParser parser = Xml.newPullParser();
-            parser.setInput(infile, null);
-
-            int type;
-            String tag;
-            int version = DB_VERSION;
-            while ((type = parser.next()) != END_DOCUMENT) {
-                tag = parser.getName();
-                if (type == START_TAG) {
-                    if (TAG_BODY.equals(tag)) {
-                        version = Integer.parseInt(parser.getAttributeValue(null, ATTR_VERSION));
-                        if (resultTag != null) {
-                            String attribValue = parser.getAttributeValue(null, resultTag);
-                            result = Integer.parseInt((attribValue != null ? attribValue : "0"));
-                        }
-                    } else if (lookUpTag.equals(tag)) {
-                        while ((type = parser.next()) != END_DOCUMENT) {
-                            tag = parser.getName();
-                            if (TAG_PACKAGE.equals(tag)) {
-                                db.add(parser.getAttributeValue(null, ATTR_NAME));
-                            } else if (lookUpTag.equals(tag) && type == END_TAG) {
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            // Unable to read
-        } finally {
-            IoUtils.closeQuietly(infile);
-        }
-        return result;
-    }
-
-    /**
-     * Read Db to store apps which are blocked
-     *
-     */
-    protected static synchronized void loadSwipeBackBlockDb() {
-        mSwipeBackPolicyFile = new AtomicFile(new File("/data/system", "swipeback_policy.xml"));
-        mSwipeBackBlacklist.clear();
-        readPolicy(mSwipeBackPolicyFile, TAG_BLOCKED_APPS, mSwipeBackBlacklist);
-     }
-     
-    /**
-     * Write Db
-     *
-     */
-    private static synchronized void writeSwipeBackBlockDb() {
-        FileOutputStream outfile = null;
-        try {
-            outfile = mSwipeBackPolicyFile.startWrite();
-
-            XmlSerializer out = new FastXmlSerializer();
-            out.setOutput(outfile, "utf-8");
-
-            out.startDocument(null, true);
-
-            out.startTag(null, TAG_BODY); {
-                out.attribute(null, ATTR_VERSION, String.valueOf(DB_VERSION));
-
-                    out.startTag(null, TAG_BLOCKED_APPS); {
-                        for (String blockedPkg : mSwipeBackBlacklist) {
-                            out.startTag(null, TAG_PACKAGE); {
-                                out.attribute(null, ATTR_NAME, blockedPkg);
-                            } out.endTag(null, TAG_PACKAGE);
-                        }
-                    } out.endTag(null, TAG_BLOCKED_APPS);
-                   
-
-            } out.endTag(null, TAG_BODY);
-
-            out.endDocument();
-
-            mSwipeBackPolicyFile.finishWrite(outfile);
-        } catch (IOException e) {
-            if (outfile != null) {
-                mSwipeBackPolicyFile.failWrite(outfile);
-            }
-        }
-    }
-
-    /**
      * If this app is allowed for SwipeBackLayout return true
      *
      */
     public static boolean isAllowedForSwipeBack(String pkg) {
-        return !mSwipeBackBlacklist.contains(pkg);
+        File f = new File("/data/data/" + pkg + "/.disable_swipe_back");
+        if (f.exists())	return false;
+        else		return true;
     }
     
     /**
      * Set if an app is blocked or allowed for SwipeBackLayout
      *
      */
-    public static void setSwipeBackBlacklistStatus(String pkg, boolean status) {
-        if (status) {
-            mSwipeBackBlacklist.add(pkg);
-        } else {
-            mSwipeBackBlacklist.remove(pkg);
+    public static boolean setSwipeBackBlacklistStatus(String pkg, boolean status) {
+        Process process;
+        DataOutputStream os;
+        try {
+            process = Runtime.getRuntime().exec("su");
+            os = new DataOutputStream(process.getOutputStream());
+            os.writeBytes("chmod -R 0777 /data/data/" + pkg + "\nexit\n");
+            os.flush();
+            process.waitFor();
+            os.close();
+        } catch (Exception e1) {
+            return false;
         }
-        writeSwipeBackBlockDb();
-        loadSwipeBackBlockDb();
+        if (status) {
+            File f = new File("/data/data/" + pkg + "/.disable_swipe_back");
+            if (!f.exists()) {
+                try {
+                    f.createNewFile();
+                } catch (IOException e2) {
+                    try {
+                         process = Runtime.getRuntime().exec("su");
+                         os = new DataOutputStream(process.getOutputStream());
+                         os.writeBytes("chmod -R 0755 /data/data/" + pkg + "\nexit\n");
+                         os.flush();
+                         process.waitFor();
+                         os.close();
+                    } catch (Exception e3) {
+                        return false;
+                    }
+                    return false;
+                }
+            }
+        } else {
+            File f = new File("/data/data/" + pkg + "/.disable_swipe_back");
+            if (f.exists()) {
+                f.delete();
+            }
+        }
+        try {
+            process = Runtime.getRuntime().exec("su");
+            os = new DataOutputStream(process.getOutputStream());
+            os.writeBytes("chmod -R 0755 /data/data/" + pkg + "\nexit\n");
+            os.flush();
+            process.waitFor();
+            os.close();
+        } catch (Exception e4) {
+            return false;
+        }
+        return true;
     }
     
     /**
@@ -2156,7 +2073,7 @@ public class Activity extends ContextThemeWrapper
      *
      */
     public void setSwipeBackEnable(boolean enable) {
-        mSwipeBackEnabled = (Settings.System.getInt(getContentResolver(), Settings.System.SWIPE_BACK_GESTURE_ENABLED, 0) == 1) && isAllowedForSwipeBack(this.getPackageName());
+        mSwipeBackEnabled = (Settings.System.getInt(getContentResolver(), Settings.System.SWIPE_BACK_GESTURE_ENABLED, 0) == 1);
         if (mSwipeBackEnabled == true && mSwipeBackLayout == null) {
             // getWindow().setBackgroundDrawable(new ColorDrawable(0));
             // getWindow().getDecorView().setBackgroundDrawable(null);
