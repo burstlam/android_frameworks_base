@@ -633,6 +633,8 @@ public class PhoneStatusBar extends BaseStatusBar {
         }
         if (mRecreating) {
             removeSidebarView();
+        } else {
+            addActiveDisplayView();
         }
         addSidebarView();
 
@@ -2780,7 +2782,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         setAreThereNotifications();
     }
 
-    private boolean areLightsOn() {
+    public boolean areLightsOn() {
         return 0 == (mSystemUiVisibility & View.SYSTEM_UI_FLAG_LOW_PROFILE);
     }
 
@@ -2798,6 +2800,10 @@ public class PhoneStatusBar extends BaseStatusBar {
             mWindowManagerService.statusBarVisibilityChanged(mSystemUiVisibility);
         } catch (RemoteException ex) {
         }
+    }
+
+    public void setNavigationBarLightsOn(boolean on, boolean force) {
+        mNavigationBarView.setLowProfile(!on, true, force);
     }
 
     @Override
