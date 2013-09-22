@@ -208,6 +208,10 @@ public class ClockStock extends TextView implements OnClickListener, OnLongClick
 
     }
         private void collapseStartActivity(Intent what) {
+        // don't do anything if the activity can't be resolved (e.g. app disabled)
+        if (getContext().getPackageManager().resolveActivity(what, 0) == null) {
+            return;
+        }
         // collapse status bar
         StatusBarManager statusBarManager = (StatusBarManager) getContext().getSystemService(
                 Context.STATUS_BAR_SERVICE);
