@@ -256,6 +256,9 @@ public class PhoneStatusBar extends BaseStatusBar {
     // clock
     private boolean mShowClock;
 
+    // Carrier
+    private boolean mShowCarrierLabel;
+
     // drag bar
     CloseDragHandle mCloseView;
     private int mCloseViewHeight;
@@ -409,6 +412,8 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.NOTIFICATION_SETTINGS_BUTTON), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.APP_SIDEBAR_POSITION), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CARRIER), false, this);
             update();
         }
 
@@ -429,7 +434,9 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.NOTIFICATION_SHORTCUTS_CONFIG, UserHandle.USER_CURRENT);
             mNotificationShortcutsIsActive = !(notificationShortcutsIsActive == null
                     || notificationShortcutsIsActive.isEmpty());
-
+            mShowCarrierLabel = Settings.System.getInt(
+                    resolver, Settings.System.STATUS_BAR_CARRIER, 0) == 1;
+            showCarrierLabel(mShowCarrierLabel);
             mNotificationHideCarrier = Settings.System.getIntForUser(resolver,
                     Settings.System.NOTIFICATION_HIDE_CARRIER, 0, UserHandle.USER_CURRENT) != 0;
             boolean notificationSettingsBtn = Settings.System.getInt(
@@ -1788,6 +1795,17 @@ public class PhoneStatusBar extends BaseStatusBar {
         }
     }
 
+    public void showCarrierLabel(boolean show) {
+        if (mStatusBarView == null) return;
+        ContentResolver resolver = mContext.getContentResolver();
+        View statusCarrierLabel = mStatusBarView.findViewById(R.id.status_carrier_label);
+        mShowCarrierLabel = (Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_CARRIER, 0) == 1);
+        if (statusCarrierLabel != null) {
+            statusCarrierLabel.setVisibility(show ? (mShowCarrierLabel ? View.VISIBLE : View.GONE) : View.GONE);
+        }
+    }
+
     /**
      * State is one or more of the DISABLE constants from StatusBarManager.
      */
@@ -1852,6 +1870,8 @@ public class PhoneStatusBar extends BaseStatusBar {
         if ((diff & StatusBarManager.DISABLE_CLOCK) != 0) {
             boolean show = (state & StatusBarManager.DISABLE_CLOCK) == 0;
             showClock(show);
+            //add CarrierLabel
+            showCarrierLabel(show);
         }
         if ((diff & StatusBarManager.DISABLE_EXPAND) != 0) {
             if ((state & StatusBarManager.DISABLE_EXPAND) != 0) {
@@ -2740,6 +2760,7 @@ public class PhoneStatusBar extends BaseStatusBar {
             final View battery3 = mStatusBarView.findViewById(R.id.circle_battery);
             final View clock = mStatusBarView.findViewById(R.id.clock);
             final View traffic = mStatusBarView.findViewById(R.id.traffic);
+            final View statusCarrierLabel = mStatusBarView.findViewById(R.id.status_carrier_label);
 
             final AnimatorSet lightsOutAnim = new AnimatorSet();
             lightsOutAnim.playTogether(
@@ -2751,7 +2772,8 @@ public class PhoneStatusBar extends BaseStatusBar {
                     ObjectAnimator.ofFloat(battery2, View.ALPHA, 0.5f),
                     ObjectAnimator.ofFloat(battery3, View.ALPHA, 0.5f),
                     ObjectAnimator.ofFloat(clock, View.ALPHA, 0.5f),
-                    ObjectAnimator.ofFloat(traffic, View.ALPHA, 0.5f)
+                    ObjectAnimator.ofFloat(traffic, View.ALPHA, 0.5f),
+                    ObjectAnimator.ofFloat(statusCarrierLabel, View.ALPHA, 0.5f)
                 );
             lightsOutAnim.setDuration(750);
 
@@ -2765,7 +2787,8 @@ public class PhoneStatusBar extends BaseStatusBar {
                     ObjectAnimator.ofFloat(battery2, View.ALPHA, 1),
                     ObjectAnimator.ofFloat(battery3, View.ALPHA, 1),
                     ObjectAnimator.ofFloat(clock, View.ALPHA, 1),
-                    ObjectAnimator.ofFloat(traffic, View.ALPHA, 1)
+                    ObjectAnimator.ofFloat(traffic, View.ALPHA, 1),
+                    ObjectAnimator.ofFloat(statusCarrierLabel, View.ALPHA, 1)
                 );
             lightsOnAnim.setDuration(250);
 
