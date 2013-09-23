@@ -3770,7 +3770,7 @@ public class PhoneStatusBar extends BaseStatusBar {
     }
 
     private void setNotificationWallpaperHelper() {
-        float wallpaperAlpha = Settings.System.getFloat(mContext.getContentResolver(), Settings.System.NOTIF_WALLPAPER_ALPHA, 0.5f);
+        float wallpaperAlpha = Settings.System.getFloat(mContext.getContentResolver(), Settings.System.NOTIF_WALLPAPER_ALPHA, 0.1f);
         String notifiBack = Settings.System.getString(mContext.getContentResolver(), Settings.System.NOTIFICATION_BACKGROUND);
         File file = new File(NOTIF_WALLPAPER_IMAGE_PATH);
         mNotificationPanel.setBackgroundResource(0);

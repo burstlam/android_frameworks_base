@@ -72,7 +72,7 @@ class NotificationWallpaper extends FrameLayout {
                 removeView(mNotificationWallpaperImage);
             }
             wallpaperAlpha = Settings.System.getFloat(getContext()
-                .getContentResolver(), Settings.System.NOTIF_WALLPAPER_ALPHA, 0.5f);
+                .getContentResolver(), Settings.System.NOTIF_WALLPAPER_ALPHA, 0.1f);
 
             mNotificationWallpaperImage = new ImageView(getContext());
             if (isLandscape && !fileLandscape.exists()) {
