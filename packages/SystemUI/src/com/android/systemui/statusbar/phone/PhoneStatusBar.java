@@ -249,6 +249,9 @@ public class PhoneStatusBar extends BaseStatusBar {
     public String[] mClockActions = new String[3];
     private boolean mClockDoubleClicked;
 
+    // Statusbar Carrier
+    private boolean mShowCarrierLabel;
+
     // carrier/wifi label
     private TextView mCarrierLabel;
     private boolean mCarrierLabelVisible = false;
@@ -1508,6 +1511,17 @@ public class PhoneStatusBar extends BaseStatusBar {
         }
     }
 
+    public void showCarrierLabel(boolean show) {
+        if (mStatusBarView == null) return;
+        ContentResolver resolver = mContext.getContentResolver();
+        View statusCarrierLabel = mStatusBarView.findViewById(R.id.status_carrier_label);
+        mShowCarrierLabel = (Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_CARRIER, 0) == 1);
+        if (statusCarrierLabel != null) {
+            statusCarrierLabel.setVisibility(show ? (mShowCarrierLabel ? View.VISIBLE : View.GONE) : View.GONE);
+        }
+    }
+
     /**
      * State is one or more of the DISABLE constants from StatusBarManager.
      */
@@ -1575,6 +1589,8 @@ public class PhoneStatusBar extends BaseStatusBar {
         if ((diff & StatusBarManager.DISABLE_CLOCK) != 0) {
             boolean show = (state & StatusBarManager.DISABLE_CLOCK) == 0;
             showClock(show);
+            //add CarrierLabel
+            showCarrierLabel(show);
         }
         if ((diff & StatusBarManager.DISABLE_EXPAND) != 0) {
             if ((state & StatusBarManager.DISABLE_EXPAND) != 0) {
@@ -2271,6 +2287,7 @@ public class PhoneStatusBar extends BaseStatusBar {
             final View signal2 = mStatusBarView.findViewById(R.id.signal_cluster);
             final View battery = mStatusBarView.findViewById(R.id.battery);
             final View clock = mStatusBarView.findViewById(R.id.clock);
+            final View statusCarrierLabel = mStatusBarView.findViewById(R.id.status_carrier_label);
 
             final AnimatorSet lightsOutAnim = new AnimatorSet();
             lightsOutAnim.playTogether(
@@ -2278,7 +2295,8 @@ public class PhoneStatusBar extends BaseStatusBar {
                     ObjectAnimator.ofFloat(systemIcons, View.ALPHA, 0),
                     ObjectAnimator.ofFloat(signal, View.ALPHA, 0),
                     ObjectAnimator.ofFloat(battery, View.ALPHA, 0.5f),
-                    ObjectAnimator.ofFloat(clock, View.ALPHA, 0.5f)
+                    ObjectAnimator.ofFloat(clock, View.ALPHA, 0.5f),
+                    ObjectAnimator.ofFloat(statusCarrierLabel, View.ALPHA, 0.5f)
                 );
             lightsOutAnim.setDuration(750);
 
@@ -2288,7 +2306,8 @@ public class PhoneStatusBar extends BaseStatusBar {
                     ObjectAnimator.ofFloat(systemIcons, View.ALPHA, 1),
                     ObjectAnimator.ofFloat(signal, View.ALPHA, 1),
                     ObjectAnimator.ofFloat(battery, View.ALPHA, 1),
-                    ObjectAnimator.ofFloat(clock, View.ALPHA, 1)
+                    ObjectAnimator.ofFloat(clock, View.ALPHA, 1),
+                    ObjectAnimator.ofFloat(statusCarrierLabel, View.ALPHA, 1)
                 );
             lightsOnAnim.setDuration(250);
 
@@ -3016,6 +3035,8 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.RIBBON_TEXT_COLOR[AokpRibbonHelper.QUICK_SETTINGS]), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.APP_SIDEBAR_POSITION), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CARRIER), false, this);
         }
 
          @Override
@@ -3055,6 +3076,8 @@ public class PhoneStatusBar extends BaseStatusBar {
         } else {
             mClockDoubleClicked = true;
         }
+        mShowCarrierLabel = Settings.System.getInt(cr, Settings.System.STATUS_BAR_CARRIER, 0) == 1;
+        showCarrierLabel(mShowCarrierLabel);
         mCurrentUIMode = Settings.System.getInt(cr,Settings.System.CURRENT_UI_MODE, 0);
         mNavBarAutoHide = Settings.System.getBoolean(cr, Settings.System.NAV_HIDE_ENABLE, false);
         mAutoHideTimeOut = Settings.System.getInt(cr, Settings.System.NAV_HIDE_TIMEOUT, mAutoHideTimeOut);
