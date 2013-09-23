@@ -37,6 +37,7 @@ import android.telephony.PhoneStateListener;
 import android.telephony.ServiceState;
 import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.Slog;
 import android.view.View;
 import android.widget.ImageView;
@@ -1222,7 +1223,7 @@ public class NetworkController extends BroadcastReceiver {
             }
         }
 
-        if (customLabel != null && customLabel.trim().length() > 0) {
+        if (!TextUtils.isEmpty(customLabel)) {
             combinedLabel = customLabel;
             mobileLabel = customLabel;
             if (Settings.System.getInt(mContext.getContentResolver(),
