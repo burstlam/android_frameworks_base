@@ -4251,6 +4251,13 @@ public final class Settings {
         public static final String RECENTS_TARGET_ASSIST = "recents_target_assist";
 
         /**
+         * Choose position of clear all button on Recents window
+         * 0 = disabled, 1 = bottom right, 2 = bottom left, 3 = top right, 4 = top left
+         * @hide
+         */
+        public static final String CLEAR_RECENTS_POSITION = "clear_recents_position";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
