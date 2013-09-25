@@ -328,4 +328,6 @@
     <!-- AM/PM size in active display -->
     <dimen name="ad_ampm_font_size">32dp</dimen>
 
+    <!-- Constant for hidden navbar drag handle -->
+    <dimen name="drag_handle_height">15dp</dimen>
 </resources>

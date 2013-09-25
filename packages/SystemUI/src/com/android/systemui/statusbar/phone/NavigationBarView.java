@@ -19,6 +19,7 @@ package com.android.systemui.statusbar.phone;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.LayoutTransition;
+import android.app.KeyguardManager;
 import android.app.StatusBarManager;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -86,6 +87,9 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
     boolean mVertical;
     boolean mScreenOn;
 
+    private boolean mNavBarAutoHide = false;
+    private boolean isRotating = false;
+
     boolean mHidden, mLowProfile, mShowMenu;
     int mDisabledFlags = 0;
     int mNavigationIconHints = 0;
@@ -95,6 +99,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
     private ArrayList<ButtonConfig> mButtonsConfig;
     
     public DelegateViewHelper mDelegateHelper;
+    private BaseStatusBar mBar;
 
     private Drawable mRecentIcon;
     private Drawable mRecentLandIcon;
@@ -170,6 +175,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
 
     public void setBar(BaseStatusBar phoneStatusBar) {
         mDelegateHelper.setBar(phoneStatusBar);
+        mBar = phoneStatusBar;
     }
 
     @Override
@@ -184,8 +190,10 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         return super.onTouchEvent(event);
     }
 
-    @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
+        //if (mBar != null) {
+        //    mBar.onBarTouchEvent(event);
+        //}
         return mDelegateHelper.onInterceptTouchEvent(event);
     }
 
@@ -544,6 +552,13 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         setDisabledFlags(disabledFlags, false);
     }
 
+    private boolean isKeyguardEnabled() {
+        KeyguardManager km = (KeyguardManager)mContext.getSystemService(Context.KEYGUARD_SERVICE);
+        if(km == null) return false;
+
+        return km.isKeyguardLocked();
+    }
+
     public void setDisabledFlags(int disabledFlags, boolean force) {
         if (!force && mDisabledFlags == disabledFlags) return;
 
@@ -599,6 +614,13 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
                 mContext.getContentResolver(),
                 Settings.System.NAVIGATION_BAR_BUTTON_ALPHA, 0.3f,
                 UserHandle.USER_CURRENT))));
+            //if (mNavBarAutoHide && !isRotating) {
+            //    if (isKeyguardEnabled())
+            //        mBar.setSearchLightOn(true);
+            //    else
+            //        mBar.setSearchLightOn(false);
+            //}
+            //isRotating = false;
         }
 
         setMenuVisibility(mShowMenu, true);
@@ -615,8 +637,13 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
             } else {
                 return;
             }
-            WindowManager wm = (WindowManager)getContext().getSystemService(Context.WINDOW_SERVICE);
-            wm.updateViewLayout(this, lp);
+            try  {
+                WindowManager wm = (WindowManager)getContext().getSystemService(Context.WINDOW_SERVICE);
+                wm.updateViewLayout(this, lp);
+            } catch (IllegalArgumentException e) {
+                // Let it go.  This should only happen when NavBar is on 'AutoHide' so the NavBar exists, but
+                // isn't attached to the window at this time.
+            }
         }
     }
 
@@ -776,6 +803,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
 
         // force the low profile & disabled states into compliance
         setLowProfile(mLowProfile, false, true /* force */);
+        isRotating = true;
         setDisabledFlags(mDisabledFlags, true /* force */);
         setMenuVisibility(mShowMenu, true /* force */);
 
@@ -891,6 +919,9 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
             resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.STATUS_NAV_BAR_COLOR_MODE),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.NAV_HIDE_ENABLE),
+                    false, this, UserHandle.USER_ALL);
             updateSettings();
         }
 
@@ -923,6 +954,9 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
 
         mNavBarColor = Settings.System.getIntForUser(resolver,
                 Settings.System.NAVIGATION_BAR_TINT, -2, UserHandle.USER_CURRENT);
+
+        mNavBarAutoHide = Settings.System.getBoolean(resolver,
+                Settings.System.NAV_HIDE_ENABLE, false);
 
         mButtonsConfig = ButtonsHelper.getNavBarConfig(mContext);
 
