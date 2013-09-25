@@ -4301,6 +4301,12 @@ public final class Settings {
         public static final String STATUS_BAR_CARRIER = "status_bar_carrier";
 
         /**
+         * Carrier Label Custom Color
+         * @hide
+         */
+        public static final String STATUS_BAR_CARRIER_COLOR = "status_bar_carrier_color";
+
+        /**
          * Choose position of clear all button on Recents window
          * 0 = disabled, 1 = bottom right, 2 = bottom left, 3 = top right, 4 = top left
          * @hide
