@@ -505,6 +505,7 @@ public class SearchPanelView extends FrameLayout implements
             return false;
         }
     };
+
     private void vibrate() {
         Context context = getContext();
         if (Settings.System.getIntForUser(context.getContentResolver(),

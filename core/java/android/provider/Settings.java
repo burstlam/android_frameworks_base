@@ -4113,32 +4113,6 @@ public final class Settings {
         public static final String NAVIGATION_BAR_CAN_MOVE = "navigation_bar_can_move";
 
         /**
-         * Used as a flag to determine if we are showing the NavBar *NOW* or is it hidden
-         * @hide
-         */
-        public static final String NAVIGATION_BAR_SHOW_NOW = "navigation_bar_show_now";
-
-        /**
-         * @hide
-         */
-        public static final String NAV_HIDE_TIMEOUT = "nav_hide_timeout";
-
-        /**
-         * @hide
-         */
-        public static final String NAV_HIDE_ENABLE = "nav_hide_enable";
-
-        /**
-         * @hide
-         */
-        public static final String DRAG_HANDLE_WEIGHT = "drag_handle_weight";
-
-        /**
-         * @hide
-         */
-        public static final String DRAG_HANDLE_OPACITY = "drag_handle_opacity";
-
-        /**
          * @hide
          */
         public static final String NAVIGATION_BAR_HEIGHT = "navigation_bar_height";
