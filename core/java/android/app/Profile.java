@@ -73,6 +73,8 @@ public final class Profile implements Parcelable, Comparable {
 
     private Map<Integer, VibratorSettings> vibrators = new HashMap<Integer, VibratorSettings>();
 
+    private SilentModeSettings mSilentMode = new SilentModeSettings();
+
     private AirplaneModeSettings mAirplaneMode = new AirplaneModeSettings();
 
     private int mScreenLockMode = LockMode.DEFAULT;
@@ -504,6 +506,7 @@ public final class Profile implements Parcelable, Comparable {
             if (vibrator.isDirty()) {
                 return true;
             }
+        }
         if (mSilentMode.isDirty()) {
             return true;
         }
@@ -687,12 +690,14 @@ public final class Profile implements Parcelable, Comparable {
                 if (name.equals("vibratorDescriptor")) {
                     VibratorSettings vs = VibratorSettings.fromXml(xpp, context);
                     profile.setVibratorSettings(vs);
+		}
                 if (name.equals("triggers")) {
                     readTriggersFromXml(xpp, context, profile);
                 }
             }
             event = xpp.next();
         }
+        
 
         /* we just loaded from XML, so nothing needs saving */
         profile.mDirty = false;

@@ -137,6 +137,8 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private ToggleAction mExpandDesktopModeOn;
     private Profile mChosenProfile;
 
+    private static final String SYSTEM_PROFILES_ENABLED = "system_profiles_enabled";
+
     private boolean mEnableNavBarHideToggle = true;
     private boolean mEnableScreenshotToggle = false;
     private boolean mEnableTorchToggle = false;
