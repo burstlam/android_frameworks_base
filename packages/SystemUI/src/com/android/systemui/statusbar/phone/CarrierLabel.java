@@ -17,9 +17,12 @@
 package com.android.systemui.statusbar.phone;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
+import android.os.Handler;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -41,6 +44,25 @@ import com.android.internal.R;
  */
 public class CarrierLabel extends TextView {
     private boolean mAttached;
+    protected int mCarrierColor = com.android.internal.R.color.holo_blue_light;
+    Handler mHandler;
+
+    class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.STATUS_BAR_CARRIER_COLOR), false, this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            updateColor();
+        }
+    }
 
     public CarrierLabel(Context context) {
         this(context, null);
@@ -53,6 +75,10 @@ public class CarrierLabel extends TextView {
     public CarrierLabel(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         updateNetworkName(false, null, false, null);
+        mHandler = new Handler();
+      	SettingsObserver settingsObserver = new SettingsObserver(mHandler);
+      	settingsObserver.observe();
+        updateColor();
     }
 
     @Override
@@ -116,6 +142,15 @@ public class CarrierLabel extends TextView {
             setText(str);
     }
 
+    private void updateColor() {
+        int newColor = 0;
+
+        mCarrierColor = Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.STATUS_BAR_CARRIER_COLOR, newColor);
+        if  (mCarrierColor == Integer.MIN_VALUE) {
+             // flag to reset the color
+             mCarrierColor = newColor;
+        }
+        setTextColor(mCarrierColor);
+    }
 }
-
-
