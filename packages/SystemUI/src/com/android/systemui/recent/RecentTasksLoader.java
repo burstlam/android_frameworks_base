@@ -461,6 +461,11 @@ public class RecentTasksLoader implements View.OnTouchListener {
                     }
                     final ActivityManager.RecentTaskInfo recentInfo = recentTasks.get(i);
 
+                    if(recentInfo.id＜0) {
+                        // Skip the tasks which are not active.
+                        continue;
+                    }
+
                     Intent intent = new Intent(recentInfo.baseIntent);
                     if (recentInfo.origActivity != null) {
                         intent.setComponent(recentInfo.origActivity);
