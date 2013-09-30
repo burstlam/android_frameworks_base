@@ -1390,12 +1390,12 @@ public abstract class BaseStatusBar extends SystemUI implements
 
         NotificationData.Entry entry = new NotificationData.Entry(key, notification, iconView,
                 createRoundIcon(notification));
-        entry.hide = entry.notification.pkg.equals("com.paranoid.halo");
+        entry.hide = entry.notification.getPackageName().equals("com.paranoid.halo");
 
         final PendingIntent contentIntent = notification.notification.contentIntent;
         if (contentIntent != null) {
             entry.floatingIntent = makeClicker(contentIntent,
-                    notification.pkg, notification.tag, notification.id);
+                    notification.getPackageName(), notification.getTag(), notification.getId());
             entry.floatingIntent.makeFloating(true);
         }
 
