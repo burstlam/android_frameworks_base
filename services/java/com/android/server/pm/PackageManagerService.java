@@ -3665,8 +3665,6 @@ public class PackageManagerService extends IPackageManager.Stub {
     }
 
     public void performBootDexOpt() {
-        Log.i(TAG, "BootDexOpt function disabled");
-/*
         HashSet<PackageParser.Package> pkgs = null;
         synchronized (mPackages) {
             pkgs = mDeferredDexOpt;
@@ -3693,7 +3691,6 @@ public class PackageManagerService extends IPackageManager.Stub {
                 }
             }
         }
-*/
     }
 
     public boolean performDexOpt(String packageName) {
