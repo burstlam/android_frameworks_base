@@ -207,6 +207,11 @@
     <string name="status_bar_help_title" msgid="1199237744086469217">"通知会显示在这里"</string>
     <string name="status_bar_help_text" msgid="7874607155052076323">"向下滑动可随时查看通知。"\n"再次向下滑动可使用系统控制功能。"</string>
 
+    <!-- Message shown in gesture unlock after some number of unsuccessful attempts -->
+    <string name="kg_forgot_gesture_button_text">忘记手势？</string>
+    <!-- Message shown when user enters wrong pattern -->
+    <string name="kg_wrong_gesture">手势错误</string>
+
     <!-- HALO -->
     <string name="accessibility_halo">打开HALO</string>
     <string name="halo_dismiss">取消通知</string>
