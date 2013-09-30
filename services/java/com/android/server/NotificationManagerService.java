@@ -590,11 +590,6 @@ public class NotificationManagerService extends INotificationManager.Stub
         }
     }
 
-    public boolean areNotificationsEnabledForPackage(String pkg) {
-        checkCallerIsSystem();
-        return areNotificationsEnabledForPackageInt(pkg);
-    }
-
     /**
      * Use this when you just want to know if notifications are OK for this package.
      */

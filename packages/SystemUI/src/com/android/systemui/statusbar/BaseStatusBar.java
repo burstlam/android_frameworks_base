@@ -1394,7 +1394,7 @@ public abstract class BaseStatusBar extends SystemUI implements
         // If we have a bona fide avatar here stretching at least over half the size of our
         // halo-bubble, we'll use that one and cut it round
         if (notification.getNotification().largeIcon != null
-                && largeIconWidth >= iconSize / 2) {         
+                && largeIconWidth >= iconSize / 2) {
             Paint smoothingPaint = new Paint();
             smoothingPaint.setAntiAlias(true);
             smoothingPaint.setFilterBitmap(true);
@@ -1409,9 +1409,9 @@ public abstract class BaseStatusBar extends SystemUI implements
         } else {
             try {
                 Drawable icon = StatusBarIconView.getIcon(mContext,
-                    new StatusBarIcon(notification.pkg, notification.user, notification.notification.icon,
-                    notification.notification.iconLevel, 0, notification.notification.tickerText)); 
-                if (icon == null) icon = mContext.getPackageManager().getApplicationIcon(notification.pkg);
+                    new StatusBarIcon(notification.getPackageName(), notification.getUser(), notification.getNotification().icon,
+                    notification.getNotification().iconLevel, 0, notification.getNotification().tickerText));
+                if (icon == null) icon = mContext.getPackageManager().getApplicationIcon(notification.getPackageName());
                 int margin = (iconSize - smallIconSize) / 2;
                 icon.setBounds(margin, margin, iconSize - margin, iconSize - margin);
                 icon.draw(canvas);
@@ -1443,22 +1443,23 @@ public abstract class BaseStatusBar extends SystemUI implements
             handleNotificationError(key, notification, "Couldn't create icon: " + ic);
             return null;
         }
-        // Construct the expanded view.
-        if (!inflateViews(entry, mPile)) {
-            handleNotificationError(key, notification, "Couldn't expand RemoteViews for: "
-                    + notification);
-            return null;
-        }
 
         NotificationData.Entry entry = new NotificationData.Entry(key, notification, iconView);
         prepareHaloNotification(entry, notification, false);
         entry.hide = entry.notification.getPackageName().equals("com.paranoid.halo");
 
-        final PendingIntent contentIntent = notification.notification.contentIntent;
+        final PendingIntent contentIntent = notification.getNotification().contentIntent;
         if (contentIntent != null) {
             entry.floatingIntent = makeClicker(contentIntent,
                     notification.getPackageName(), notification.getTag(), notification.getId());
             entry.floatingIntent.makeFloating(true);
+        }
+
+        // Construct the expanded view.
+        if (!inflateViews(entry, mPile)) {
+            handleNotificationError(key, notification, "Couldn't expand RemoteViews for: "
+                    + notification);
+            return null;
         }
 
         // Add the expanded view and icon.
@@ -1575,10 +1576,9 @@ public abstract class BaseStatusBar extends SystemUI implements
         boolean orderUnchanged = notification.getNotification().when== oldNotification.getNotification().when
                 && notification.getScore() == oldNotification.getScore();
                 // score now encompasses/supersedes isOngoing()
-
-        boolean updateTicker = (notification.notification.tickerText != null
+        boolean updateTicker = (notification.getNotification().tickerText != null
                 && !TextUtils.equals(notification.getNotification().tickerText,
-                        oldEntry.notification.notification.tickerText)) || mHaloActive;
+                        oldEntry.notification.getNotification().tickerText)) || mHaloActive;
         boolean isTopAnyway = isTopNotification(rowParent, oldEntry);
         if (contentsUnchanged && bigContentsUnchanged && (orderUnchanged || isTopAnyway)) {
             if (DEBUG) Slog.d(TAG, "reusing notification for key: " + key);
@@ -1595,7 +1595,7 @@ public abstract class BaseStatusBar extends SystemUI implements
                     final View.OnClickListener listener = makeClicker(contentIntent,
                             notification.getPackageName(), notification.getTag(), notification.getId());
                     oldEntry.floatingIntent = makeClicker(contentIntent,
-                            notification.pkg, notification.tag, notification.id);
+                            notification.getPackageName(), notification.getTag(), notification.getId());
                     oldEntry.floatingIntent.makeFloating(true);
                 } else {
                     oldEntry.content.setOnClickListener(null);
