@@ -169,9 +169,11 @@ public class ActiveDisplayView extends FrameLayout {
             if (shouldShowNotification() && isValidNotification(sbn)) {
                 // need to make sure either the screen is off or the user is currently
                 // viewing the notifications
-                if (ActiveDisplayView.this.getVisibility() == View.VISIBLE
-                        || !isScreenOn())
-                    showNotification(sbn, true);
+                if (!isCallIncoming()) {
+                    if (ActiveDisplayView.this.getVisibility() == View.VISIBLE
+                            || !isScreenOn())
+                        showNotification(sbn, true);
+                }
             }
         }
         @Override
@@ -418,7 +420,8 @@ public class ActiveDisplayView extends FrameLayout {
         makeActiveDisplayView(mCreationOrientation, false);
     }
 
-    @Override protected void onAttachedToWindow() {
+    @Override
+    protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         mSettingsObserver.observe();
         if (mRedisplayTimeout > 0 && !isScreenOn()) updateRedisplayTimer();
@@ -970,6 +973,15 @@ public class ActiveDisplayView extends FrameLayout {
             }
         }
         return false;
+    }
+
+    /**
+     * Determine if a call is incoming.
+     * @return True if a call is incoming.
+     */
+    private boolean isCallIncoming() {
+        TelephonyManager tm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
+        return tm.getCallState() == TelephonyManager.CALL_STATE_RINGING;
     }
 
     /**
