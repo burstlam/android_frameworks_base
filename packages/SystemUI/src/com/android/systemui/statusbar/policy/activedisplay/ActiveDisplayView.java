@@ -197,6 +197,10 @@ public class ActiveDisplayView extends FrameLayout {
 
         public void onTrigger(final View v, final int target) {
             if (target == UNLOCK_TARGET) {
+                if (mWakedByPocketMode) {
+                    unregisterSensorListener();
+                    mWakedByPocketMode = false;
+                }
                 mNotification = null;
                 hideNotificationView();
                 if (!mKeyguardManager.isKeyguardSecure()) {
@@ -211,6 +215,10 @@ public class ActiveDisplayView extends FrameLayout {
                     }
                 }
             } else if (target == OPEN_APP_TARGET) {
+                if (mWakedByPocketMode) {
+                    unregisterSensorListener();
+                    mWakedByPocketMode = false;
+                }
                 hideNotificationView();
                 if (!mKeyguardManager.isKeyguardSecure()) {
                     try {
@@ -673,10 +681,14 @@ public class ActiveDisplayView extends FrameLayout {
 
     private void onScreenTurnedOn() {
         cancelRedisplayTimer();
-        unregisterSensorListener();
+        if (!mWakedByPocketMode) unregisterSensorListener();
     }
 
     private void onScreenTurnedOff() {
+        if (mWakedByPocketMode) {
+            unregisterSensorListener();
+            mWakedByPocketMode = false;
+        }
         hideNotificationView();
         cancelTimeoutTimer();
         if (mRedisplayTimeout > 0) updateRedisplayTimer();
