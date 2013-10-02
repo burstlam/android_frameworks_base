@@ -99,6 +99,8 @@ public class ActiveDisplayView extends FrameLayout {
 
     private static final long DISPLAY_TIMEOUT = 8000L;
 
+    private static final int POCKET_THRESHOLD = 5000;
+
     private static final int HIDE_NOTIFICATIONS_BELOW_SCORE = Notification.PRIORITY_LOW;
 
     // Targets
@@ -134,11 +136,13 @@ public class ActiveDisplayView extends FrameLayout {
     private boolean mProximityRegistered = false;
     private boolean mProximityIsFar = true;
     private boolean mIsInBrightLight = false;
+    private boolean mWakedByPocketMode = false;
     private LinearLayout mOverflowNotifications;
     private LayoutParams mRemoteViewLayoutParams;
     private int mIconSize;
     private int mIconMargin;
     private int mIconPadding;
+    private long mPocketTime;
     private LinearLayout.LayoutParams mOverflowLayoutParams;
     private KeyguardManager mKeyguardManager;
     private KeyguardLock mKeyguardLock;
@@ -1054,10 +1058,14 @@ public class ActiveDisplayView extends FrameLayout {
                 if (value >= mProximitySensor.getMaximumRange()) {
                     mProximityIsFar = true;
                     if (!isScreenOn() && mPocketModeEnabled && !isOnCall() && !inQuietHours()) {
-                        mNotification = getNextAvailableNotification();
-                        if (mNotification != null) showNotification(mNotification, true);
+                        if (System.currentTimeMillis() >= (mPocketTime + POCKET_THRESHOLD)) {
+                            mWakedByPocketMode = true;
+                            mNotification = getNextAvailableNotification();
+                            if (mNotification != null) showNotification(mNotification, true);
+                        }
                     }
                 } else {
+                    if (mProximityIsFar) mPocketTime = System.currentTimeMillis();
                     mProximityIsFar = false;
                 }
             } else if (event.sensor.equals(mLightSensor)) {
