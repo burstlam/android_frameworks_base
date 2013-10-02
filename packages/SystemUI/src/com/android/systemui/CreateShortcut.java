@@ -56,6 +56,8 @@ public class CreateShortcut extends LauncherActivity {
 
     if (c.equals ("RingVibToggle")) {
         return R.drawable.ic_lockscreen_vib;
+    } else if (c.equals ("QuietHoursShortcut")) {
+          return R.drawable.toggle_quiethours; 
     } else if (c.equals ("RingSilentToggle")) {
         return R.drawable.ic_lockscreen_silent;
     } else if (c.equals ("RingVibSilentToggle")) {
