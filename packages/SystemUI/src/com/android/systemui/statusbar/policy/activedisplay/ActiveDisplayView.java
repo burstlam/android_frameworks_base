@@ -79,6 +79,7 @@ import com.android.systemui.statusbar.BaseStatusBar;
 import com.android.systemui.statusbar.tablet.TabletStatusBar;
 
 import java.util.ArrayList;
+import android.util.Log;
 import java.util.Calendar;
 
 public class ActiveDisplayView extends FrameLayout {
@@ -114,7 +115,11 @@ public class ActiveDisplayView extends FrameLayout {
     private static final int MSG_SHOW_NOTIFICATION      = 1002;
     private static final int MSG_DISMISS_NOTIFICATION   = 1003;
 
+
+    private static final long NAP_TIME = 100;
+
     private BaseStatusBar mBar;
+    private boolean mAttached = false;
     private GlowPadView mGlowPadView;
     private View mRemoteView;
     private View mClock;
@@ -147,6 +152,7 @@ public class ActiveDisplayView extends FrameLayout {
     private KeyguardManager mKeyguardManager;
     private KeyguardLock mKeyguardLock;
     private boolean mCallbacksRegistered = false;
+    private float value = 8.0f;
 
     // user customizable settings
     private boolean mDisplayNotifications = false;
@@ -160,19 +166,32 @@ public class ActiveDisplayView extends FrameLayout {
     private int mUserBrightnessLevel = -1;
     private boolean mSunlightModeEnabled = false;
 
+    private void logi(String s) { if (DEBUG) Log.i(TAG, s); }
+    private void logd(String s) { if (DEBUG) Log.d(TAG, s); }
+    private void logw(String s) { if (DEBUG) Log.w(TAG, s); }
+    private void loge(String s) { if (DEBUG) Log.e(TAG, s); }
+
     /**
      * Simple class that listens to changes in notifications
      */
     private class INotificationListenerWrapper extends INotificationListener.Stub {
         @Override
         public void onNotificationPosted(final StatusBarNotification sbn) {
-            if (shouldShowNotification() && isValidNotification(sbn)) {
+            if (shouldShowNotification() && isValidNotification(sbn) ) {
                 // need to make sure either the screen is off or the user is currently
                 // viewing the notifications
-                if (!isCallIncoming()) {
-                    if (ActiveDisplayView.this.getVisibility() == View.VISIBLE
-                            || !isScreenOn())
-                        showNotification(sbn, true);
+                if (!isCallIncoming() && !isOnCall()) {
+                    logd("Showing a notification!");
+                    if (ActiveDisplayView.this.getVisibility() == View.VISIBLE || !isScreenOn())
+                         showNotification(sbn, true);
+                } else {
+                    logw("Not showing notification because phone is ringing");
+                }
+            } else {
+                if (shouldShowNotification()) {
+                    logi("We should be waking the screen right now, but some shit is borked.");
+                } else {
+                    logw("A notification changed, but we seem to be in a pocket.");
                 }
             }
         }
@@ -400,7 +419,7 @@ public class ActiveDisplayView extends FrameLayout {
 
         mKeyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
 
-        mSettingsObserver = new SettingsObserver(new Handler());
+        mSettingsObserver = new SettingsObserver(mHandler);
         mCreationOrientation = Resources.getSystem().getConfiguration().orientation;
         mInvertedPaint = makeInvertedPaint();
     }
@@ -757,7 +776,7 @@ public class ActiveDisplayView extends FrameLayout {
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_SCREEN_ON);
         /* uncomment the line below for testing */
-        filter.addAction(ACTION_FORCE_DISPLAY);
+        // filter.addAction(ACTION_FORCE_DISPLAY);
         mContext.registerReceiver(mBroadcastReceiver, filter);
     }
 
@@ -786,12 +805,14 @@ public class ActiveDisplayView extends FrameLayout {
 
     private void registerSensorListener() {
         if (mProximitySensor != null && !mProximityRegistered)
-            mSensorManager.registerListener(mSensorListener, mProximitySensor, SensorManager.SENSOR_DELAY_UI);
+            logd("Registering sensor");
+            mSensorManager.registerListener(mSensorListener, mProximitySensor, 2000000);
             mProximityRegistered = true;
     }
 
     private void unregisterSensorListener() {
         if (mProximitySensor != null && mProximityRegistered)
+            logd("Registering sensor");
             mSensorManager.unregisterListener(mSensorListener, mProximitySensor);
             mProximityRegistered = false;
     }
@@ -1077,11 +1098,16 @@ public class ActiveDisplayView extends FrameLayout {
     private SensorEventListener mSensorListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
-            float value = event.values[0];
-            if (event.sensor.equals(mProximitySensor)) {
+            float newvalue = event.values[0];
+            logd("new:"+newvalue+" old:"+value);
+            if (Math.abs(newvalue-value)>0.1) {
+                value = newvalue;
+                //only fire when initially removed from pocket                
+                logd("Got a proximity reading!\nvalue:"+value+"\nthresh:"+(mProximitySensor.getMaximumRange()));
                 if (value >= mProximitySensor.getMaximumRange()) {
                     mProximityIsFar = true;
-                    if (!isScreenOn() && mPocketModeEnabled && !isOnCall() && !inQuietHours()) {
+                    if (!isScreenOn() && mPocketModeEnabled && !isOnCall() && !isCallIncoming() && !inQuietHours()) {
+                        logd("Waking because just removed from pocket"); 
                         if (System.currentTimeMillis() >= (mPocketTime + POCKET_THRESHOLD)) {
                             mWakedByPocketMode = true;
                             mNotification = getNextAvailableNotification();
@@ -1090,6 +1116,7 @@ public class ActiveDisplayView extends FrameLayout {
                     }
                 } else {
                     if (mProximityIsFar) mPocketTime = System.currentTimeMillis();
+                    logd("HOT POCKET HOT POCKET");
                     mProximityIsFar = false;
                 }
             } else if (event.sensor.equals(mLightSensor)) {
