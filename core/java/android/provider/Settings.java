@@ -2698,6 +2698,12 @@ public final class Settings {
         public static final String ACTIVE_DISPLAY_SUNLIGHT_MODE = "active_display_sunlight_mode";
 
         /**
+         * Display timeout for Active Display
+         * @hide
+         */
+        public static final String ACTIVE_DISPLAY_DISPLAYTIMEOUT = "active_display_displaytimeout";
+
+        /**
          * @deprecated Use {@link android.provider.Settings.Global#LOW_BATTERY_SOUND}
          * instead
          * @hide

@@ -98,8 +98,6 @@ public class ActiveDisplayView extends FrameLayout {
 
     private static final int MAX_OVERFLOW_ICONS = 8;
 
-    private static final long DISPLAY_TIMEOUT = 8000L;
-
     // Targets
     private static final int UNLOCK_TARGET = 0;
     private static final int OPEN_APP_TARGET = 4;
@@ -151,6 +149,7 @@ public class ActiveDisplayView extends FrameLayout {
     private boolean mShowAllNotifications = false;
     private boolean mPocketModeEnabled = false;
     private long mRedisplayTimeout = 0;
+    private long mDisplayActiveTimeout = 10000L;
     private float mInitialBrightness = 1f;
     private int mBrightnessMode = -1;
     private int mUserBrightnessLevel = -1;
@@ -286,6 +285,8 @@ public class ActiveDisplayView extends FrameLayout {
                     Settings.System.ENABLE_ACTIVE_DISPLAY), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.ACTIVE_DISPLAY_TEXT), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor( 
+                    Settings.System.ACTIVE_DISPLAY_DISPLAYTIMEOUT), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.ACTIVE_DISPLAY_ALL_NOTIFICATIONS), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -337,6 +338,8 @@ public class ActiveDisplayView extends FrameLayout {
                         resolver, Settings.System.ACTIVE_DISPLAY_BRIGHTNESS, 100) / 100f;
                 mSunlightModeEnabled = Settings.System.getInt(
                         resolver, Settings.System.ACTIVE_DISPLAY_SUNLIGHT_MODE, 0) == 1;
+                mDisplayActiveTimeout = Settings.System.getLong(
+                    resolver, Settings.System.ACTIVE_DISPLAY_DISPLAYTIMEOUT, 10000L);
 
                 int brightnessMode = Settings.System.getInt(
                         resolver, Settings.System.SCREEN_BRIGHTNESS_MODE, -1);
@@ -1179,7 +1182,7 @@ public class ActiveDisplayView extends FrameLayout {
         } catch (Exception e) {
         }
         Calendar time = Calendar.getInstance();
-        time.setTimeInMillis(System.currentTimeMillis() + DISPLAY_TIMEOUT);
+        time.setTimeInMillis(System.currentTimeMillis() + mDisplayActiveTimeout);
         am.set(AlarmManager.RTC, time.getTimeInMillis(), pi);
     }
 
