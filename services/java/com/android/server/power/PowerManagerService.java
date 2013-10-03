@@ -625,7 +625,8 @@ public final class PowerManagerService extends IPowerManager.Stub
                 mElectronBeamFadesConfig ? 0 : 1,
                 UserHandle.USER_CURRENT) == 1;
         mElectronBeamMode = Settings.System.getIntForUser(resolver,
-                Settings.System.SYSTEM_POWER_CRT_MODE, 1);
+                Settings.System.SYSTEM_POWER_CRT_MODE,
+                1, UserHandle.USER_CURRENT);
 
         mWakeLockBlockingEnabled = Settings.System.getIntForUser(resolver,
                 Settings.System.WAKELOCK_BLOCKING_ENABLED,
