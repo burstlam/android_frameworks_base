@@ -113,7 +113,7 @@ public class ResolverActivity extends AlertActivity implements AdapterView.OnIte
                 == Configuration.UI_INVERTED_MODE_YES) {
             setTheme(R.style.Theme_DeviceDefault_Dialog_Alert);
         } else {
-            setTheme(R.style.Theme_DeviceDefault_Light_Dialog_Alert);
+            setTheme(R.style.Theme_DeviceDefault_Dialog_Alert);
         }
         super.onCreate(savedInstanceState);
         try {
