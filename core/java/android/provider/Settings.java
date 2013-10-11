@@ -2946,43 +2946,43 @@ public final class Settings {
          * always: 2
          * @hide
          */
-        public static final String PIE_CONTROLS = "pie_controls";
+        public static final String SPIE_CONTROLS = "spie_controls";
 
         /**
          * Whether dynamic menu button is shown or not or dynamic (default)
          * @hide
          */
-        public static final String PIE_MENU = "pie_menu";
+        public static final String SPIE_MENU = "spie_menu";
 
         /**
          * Whether right edge PIE is mirrored or not
          * @hide
          */
-        public static final String PIE_MIRROR_RIGHT = "pie_mirror_right";
+        public static final String SPIE_MIRROR_RIGHT = "spie_mirror_right";
 
         /**
          * Pie show text (0 or 1)
          * @hide
          */
-        public static final String PIE_SHOW_TEXT = "pie_show_text";
+        public static final String SPIE_SHOW_TEXT = "spie_show_text";
 
         /**
          * Pie disable redundant statusbar infos (0 or 1)
          * @hide
          */
-        public static final String PIE_DISABLE_STATUSBAR_INFO = "pie_disable_statusbar_info";
+        public static final String SPIE_DISABLE_STATUSBAR_INFO = "spie_disable_statusbar_info";
 
         /**
          * Pie show snap (0 or 1)
          * @hide
          */
-        public static final String PIE_SHOW_SNAP = "pie_show_snap";
+        public static final String SPIE_SHOW_SNAP = "spie_show_snap";
 
         /**
          * Pie show background (0 or 1)
          * @hide
          */
-        public static final String PIE_SHOW_BACKGROUND = "pie_show_background";
+        public static final String SPIE_SHOW_BACKGROUND = "spie_show_background";
 
         /**
          * Locations of the pie in the screen.
@@ -2993,33 +2993,33 @@ public final class Settings {
          * Default: LEFT
          * @hide
          */
-        public static final String PIE_GRAVITY = "pie_gravity";
+        public static final String SPIE_GRAVITY = "spie_gravity";
 
         /**
          * Relative pie size (fraction)
          * Default: 1.0f
          * @hide
          */
-        public static final String PIE_SIZE = "pie_size";
+        public static final String SPIE_SIZE = "spie_size";
 
         /**
          * Relative pie trigger thickness
          * @hide
          */
-        public static final String PIE_TRIGGER_THICKNESS = "pie_trigger_thickness";
+        public static final String SPIE_TRIGGER_THICKNESS = "spie_trigger_thickness";
 
 	
         /**
          * Relative pie trigger height for left and right trigger
          * @hide
          */
-        public static final String PIE_TRIGGER_HEIGHT = "pie_trigger_height";
+        public static final String SPIE_TRIGGER_HEIGHT = "spie_trigger_height";
 
         /**
          * Pie trigger vertical gravity
          * @hide
          */
-        public static final String PIE_TRIGGER_GRAVITY_LEFT_RIGHT = "pie_trigger_gravity_left_right";
+        public static final String SPIE_TRIGGER_GRAVITY_LEFT_RIGHT = "spie_trigger_gravity_left_right";
         
         /*
          * HALO being minimal.
@@ -3085,55 +3085,55 @@ public final class Settings {
          * Show pie trigger
          * @hide
          */
-        public static final String PIE_TRIGGER_SHOW = "pie_trigger_show";
+        public static final String SPIE_TRIGGER_SHOW = "spie_trigger_show";
 
         /**
          * Pie IME softkeyboard state toggle (0 or 1)
          * @hide
          */
-        public static final String PIE_SOFTKEYBOARD_IS_SHOWING = "pie_softkeyboard_is_showing";
+        public static final String SPIE_SOFTKEYBOARD_IS_SHOWING = "spie_softkeyboard_is_showing";
 
         /**
          * Pie allow to adjust triggers if IME is showing (0 or 1)
          * @hide
          */
-        public static final String PIE_ADJUST_TRIGGER_FOR_IME = "pie_adjust_trigger_for_ime";
+        public static final String SPIE_ADJUST_TRIGGER_FOR_IME = "spie_adjust_trigger_for_ime";
 
         /**
          * Pie button color
          * @hide
          */
-        public static final String PIE_BUTTON_COLOR = "pie_button_color";
+        public static final String SPIE_BUTTON_COLOR = "spie_button_color";
 
         /**
          * Pie button press color
          * @hide
          */
-        public static final String PIE_BUTTON_PRESSED_COLOR = "pie_button_pressed_color";
+        public static final String SPIE_BUTTON_PRESSED_COLOR = "spie_button_pressed_color";
 
         /**
          * Pie button long press color
          * @hide
          */
-        public static final String PIE_BUTTON_LONG_PRESSED_COLOR = "pie_button_long_pressed_color";
+        public static final String SPIE_BUTTON_LONG_PRESSED_COLOR = "spie_button_long_pressed_color";
 
         /**
          * Pie button outline color
          * @hide
          */
-        public static final String PIE_BUTTON_OUTLINE_COLOR = "pie_button_outline_color";
+        public static final String SPIE_BUTTON_OUTLINE_COLOR = "spie_button_outline_color";
 
         /**
          * Pie background color
          * @hide
          */
-        public static final String PIE_BACKGROUND_COLOR = "pie_background_color";
+        public static final String SPIE_BACKGROUND_COLOR = "spie_background_color";
 
         /**
          * Pie snap color
          * @hide
          */
-        public static final String PIE_SNAP_COLOR = "pie_snap_color";
+        public static final String SPIE_SNAP_COLOR = "spie_snap_color";
         /**  
          * HALO, should default to 0 (no, do not show)
          * @hide
@@ -3168,52 +3168,52 @@ public final class Settings {
          * Pie text color
          * @hide
          */
-        public static final String PIE_TEXT_COLOR = "pie_text_color";
+        public static final String SPIE_TEXT_COLOR = "spie_text_color";
 
         /**
          * Pie icon color
          * @hide
          */
-        public static final String PIE_ICON_COLOR = "pie_icon_color";
+        public static final String SPIE_ICON_COLOR = "spie_icon_color";
 
         /**
          * Pie icon color mode
          * @hide
          */
-        public static final String PIE_ICON_COLOR_MODE = "pie_icon_color_mode";
+        public static final String SPIE_ICON_COLOR_MODE = "spie_icon_color_mode";
 
         /**
          * Pie button alpha
          * @hide
          */
-        public static final String PIE_BUTTON_ALPHA = "pie_button_alpha";
+        public static final String SPIE_BUTTON_ALPHA = "spie_button_alpha";
 
         /**
          * Pie button pressed and long pressed alpha
          * @hide
          */
-        public static final String PIE_BUTTON_PRESSED_ALPHA = "pie_button_pressed_alpha";
+        public static final String SPIE_BUTTON_PRESSED_ALPHA = "spie_button_pressed_alpha";
 
         /**
          * Pie background alpha
          * @hide
          */
-        public static final String PIE_BACKGROUND_ALPHA = "pie_background_alpha";
+        public static final String SPIE_BACKGROUND_ALPHA = "spie_background_alpha";
 
         /**
          * @hide
          */
-        public static final String PIE_BUTTONS_CONFIG = "pie_buttons_config";
+        public static final String SPIE_BUTTONS_CONFIG = "spie_buttons_config";
 
         /**
          * @hide
          */
-        public static final String PIE_SECOND_LAYER_ACTIVE = "pie_second_layer_active";
+        public static final String SPIE_SECOND_LAYER_ACTIVE = "spie_second_layer_active";
 
         /**
          * @hide
          */
-        public static final String PIE_BUTTONS_CONFIG_SECOND_LAYER = "pie_buttons_config_second_layer";
+        public static final String SPIE_BUTTONS_CONFIG_SECOND_LAYER = "spie_buttons_config_second_layer";
 
         /**
          * Quick Settings Panel Tiles to Use

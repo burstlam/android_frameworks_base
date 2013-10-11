@@ -405,9 +405,9 @@ public class PhoneStatusBar extends BaseStatusBar {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.AUTO_HIDE_STATUSBAR), false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_DISABLE_STATUSBAR_INFO), false, this);
+                    Settings.System.SPIE_DISABLE_STATUSBAR_INFO), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_CONTROLS), false, this);
+                    Settings.System.SPIE_CONTROLS), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.EXPANDED_DESKTOP_STATE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -1067,7 +1067,7 @@ public class PhoneStatusBar extends BaseStatusBar {
     @Override
     public void setImeShowStatus(boolean enabled) {
         Settings.System.putInt(mContext.getContentResolver(),
-                Settings.System.PIE_SOFTKEYBOARD_IS_SHOWING,
+                Settings.System.SPIE_SOFTKEYBOARD_IS_SHOWING,
                 enabled ? 1 : 0);
     }
 
@@ -1283,8 +1283,6 @@ public class PhoneStatusBar extends BaseStatusBar {
                     | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
                     | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
                 PixelFormat.TRANSLUCENT);
-        }
-
         lp.setTitle("NavigationBar");
         lp.windowAnimations = 0;
         return lp;
@@ -1778,11 +1776,11 @@ public class PhoneStatusBar extends BaseStatusBar {
         if (mStatusBarView == null) return;
         ContentResolver resolver = mContext.getContentResolver();
         boolean disableStatusBarInfo = Settings.System.getInt(resolver,
-                Settings.System.PIE_DISABLE_STATUSBAR_INFO, 0) == 1;
+                Settings.System.SPIE_DISABLE_STATUSBAR_INFO, 0) == 1;
         if (disableStatusBarInfo) {
             // call only the settings if statusbar info is really hidden
             int pieMode = Settings.System.getInt(resolver,
-                    Settings.System.PIE_CONTROLS, 0);
+                    Settings.System.SPIE_CONTROLS, 0);
             boolean expandedDesktopState = Settings.System.getInt(resolver,
                     Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
 
@@ -2846,6 +2844,10 @@ public class PhoneStatusBar extends BaseStatusBar {
     public void topAppWindowChanged(boolean showMenu) {
         if (mPieControlPanel != null)
             mPieControlPanel.setMenu(showMenu);
+
+        if (mPieControlsTrigger != null)
+            mPieControlsTrigger.setVisibility(!mPieControlPanel.getKeyguardStatus() ? View.VISIBLE : View.GONE);
+
         mTransparencyManager.update();
         if (DEBUG) {
             Slog.d(TAG, (showMenu?"showing":"hiding") + " the MENU button");
