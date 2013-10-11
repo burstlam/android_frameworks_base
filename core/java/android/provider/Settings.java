@@ -4483,6 +4483,12 @@ public final class Settings {
          */
         public static final String PIE_ACT_QS = "pie_act_qs";
 
+        /**
+         * Pie screenshot, should default to 0 (no, not show)
+         * @hide
+         */
+        public static final String PIE_SCREENSHOT = "pie_screenshot";
+
         /*
          * Pie gap angle, should default to 2
          * @hide

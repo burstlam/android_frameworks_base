@@ -18,20 +18,27 @@ package com.android.systemui.statusbar;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.ActivityOptions;
 import android.app.KeyguardManager;
 import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.pm.ResolveInfo;
+import android.content.ServiceConnection;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.hardware.input.InputManager;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
+import android.os.Messenger;
+import android.os.RemoteException;
+import android.os.Process;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemClock;
@@ -77,6 +84,10 @@ public class PieControlPanel extends FrameLayout implements StatusBarPanel, OnNa
     private WindowManager mWindowManager;
     private Display mDisplay;
     private KeyguardManager mKeyguardManger;
+
+    // ScreenShot
+    private final Object mScreenshotLock = new Object();
+    private ServiceConnection mScreenshotConnection = null;
 
     ViewGroup mContentFrame;
     Rect mContentArea = new Rect();
@@ -308,6 +319,8 @@ public class PieControlPanel extends FrameLayout implements StatusBarPanel, OnNa
             launchAssistAction();
         } else if (buttonName.equals(PieControl.LAST_APP_BUTTON)) {
             toggleLastApp();
+        } else if (buttonName.equals(PieControl.SCREENSHOT_BUTTON)) {
+            takeScreenshot();
         } else if (buttonName.equals(PieControl.KILL_TASK_BUTTON)) {
             KillTask mKillTask = new KillTask(mContext);
             mHandler.post(mKillTask);
@@ -398,6 +411,92 @@ public class PieControlPanel extends FrameLayout implements StatusBarPanel, OnNa
             }
         }
      }
+
+    final Runnable mScreenshotTimeout = new Runnable() {
+        @Override
+        public void run() {
+            synchronized (mScreenshotLock) {
+                if (mScreenshotConnection != null) {
+                    mContext.unbindService(mScreenshotConnection);
+                    mScreenshotConnection = null;
+                }
+            }
+        }
+    };
+
+    private void takeScreenshot() {
+        synchronized (mScreenshotLock) {
+            if (mScreenshotConnection != null) {
+                return;
+            }
+            ComponentName cn = new ComponentName("com.android.systemui",
+                    "com.android.systemui.screenshot.TakeScreenshotService");
+            Intent intent = new Intent();
+            intent.setComponent(cn);
+            ServiceConnection conn = new ServiceConnection() {
+                @Override
+                public void onServiceConnected(ComponentName name, IBinder service) {
+                    synchronized (mScreenshotLock) {
+                        if (mScreenshotConnection != this) {
+                            return;
+                        }
+                        Messenger messenger = new Messenger(service);
+                        Message msg = Message.obtain(null, 1);
+                        final ServiceConnection myConn = this;
+                        Handler h = new Handler(HDL.getLooper()) {
+                            @Override
+                            public void handleMessage(Message msg) {
+                                synchronized (mScreenshotLock) {
+                                    if (mScreenshotConnection == myConn) {
+                                        mContext.unbindService(mScreenshotConnection);
+                                        mScreenshotConnection = null;
+                                        HDL.removeCallbacks(mScreenshotTimeout);
+                                    }
+                                }
+                            }
+                        };
+                        msg.replyTo = new Messenger(h);
+                        msg.arg1 = msg.arg2 = 0;
+
+                        /*
+* remove for the time being if (mStatusBar != null &&
+* mStatusBar.isVisibleLw()) msg.arg1 = 1; if
+* (mNavigationBar != null &&
+* mNavigationBar.isVisibleLw()) msg.arg2 = 1;
+*/
+
+                        /* wait for the dialog box to close */
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException ie) {
+                        }
+
+                        /* take the screenshot */
+                        try {
+                            messenger.send(msg);
+                        } catch (RemoteException e) {
+                        }
+                    }
+                }
+
+                @Override
+                public void onServiceDisconnected(ComponentName name) {
+                }
+            };
+            if (mContext.bindService(intent, conn, mContext.BIND_AUTO_CREATE)) {
+                mScreenshotConnection = conn;
+                HDL.postDelayed(mScreenshotTimeout, 10000);
+            }
+        }
+    }
+
+    private Handler HDL = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+
+            }
+        }
+    };
 
     public void injectKeyDelayed(int keycode){
         mInjectKeycode = keycode;
