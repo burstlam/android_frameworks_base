@@ -55,6 +55,7 @@ public class PieControl implements OnClickListener {
     public static final String KILL_TASK_BUTTON = "##killtask##";
     public static final String APP_WINDOW_BUTTON = "##appwindow##";
     public static final String ACT_NOTIF_BUTTON = "##actnotif##";
+    public static final String SCREENSHOT_BUTTON = "##screenshot##";
 
     protected Context mContext;
     protected PieMenu mPie;
@@ -69,6 +70,7 @@ public class PieControl implements OnClickListener {
     private PieItem mAppWindow;
     private PieItem mActNotif;
     private PieItem mSearch;
+    private PieItem mScreenShot;
     private OnNavButtonPressedListener mListener;
     private PieControlPanel mPanel;
 
@@ -130,8 +132,10 @@ public class PieControl implements OnClickListener {
         mKillTask = makeItem(R.drawable.ic_sysbar_killtask_pie, 1, KILL_TASK_BUTTON, true);
         mAppWindow = makeItem(R.drawable.ic_sysbar_appwindow_pie, 1, APP_WINDOW_BUTTON, true);
         mActNotif = makeItem(R.drawable.ic_sysbar_notifications_pie, 1, ACT_NOTIF_BUTTON, true);
+        mScreenShot = makeItem(R.drawable.ic_sysbar_screenshot_pie, 1, SCREENSHOT_BUTTON, true);
         mMenu = makeItem(R.drawable.ic_sysbar_menu, 1, MENU_BUTTON, true);
         mPie.addItem(mMenu);
+        mPie.addItem(mScreenShot);
         mPie.addItem(mKillTask);
         mPie.addItem(mLastApp);
         mPie.addItem(mAppWindow);
