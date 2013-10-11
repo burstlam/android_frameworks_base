@@ -39,7 +39,7 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.os.Process;
-import android.os.RemoteException;
+import android.os.PowerManager;
 import android.os.ServiceManager;
 import android.os.SystemClock;
 import android.os.UserHandle;
@@ -321,6 +321,8 @@ public class PieControlPanel extends FrameLayout implements StatusBarPanel, OnNa
             toggleLastApp();
         } else if (buttonName.equals(PieControl.SCREENSHOT_BUTTON)) {
             takeScreenshot();
+        } else if (buttonName.equals(PieControl.POWER_BUTTON)) {
+            goToSleep();
         } else if (buttonName.equals(PieControl.KILL_TASK_BUTTON)) {
             KillTask mKillTask = new KillTask(mContext);
             mHandler.post(mKillTask);
@@ -357,6 +359,11 @@ public class PieControlPanel extends FrameLayout implements StatusBarPanel, OnNa
             } catch (ActivityNotFoundException e) {
             }
         }
+    }
+
+    private void goToSleep() {
+        PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+        pm.goToSleep(SystemClock.uptimeMillis());
     }
 
     private void toggleLastApp() {
@@ -459,11 +466,11 @@ public class PieControlPanel extends FrameLayout implements StatusBarPanel, OnNa
                         msg.arg1 = msg.arg2 = 0;
 
                         /*
-* remove for the time being if (mStatusBar != null &&
-* mStatusBar.isVisibleLw()) msg.arg1 = 1; if
-* (mNavigationBar != null &&
-* mNavigationBar.isVisibleLw()) msg.arg2 = 1;
-*/
+                         * remove for the time being if (mStatusBar != null &&
+                         * mStatusBar.isVisibleLw()) msg.arg1 = 1; if
+                         * (mNavigationBar != null &&
+                         * mNavigationBar.isVisibleLw()) msg.arg2 = 1;
+                         */
 
                         /* wait for the dialog box to close */
                         try {
