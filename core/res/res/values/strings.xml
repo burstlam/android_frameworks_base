@@ -4032,6 +4032,9 @@
     <!-- Reboot recovery option -->
     <string name="reboot_bootloader">Bootloader</string>
 
+    <!-- Button to hot boot the phone, within the Reboot Options dialog -->
+    <string name="hot_reboot">Hot Reboot</string>
+
     <!-- Rebooting message -->
     <string name="reboot_progress">Your device is rebooting</string>
 
