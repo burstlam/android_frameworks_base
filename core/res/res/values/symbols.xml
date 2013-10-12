@@ -2052,4 +2052,11 @@
 
   <!-- SMS RIL_REQUEST_SEND_SMS_EXPECT_MORE -->
   <java-symbol type="bool" name="config_smsUseExpectMore" />
+
+  <!-- Swipe Back Layout -->
+  <java-symbol type="attr" name="SwipeBackLayoutStyle" />
+  <java-symbol type="style" name="SwipeBackLayout" />
+  <java-symbol type="drawable" name="shadow_left" />
+  <java-symbol type="drawable" name="shadow_right" />
+  <java-symbol type="drawable" name="shadow_bottom" />
 </resources>
