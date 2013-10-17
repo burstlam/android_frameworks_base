@@ -3084,6 +3084,8 @@ public class PhoneStatusBar extends BaseStatusBar {
                 repositionNavigationBar();
                 updateExpandedViewPos(EXPANDED_LEAVE_ALONE);
                 mNotificationShortcutsLayout.recreateShortcutLayout();
+                removeSidebarView();
+                addSidebarView();
                 if (mNavigationBarView != null && mNavigationBarView.mDelegateHelper != null) {
                     // if We are in Landscape/Phone Mode then swap the XY coordinates for NaVRing Swipe
                     mNavigationBarView.mDelegateHelper.setSwapXY((
