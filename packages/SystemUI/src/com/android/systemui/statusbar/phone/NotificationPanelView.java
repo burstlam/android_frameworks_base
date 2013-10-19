@@ -21,6 +21,7 @@ import android.content.ContentResolver;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.EventLog;
@@ -66,8 +67,11 @@ public class NotificationPanelView extends PanelView {
     private boolean mTrackingSwipe;
     private boolean mSwipeTriggered;
 
+    private final PowerManager mPm;
+
     public NotificationPanelView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mPm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
     }
 
     public void setStatusBar(PhoneStatusBar bar) {
@@ -223,6 +227,7 @@ public class NotificationPanelView extends PanelView {
                     }
                     break;
                 case MotionEvent.ACTION_MOVE:
+                    mPm.cpuBoost(1500000);
                     if (mStatusBar.mHideSettingsPanel)
                         break;
                     if (mSwipeToSwitch) {
@@ -259,6 +264,8 @@ public class NotificationPanelView extends PanelView {
                     }
                     break;
                 case MotionEvent.ACTION_POINTER_DOWN:
+                    // boost two fingers also
+                    mPm.cpuBoost(1500000);
                     if (!mStatusBar.mHideSettingsPanel)
                         shouldFlip = true;
                     break;
