@@ -392,7 +392,7 @@ public class NotificationManagerService extends INotificationManager.Stub
 
     private int readPolicy(AtomicFile file, String lookUpTag, HashSet<String> db) {
         return readPolicy(file, lookUpTag, db, null, 0);
-    } 
+    }
 
     private int readPolicy(AtomicFile file, String lookUpTag, HashSet<String> db, String resultTag, int defaultResult) {
         int result = defaultResult;
@@ -420,12 +420,12 @@ public class NotificationManagerService extends INotificationManager.Stub
                             if (TAG_PACKAGE.equals(tag)) {
                                 db.add(parser.getAttributeValue(null, ATTR_NAME));
                             } else if (lookUpTag.equals(tag) && type == END_TAG) {
-                                break; 
+                                break;
                             }
                         }
                     }
-		}
-	    }
+                }
+            }
         } catch (Exception e) {
             // Unable to read
         } finally {
@@ -433,40 +433,13 @@ public class NotificationManagerService extends INotificationManager.Stub
         }
         return result;
     }
-
+    
     private void loadBlockDb() {
-        synchronized (mBlockedPackages) {
+        synchronized(mBlockedPackages) {
             if (mPolicyFile == null) {
                 mPolicyFile = new AtomicFile(new File("/data/system", "notification_policy.xml"));
                 mBlockedPackages.clear();
                 readPolicy(mPolicyFile, TAG_BLOCKED_PKGS, mBlockedPackages);
-
-                FileInputStream infile = null;
-                try {
-                    infile = mPolicyFile.openRead();
-                    final XmlPullParser parser = Xml.newPullParser();
-                    parser.setInput(infile, null);
-
-                    int type;
-                    String tag;
-                    int version = DB_VERSION;
-                    while ((type = parser.next()) != END_DOCUMENT) {
-                        tag = parser.getName();
-                        if (type == START_TAG) {
-                            if (TAG_BODY.equals(tag)) {
-                                version = Integer.parseInt(parser.getAttributeValue(null,
-                                        ATTR_VERSION));
-                            } else if (TAG_BLOCKED_PKGS.equals(tag)) {
-                                while ((type = parser.next()) != END_DOCUMENT) {
-                                    tag = parser.getName();
-                                    if (TAG_PACKAGE.equals(tag)) {
-                                        mBlockedPackages.add(parser.getAttributeValue(null,
-                                                ATTR_NAME));
-                                    } else if (TAG_BLOCKED_PKGS.equals(tag) && type == END_TAG) {
-                                        break;
-                                    }
-                                }
-                            }
             }
         }
     }
@@ -479,8 +452,42 @@ public class NotificationManagerService extends INotificationManager.Stub
             mHaloWhitelist.clear();
             readPolicy(mHaloPolicyFile, TAG_ALLOWED_PKGS, mHaloWhitelist);
         }
-    } 
+    }
 
+    private void writeBlockDb() {
+        synchronized(mBlockedPackages) {
+            FileOutputStream outfile = null;
+            try {
+                outfile = mPolicyFile.startWrite();
+
+                XmlSerializer out = new FastXmlSerializer();
+                out.setOutput(outfile, "utf-8");
+
+                out.startDocument(null, true);
+
+                out.startTag(null, TAG_BODY); {
+                    out.attribute(null, ATTR_VERSION, String.valueOf(DB_VERSION));
+                    out.startTag(null, TAG_BLOCKED_PKGS); {
+                        // write all known network policies
+                        for (String pkg : mBlockedPackages) {
+                            out.startTag(null, TAG_PACKAGE); {
+                                out.attribute(null, ATTR_NAME, pkg);
+                            } out.endTag(null, TAG_PACKAGE);
+                        }
+                    } out.endTag(null, TAG_BLOCKED_PKGS);
+                } out.endTag(null, TAG_BODY);
+
+                out.endDocument();
+
+                mPolicyFile.finishWrite(outfile);
+            } catch (IOException e) {
+                if (outfile != null) {
+                    mPolicyFile.failWrite(outfile);
+                }
+            }
+        }
+    }
+    
     private synchronized void writeHaloBlockDb() {
         FileOutputStream outfile = null;
         try {
@@ -538,7 +545,7 @@ public class NotificationManagerService extends INotificationManager.Stub
 
     public void setHaloBlacklistStatus(String pkg, boolean status) {
         if (status) {
-            mHaloBlacklist.add(pkg);            
+            mHaloBlacklist.add(pkg);
         } else {
             mHaloBlacklist.remove(pkg);
         }
@@ -547,7 +554,7 @@ public class NotificationManagerService extends INotificationManager.Stub
 
     public void setHaloWhitelistStatus(String pkg, boolean status) {
         if (status) {
-            mHaloWhitelist.add(pkg);            
+            mHaloWhitelist.add(pkg);
         } else {
             mHaloWhitelist.remove(pkg);
         }
@@ -564,7 +571,7 @@ public class NotificationManagerService extends INotificationManager.Stub
         } else {
             return mHaloWhitelist.contains(pkg);
         }
-    } 
+    }
 
     /**
      * Use this when you just want to know if notifications are OK for this package.

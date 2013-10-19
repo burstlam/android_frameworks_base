@@ -2708,60 +2708,6 @@ public final class Settings {
          */
         public static final String UI_FORCE_OVERFLOW_BUTTON = "ui_force_overflow_button";
 
- 	/**
-         * HALO, should default to 0 (no, do not show)
-         * @hide
-         */
-        public static final String HALO_ACTIVE = "halo_active";
-
-        /**
-         * HALO reversed?, should default to 1 (yes, reverse)
-         * @hide
-         */
-        public static final String HALO_REVERSED = "halo_reversed";
-
-        /**
-         * HALO hide?, should default to 0 (no, do not hide)
-         * @hide
-         */
-        public static final String HALO_HIDE = "halo_hide"; 
-
-        /**
-         * HALO ninja?, should default to 0 (no, do not disappear when empty)
-         * @hide
-         */
-        public static final String HALO_NINJA = "halo_ninja";
-
-        /**
-         * HALO message box?, should default to 1 (yes, show message box on incoming notification)
-         * @hide
-         */
-        public static final String HALO_MSGBOX = "halo_msgbox";
-
-        /**
-         * HALO notificatoin count?, should default to 4 (both)
-         * @hide
-         */
-        public static final String HALO_NOTIFY_COUNT = "halo_notify_count";
-
-        /**
-         * HALO message box animation?, should default to 2 (flip animation)
-         * @hide
-         */
-        public static final String HALO_MSGBOX_ANIMATION = "halo_msgbox_animation";
-
-        /**
-         * HALO unlock ping?, should default to 0 (no, do not ping on unlock)
-         * @hide
-         */
-        public static final String HALO_UNLOCK_PING = "halo_unlock_ping";
-
-        /**
-         * HALO size fraction, default is 1.0f (normal)
-         * @hide
-         */
-        public static final String HALO_SIZE = "halo_size";
-
         /**
          * AM/PM Style for clock options
          * 0 - Normal AM/PM
@@ -3819,64 +3765,6 @@ public final class Settings {
          * @hide
          */
         public static final String APP_WINDOW_OPACITY = "app_window_opacity";
-        
-        /**
-         * HALO pause activities?, defaults to 0 (no, do not pause) on devices which isLargeRAM() == true
-         * otherwise it defaults to 1 (yes, do pause)
-         * @hide
-         */
-        public static final String HALO_PAUSE = "halo_pause";
-        
-        /**
-         * Do you want popups/floating windows?
-         * @hide
-         */
-        public static final String WE_WANT_POPUPS = "we_want_popups"; 
-
-		/**
-         * HALO being minimal.
-         * @hide
-         */
-        public static final String HALO_STYLE = "halo_style";
-        
-        /**
-         * HALO colors
-         * @hide
-         */
-        public static final String HALO_COLORS = "halo_colors";
-
-        /**
-         * HALO speech bubble color
-         * @hide
-         */
-        public static final String HALO_BUBBLE_COLOR = "halo_bubble_color";
-
-        /**
-         * HALO speech bubble text color
-         * @hide
-         */
-        public static final String HALO_BUBBLE_TEXT_COLOR = "halo_bubble_text_color";
-        
-        /**
-         * HALO effect color
-         * @hide
-         */
-        public static final String HALO_EFFECT_COLOR = "halo_effect_color";
-
-       /**
-        * MediaScanner behavior on boot.
-        * 0 = enabled
-        * 1 = ask (notification)
-        * 2 = disabled
-        * @hide
-        */
-        public static final String MEDIA_SCANNER_ON_BOOT = "media_scanner_on_boot"; 
-
-        /**
-         * HALO circle bg color
-         * @hide
-         */
-        public static final String HALO_CIRCLE_COLOR = "halo_circle_color";
 
         /**
          *
@@ -4344,6 +4232,115 @@ public final class Settings {
          * @hide
          */
         public static final String SWAP_VOLUME_KEYS = "swap_volume_keys";
+
+     	/**
+         * HALO Main Switch
+         * @hide
+         */
+        public static final String HALO_ENABLED = "halo_enabled";
+
+     	/**
+         * HALO, should default to 0 (no, do not show)
+         * @hide
+         */
+        public static final String HALO_ACTIVE = "halo_active";
+
+        /**
+         * HALO reversed?, should default to 1 (yes, reverse)
+         * @hide
+         */
+        public static final String HALO_REVERSED = "halo_reversed";
+
+        /**
+         * HALO hide?, should default to 0 (no, do not hide)
+         * @hide
+         */
+        public static final String HALO_HIDE = "halo_hide"; 
+
+        /**
+         * HALO ninja?, should default to 0 (no, do not disappear when empty)
+         * @hide
+         */
+        public static final String HALO_NINJA = "halo_ninja";
+
+        /**
+         * HALO message box?, should default to 1 (yes, show message box on incoming notification)
+         * @hide
+         */
+        public static final String HALO_MSGBOX = "halo_msgbox";
+
+        /**
+         * HALO notificatoin count?, should default to 4 (both)
+         * @hide
+         */
+        public static final String HALO_NOTIFY_COUNT = "halo_notify_count";
+
+        /**
+         * HALO message box animation?, should default to 2 (flip animation)
+         * @hide
+         */
+        public static final String HALO_MSGBOX_ANIMATION = "halo_msgbox_animation";
+
+        /**
+         * HALO unlock ping?, should default to 0 (no, do not ping on unlock)
+         * @hide
+         */
+        public static final String HALO_UNLOCK_PING = "halo_unlock_ping";
+
+        /**
+         * HALO size fraction, default is 1.0f (normal)
+         * @hide
+         */
+        public static final String HALO_SIZE = "halo_size";
+
+        /**
+         * HALO pause activities?, defaults to 0 (no, do not pause) on devices which isLargeRAM() == true
+         * otherwise it defaults to 1 (yes, do pause)
+         * @hide
+         */
+        public static final String HALO_PAUSE = "halo_pause";
+        
+        /**
+         * Do you want popups/floating windows?
+         * @hide
+         */
+        public static final String WE_WANT_POPUPS = "we_want_popups"; 
+
+		/**
+         * HALO being minimal.
+         * @hide
+         */
+        public static final String HALO_STYLE = "halo_style";
+        
+        /**
+         * HALO colors
+         * @hide
+         */
+        public static final String HALO_COLORS = "halo_colors";
+
+        /**
+         * HALO speech bubble color
+         * @hide
+         */
+        public static final String HALO_BUBBLE_COLOR = "halo_bubble_color";
+
+        /**
+         * HALO speech bubble text color
+         * @hide
+         */
+        public static final String HALO_BUBBLE_TEXT_COLOR = "halo_bubble_text_color";
+        
+        /**
+         * HALO effect color
+         * @hide
+         */
+        public static final String HALO_EFFECT_COLOR = "halo_effect_color";
+
+        /**
+         * HALO circle bg color
+         * @hide
+         */
+        public static final String HALO_CIRCLE_COLOR = "halo_circle_color";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
