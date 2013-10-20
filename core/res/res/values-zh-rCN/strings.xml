@@ -1500,55 +1500,11 @@
     <string name="app_not_found" msgid="3429141853498927379">"找不到可处理此操作的应用"</string>
     <string name="revoke" msgid="5404479185228271586">"撤销"</string>
 
-    <!-- Button to reboot the phone, within the Reboot Options dialog -->
-    <string name="reboot_reboot">重启</string>
-    <!-- Button to reboot the phone into recovery, within the Reboot Options dialog -->
-    <string name="reboot_recovery">恢复模式</string>
-    <!-- Button to reboot the phone into bootloader, within the Reboot Options dialog -->
-    <string name="reboot_bootloader">引导程序</string>
-    <!-- Button to reboot the phone into bootmenu, within the Reboot Options dialog -->
-    <string name="reboot_bootmenu">启动菜单</string>
-    <!-- Button to reboot the phone into fastboot, within the Reboot Options dialog -->
-    <string name="reboot_fastboot">线刷模式</string>
-    <!-- Button to reboot the phone into download, within the Reboot Options dialog -->
-    <string name="reboot_download">下载模式</string>
     <!-- Button to reboot the phone to system0, within the Reboot Options dialog -->
     <string name="reboot_system0">系统一</string>
     <!-- Button to reboot the phone to system1, within the Reboot Options dialog -->
     <string name="reboot_system1">系统二</string>
     <!-- Button to hot boot the phone, within the Reboot Options dialog -->
     <string name="hot_reboot">快速重启</string>
-
-    <!-- Reboot Progress Dialog. This is shown if the user chooses to reboot the phone. -->
-    <string name="reboot_progress">正在重启\u2026</string>
-    <!-- Reboot Confirmation Dialog.  When the user chooses to reboot the phone, there will be a confirmation dialog.  This is the message. -->
-    <string name="reboot_confirm">你的设备将重启.</string>
-
-    <!-- Button to reboot the phone, within the Phone Options dialog -->
-    <string name="reboot_system" product="tablet">重启平板</string>
-    <string name="reboot_system" product="default">重启手机</string>
-
-    <!-- label for item that screenshots in phone options dialog -->
-    <string name="global_action_screenshot">屏幕截图</string>
-
-    <!-- label for item that opens the profile choosing dialog -->
-    <string name="global_action_choose_profile">情景模式</string>
-
-    <!-- label for item that reboots the phone in phone options dialog -->
-    <string name="global_action_reboot">重启</string>
-
-    <!-- label for item that toggles expand desktop mode -->
-    <string name="global_actions_toggle_expanded_desktop_mode">扩展桌面</string>
-    <!-- status message in phone options dialog for when expand desktop mode is on -->
-    <string name="global_actions_expanded_desktop_mode_on_status">开启</string>
-    <!-- status message in phone options dialog for when expand desktop mode is off -->
-    <string name="global_actions_expanded_desktop_mode_off_status">关闭</string>
-
-    <!-- Reboot Confirmation Dialog.  When the user chooses to reboot the phone, there will
-         be a confirmation dialog.  This is the message. -->
-    <string name="shutdown_confirm_reboot" product="tablet">你的平板将要重启.</string>
-    <!-- Reboot Confirmation Dialog.  When the user chooses to reboot the phone, there will
-         be a confirmation dialog.  This is the message. -->
-    <string name="shutdown_confirm_reboot" product="default">你的手机将要重启.</string>
 
 </resources>

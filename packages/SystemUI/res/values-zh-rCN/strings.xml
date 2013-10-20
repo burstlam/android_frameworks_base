@@ -206,27 +206,6 @@
     <string name="quick_settings_brightness_dialog_auto_brightness_label" msgid="5064982743784071218">"自动"</string>
     <string name="status_bar_help_title" msgid="1199237744086469217">"通知会显示在这里"</string>
     <string name="status_bar_help_text" msgid="7874607155052076323">"向下滑动可随时查看通知。"\n"再次向下滑动可使用系统控制功能。"</string>
-    <string name="quick_settings_usb_tether_connected_label">USB共享关闭</string>
-    <string name="quick_settings_usb_tether_on_label">USB共享开启</string>
-    <string name="quick_settings_usb_tether_off_label">未连接</string>
-    <string name="quick_settings_mobile_data_on">移动数据</string>
-    <string name="quick_settings_mobile_data_off">移动数据关闭</string>
-    <string name="quick_settings_power">电源</string>
-    <string name="quick_settings_ringer_on">声音</string>
-    <string name="quick_settings_ringer_off">无声</string>
-    <string name="quick_settings_vibration_on">震动</string>
-    <string name="quick_settings_vibration_off">震动关闭</string>
-    <string name="quick_settings_label_enabled">开启</string>
-    <string name="quick_settings_label_disabled">关闭</string>
-    <string name="quick_settings_reboot">重启系统</string>
-    <string name="quick_settings_reboot_recovery">重启到Recovery</string>
-    <string name="quick_settings_sync">同步</string>
-    <string name="quick_settings_sync_off">同步关闭</string>
-    <string name="quick_settings_torch">手电筒</string>
-    <string name="quick_settings_torch_off">手电筒关闭</string>
-    <string name="quick_settings_nfc">NFC</string>
-    <string name="quick_settings_nfc_off">NFC关闭</string>
-    <string name="quick_settings_fcharge">快速充电</string>
 
     <!-- App sidebar -->
     <string name="default_folder_text">文件夹</string>
@@ -235,30 +214,6 @@
     <string name="toast_items_saved">侧边栏项目已保存.</string>
     <string name="content_setup_instructions">长按右边的项目并拖拽到侧边栏以添加项目.\n\n将项目拖拽到任何已有的项目之上，可以建立文件夹.\n\n要删除，只需简单的将项目拖拽出侧边栏即可.</string>
     <string name="content_setup_dismiss">继续</string>
-    
-     <!--  General action Strings -->
-    <string name="widgets">小部件</string>
-    <string name="app_killed_message">已强制停止应用程序</string>
-
-    <!-- Label in drop down to identify brightness slider -->
-    <string name="brightness_label">亮度</string>
-
-    <!-- Recents Ram Bar -->
-    <string name="memory">运行内存</string>
-    <!-- [CHAR LIMIT=10] Running services, summary of background processes -->
-    <string name="service_free_mem"><xliff:g id="memory">%1$s</xliff:g> 可用</string>
-    <!-- [CHAR LIMIT=10] Running services, summary of foreground processes -->
-    <string name="service_used_mem"><xliff:g id="memory">%1$s</xliff:g> 已用</string>
-    
-    <!-- Notification drawer toasts -->
-    <string name="calendar_error_alert">未安装任何日历应用.</string>
-    <string name="clock_error_alert">未安装任何桌面时钟应用.</string>
-    <string name="qs_shortcut_error">请先选择快捷方式目标再更改它的图标!</string>
-    
-     <!-- Phone status in pie controls -->
-    <string name="pie_phone_status_no_service">无服务</string>
-    <string name="pie_phone_status_airplane_mode">已进入飞行模式</string>
-    <string name="pie_phone_status_emergency_only">仅可拨打紧急电话</string>
 
     <!-- HALO -->
     <string name="accessibility_halo">打开HALO</string>
