@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.os.Handler;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -45,6 +46,7 @@ import com.android.internal.R;
 public class CarrierLabel extends TextView {
     private boolean mAttached;
     protected int mCarrierColor = com.android.internal.R.color.holo_blue_light;
+    String mLastCarrier;
     Handler mHandler;
 
     class SettingsObserver extends ContentObserver {
@@ -56,11 +58,15 @@ public class CarrierLabel extends TextView {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System
                     .getUriFor(Settings.System.STATUS_BAR_CARRIER_COLOR), false, this);
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.CUSTOM_CARRIER_LABEL), false, this);
         }
 
         @Override
         public void onChange(boolean selfChange) {
             updateColor();
+            updateNetworkName(true, Settings.System.getStringForUser(getContext().getContentResolver(),
+                    Settings.System.CUSTOM_CARRIER_LABEL, UserHandle.USER_CURRENT), false, null);
         }
     }
 
@@ -126,7 +132,7 @@ public class CarrierLabel extends TextView {
         final boolean plmnValid = showPlmn && !TextUtils.isEmpty(plmn);
         final boolean spnValid = showSpn && !TextUtils.isEmpty(spn);
         if (plmnValid && spnValid) {
-            str = plmn + "|" + spn;
+            str = spn;
         } else if (plmnValid) {
             str = plmn;
         } else if (spnValid) {
@@ -134,10 +140,12 @@ public class CarrierLabel extends TextView {
         } else {
             str = "";
         }
-        String customLabel = Settings.System.getString(getContext().getContentResolver(),
-                Settings.System.CUSTOM_CARRIER_LABEL);
+        String customLabel = Settings.System.getStringForUser(getContext().getContentResolver(),
+                Settings.System.CUSTOM_CARRIER_LABEL, UserHandle.USER_CURRENT);
         if(!TextUtils.isEmpty(customLabel))
             setText(customLabel);
+        else if (TextUtils.isEmpty(str.trim()))
+            setText(mLastCarrier);
         else
             setText(str);
     }
