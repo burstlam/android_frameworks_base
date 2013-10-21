@@ -20,6 +20,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewParent;
@@ -91,11 +92,14 @@ public class DateView extends TextView {
     }
 
     protected void updateClock() {
+        /*
         final String dateFormat = getContext().getString(R.string.system_ui_date_pattern);
         final Locale l = Locale.getDefault();
         String fmt = ICU.getBestDateTimePattern(dateFormat, l.toString());
         SimpleDateFormat sdf = new SimpleDateFormat(fmt, l);
-        setText(sdf.format(new Date()));
+        setText(sdf.format(new Date()));*/
+        final String dateFormat = getContext().getString(R.string.abbrev_wday_month_day_no_year);
+        setText(DateFormat.format(dateFormat, new Date()));
     }
 
     private boolean isVisible() {
