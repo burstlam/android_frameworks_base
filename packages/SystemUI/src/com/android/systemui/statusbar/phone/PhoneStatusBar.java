@@ -1041,7 +1041,8 @@ public class PhoneStatusBar extends BaseStatusBar {
     }
 
     private int mShowSearchHoldoff = 0;
-    private Runnable mShowSearchPanel = new Runnable() {
+    private final Runnable mShowSearchPanel = new Runnable() {
+        @Override
         public void run() {
             showSearchPanel();
             awakenDreams();
@@ -1544,6 +1545,7 @@ public class PhoneStatusBar extends BaseStatusBar {
     }
 
     protected void updateCarrierAndWifiLabelVisibility(boolean force) {
+        if (!mShowCarrierInPanel || mCarrierAndWifiView == null) return;
         if (DEBUG) {
             Slog.d(TAG, String.format("pileh=%d scrollh=%d carrierh=%d",
                     mPile.getHeight(), mScrollView.getHeight(), mCarrierAndWifiViewHeight));
@@ -1555,12 +1557,12 @@ public class PhoneStatusBar extends BaseStatusBar {
             makeVisible =
                 !(emergencyCallsShownElsewhere && mMSimNetworkController.isEmergencyOnly())
                 && mPile.getHeight() < (mNotificationPanel.getHeight() - mCarrierAndWifiViewHeight
-                 - mNotificationHeaderHeight- calculateCarrierLabelBottomMargin()) && mScrollView.getVisibility() == View.VISIBLE;
+                 - mNotificationHeaderHeight) && mScrollView.getVisibility() == View.VISIBLE;
         } else {
             makeVisible =
                 !(emergencyCallsShownElsewhere && mNetworkController.isEmergencyOnly())
                 && mPile.getHeight() < (mNotificationPanel.getHeight() - mCarrierAndWifiViewHeight
-                  - mNotificationHeaderHeight - calculateCarrierLabelBottomMargin())&& mScrollView.getVisibility() == View.VISIBLE;
+                  - mNotificationHeaderHeight)&& mScrollView.getVisibility() == View.VISIBLE;
         }
 
         if (force || mCarrierAndWifiViewVisible != makeVisible) {
@@ -1574,8 +1576,6 @@ public class PhoneStatusBar extends BaseStatusBar {
             }
             mCarrierAndWifiView.animate()
                 .alpha(makeVisible ? 1f : 0f)
-                //.setStartDelay(makeVisible ? 500 : 0)
-                //.setDuration(makeVisible ? 750 : 100)
                 .setDuration(150)
                 .setListener(makeVisible ? null : new AnimatorListenerAdapter() {
                     @Override
@@ -2762,7 +2762,8 @@ public class PhoneStatusBar extends BaseStatusBar {
         }
     }
 
-    private View.OnClickListener mClearButtonListener = new View.OnClickListener() {
+    private final View.OnClickListener mClearButtonListener = new View.OnClickListener() {
+        @Override
         public void onClick(View v) {
             synchronized (mNotificationData) {
                 // animate-swipe all dismissable notifications, then animate the shade closed
@@ -2852,7 +2853,8 @@ public class PhoneStatusBar extends BaseStatusBar {
         animateCollapsePanels();
     }
 
-    private View.OnClickListener mSettingsButtonListener = new View.OnClickListener() {
+    private final View.OnClickListener mSettingsButtonListener = new View.OnClickListener() {
+        @Override
         public void onClick(View v) {
             if (mHasSettingsPanel) {
                 animateExpandSettingsPanel();
