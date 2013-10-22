@@ -4976,6 +4976,13 @@ public final class Settings {
         public static final String WEATHER_SHOW_LOCATION = "weather_show_location";
 
         /**
+         * whether to hide the all signal bars (GSM + WIFI)
+         *
+         * @hide
+         */
+        public static final String STATUSBAR_HIDE_ALL_SIGNAL_BARS = "statusbar_hide_all_signal_bars";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
