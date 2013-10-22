@@ -46,6 +46,7 @@ public class CarrierLabel extends TextView {
     private boolean mAttached;
     protected int mCarrierColor = com.android.internal.R.color.holo_blue_light;
     Handler mHandler;
+    String mLastCarrier;
 
     class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
@@ -55,12 +56,18 @@ public class CarrierLabel extends TextView {
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.STATUS_BAR_CARRIER), false, this);
+            resolver.registerContentObserver(Settings.System
                     .getUriFor(Settings.System.STATUS_BAR_CARRIER_COLOR), false, this);
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.CUSTOM_CARRIER_LABEL), false, this);
         }
 
         @Override
         public void onChange(boolean selfChange) {
-            updateColor();
+            updateSettings();
+            updateNetworkName(true, Settings.System.getString(getContext().getContentResolver(),
+                    Settings.System.CUSTOM_CARRIER_LABEL), false, null);
         }
     }
 
@@ -78,7 +85,6 @@ public class CarrierLabel extends TextView {
         mHandler = new Handler();
       	SettingsObserver settingsObserver = new SettingsObserver(mHandler);
       	settingsObserver.observe();
-        updateColor();
     }
 
     @Override
@@ -92,6 +98,7 @@ public class CarrierLabel extends TextView {
             filter.addAction("com.android.settings.LABEL_CHANGED");
             getContext().registerReceiver(mIntentReceiver, filter, null, getHandler());
         }
+        updateSettings();
     }
 
     @Override
@@ -108,6 +115,7 @@ public class CarrierLabel extends TextView {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (TelephonyIntents.SPN_STRINGS_UPDATED_ACTION.equals(action) || "com.android.settings.LABEL_CHANGED".equals(action)) {
+                mLastCarrier = intent.getStringExtra(TelephonyIntents.EXTRA_SPN);
                 updateNetworkName(intent.getBooleanExtra(TelephonyIntents.EXTRA_SHOW_SPN, false),
                         intent.getStringExtra(TelephonyIntents.EXTRA_SPN),
                         intent.getBooleanExtra(TelephonyIntents.EXTRA_SHOW_PLMN, false),
@@ -138,18 +146,27 @@ public class CarrierLabel extends TextView {
                 Settings.System.CUSTOM_CARRIER_LABEL);
         if(!TextUtils.isEmpty(customLabel))
             setText(customLabel);
+        else if (TextUtils.isEmpty(str.trim()))
+            setText(mLastCarrier);
         else
             setText(str);
     }
 
-    private void updateColor() {
-        int newColor = 0;
-
-        mCarrierColor = Settings.System.getInt(mContext.getContentResolver(),
-                        Settings.System.STATUS_BAR_CARRIER_COLOR, newColor);
-        if  (mCarrierColor == Integer.MIN_VALUE) {
-             // flag to reset the color
-             mCarrierColor = newColor;
+    private void updateSettings() {
+        boolean showCarrier = (Settings.System.getInt(getContext().getContentResolver(),
+                Settings.System.STATUS_BAR_CARRIER, 1) == 1);
+        if (showCarrier) {
+            setVisibility(View.VISIBLE);
+        } else {
+            setVisibility(View.GONE);
+        }
+        // set the color
+        int defaultColor = getResources().getColor(
+                com.android.internal.R.color.holo_blue_light);
+        mCarrierColor = Settings.System.getInt(getContext().getContentResolver(),
+                Settings.System.STATUS_BAR_CARRIER_COLOR, -2);
+        if (mCarrierColor == Integer.MIN_VALUE || mCarrierColor == -2) {
+            mCarrierColor = defaultColor;
         }
         setTextColor(mCarrierColor);
     }
