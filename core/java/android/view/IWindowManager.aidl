@@ -294,4 +294,9 @@ interface IWindowManager
     void notifyActivityTouched(IBinder token, boolean force);
 
     /** SPLIT VIEW END **/
+
+    /**
+     * PA HYBRID ENGINE
+     */
+    void updateDisplayMetrics();
 }

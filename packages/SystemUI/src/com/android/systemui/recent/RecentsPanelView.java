@@ -48,6 +48,8 @@ import android.provider.Settings;
 import android.text.format.Formatter;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.DisplayMetrics;
+import android.util.ExtendedPropertiesUtils;
 import android.view.IWindowManager;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -121,6 +123,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     boolean ramBarEnabled;
     boolean mRecentsKillAllEnabled;
     boolean mRecentsGoogEnabled;
+    private int mAndroidDpi = DisplayMetrics.DENSITY_DEVICE;
 
     private static int mRecentClear;
     private static final int CLEAR_DISABLE = 0;
@@ -557,8 +560,11 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
 
     public void updateValuesFromResources() {
         final Resources res = mContext.getResources();
-        mThumbnailWidth = Math.round(res.getDimension(R.dimen.status_bar_recents_thumbnail_width));
-        mThumbnailHeight = Math.round(res.getDimension(R.dimen.status_bar_recents_thumbnail_height));
+        mAndroidDpi = ExtendedPropertiesUtils.getActualProperty("com.android.systemui.dpi");
+        mThumbnailWidth = Math.round((float)res.getDimension(R.dimen.status_bar_recents_thumbnail_width) * 
+                DisplayMetrics.DENSITY_DEVICE / mAndroidDpi);
+        mThumbnailHeight = Math.round((float)res.getDimension(R.dimen.status_bar_recents_thumbnail_height) * 
+                DisplayMetrics.DENSITY_DEVICE / mAndroidDpi);
         mFitThumbnailToXY = res.getBoolean(R.bool.config_recents_thumbnail_image_fits_to_xy);
     }
 
@@ -702,6 +708,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             // Should remove the default image in the frame
             // that this now covers, to improve scrolling speed.
             // That can't be done until the anim is complete though.
+            thumbnail.setDensity(mAndroidDpi);
             h.thumbnailViewImage.setImageBitmap(thumbnail);
 
             // scale the image to fill the full width of the ImageView. do this only if
