@@ -474,6 +474,19 @@ public final class Settings {
 
     /**
      * @hide
+     * Activity Action: Show the "app ops" details screen.
+     * <p>
+     * Input: The Intent's data URI specifies the application package name
+     * to be shown, with the "package" scheme.  That is "package:com.my.app".
+     * <p>
+     * Output: Nothing.
+     */
+    @SdkConstant(SdkConstantType.ACTIVITY_INTENT_ACTION)
+    public static final String ACTION_APP_OPS_DETAILS_SETTINGS =
+            "android.settings.APP_OPS_DETAILS_SETTINGS";
+
+    /**
+     * @hide
      * Activity Action: Show the "app ops" settings screen.
      * <p>
      * Input: Nothing.
@@ -963,6 +976,7 @@ public final class Settings {
             MOVED_TO_SECURE.add(Secure.LOCK_DOTS_VISIBLE);
             MOVED_TO_SECURE.add(Secure.LOCK_PATTERN_TACTILE_FEEDBACK_ENABLED);
             MOVED_TO_SECURE.add(Secure.LOCK_BEFORE_UNLOCK);
+            MOVED_TO_SECURE.add(Secure.LOCK_NUMPAD_RANDOM);
             MOVED_TO_SECURE.add(Secure.LOCKSCREEN_UNSECURE_USED);
             MOVED_TO_SECURE.add(Secure.LOGGING_ID);
             MOVED_TO_SECURE.add(Secure.PARENTAL_CONTROL_ENABLED);
@@ -2756,6 +2770,12 @@ public final class Settings {
         public static final String GESTURE_ANYWHERE_SHOW_TRIGGER = "gesture_anywhere_show_trigger";
 
         /**
+         * Whether lid wakes the device
+         * @hide
+         */
+        public static final String LOCKSCREEN_LID_WAKE = "lockscreen_lid_wake";
+
+        /**
          * @deprecated Use {@link android.provider.Settings.Global#LOW_BATTERY_SOUND}
          * instead
          * @hide
@@ -3676,6 +3696,13 @@ public final class Settings {
          * @hide
          */
         public static final String RECENTS_RAM_BAR_ACTIVE_APPS_COLOR = "recents_ram_bar_active_apps_color";
+
+	/**
+         *
+         * Whether to show Recents clear all button on right side of screen
+         * @hide
+         */
+        public static final String RECENTS_CLEAR_ALL_ON_RIGHT = "recents_clear_all_on_right";
 
         /**
          * Override and forcefully disable the fullscreen keyboard
@@ -5847,6 +5874,16 @@ public final class Settings {
             "lock_before_unlock";
 
         /**
+         * Whether the NumKeyPad will change the orders of numbers
+         * in a PIN locked lockscreen
+         * 0 = off | 1 = always | 2 = only on request
+         * @hide
+          */
+
+        public static final String LOCK_NUMPAD_RANDOM =
+            "lock_numpad_random";
+
+        /**
          * Stores used unsecure lockscreen for normal mode and unlock before unlock
          * @hide
          */
@@ -6698,6 +6735,12 @@ public final class Settings {
          public static final String PRIVACY_GUARD_DEFAULT = "privacy_guard_default";
 
         /**
+         * Whether privacy guard notification should show.
+         * @hide
+         */
+         public static final String PRIVACY_GUARD_NOTIFICATION = "privacy_guard_notification";
+
+        /**
          * Name of a package that the current user has explicitly allowed to see all of that
          * user's notifications.
          *
@@ -6760,7 +6803,8 @@ public final class Settings {
             LOCK_SCREEN_OWNER_INFO_ENABLED,
             ADVANCED_REBOOT,
             DIALPAD_AUTOCOMPLETE,
-            PRIVACY_GUARD_DEFAULT
+            PRIVACY_GUARD_DEFAULT,
+            PRIVACY_GUARD_NOTIFICATION
         };
 
         /**
