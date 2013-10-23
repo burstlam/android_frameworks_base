@@ -55,18 +55,12 @@ public class CarrierLabel extends TextView {
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System
-                    .getUriFor(Settings.System.STATUS_BAR_CARRIER), false, this);
-            resolver.registerContentObserver(Settings.System
                     .getUriFor(Settings.System.STATUS_BAR_CARRIER_COLOR), false, this);
-            resolver.registerContentObserver(Settings.System
-                    .getUriFor(Settings.System.CUSTOM_CARRIER_LABEL), false, this);
         }
 
         @Override
         public void onChange(boolean selfChange) {
-            updateSettings();
-            updateNetworkName(true, Settings.System.getString(getContext().getContentResolver(),
-                  Settings.System.CUSTOM_CARRIER_LABEL), false, null);
+            updateColor();
         }
     }
 
@@ -84,6 +78,7 @@ public class CarrierLabel extends TextView {
         mHandler = new Handler();
       	SettingsObserver settingsObserver = new SettingsObserver(mHandler);
       	settingsObserver.observe();
+        updateColor();
     }
 
     @Override
@@ -97,7 +92,6 @@ public class CarrierLabel extends TextView {
             filter.addAction("com.android.settings.LABEL_CHANGED");
             getContext().registerReceiver(mIntentReceiver, filter, null, getHandler());
         }
-        updateSettings();
     }
 
     @Override
@@ -118,7 +112,7 @@ public class CarrierLabel extends TextView {
                         intent.getStringExtra(TelephonyIntents.EXTRA_SPN),
                         intent.getBooleanExtra(TelephonyIntents.EXTRA_SHOW_PLMN, false),
                         intent.getStringExtra(TelephonyIntents.EXTRA_PLMN));
-            }
+            } 
         }
     };
 
@@ -148,14 +142,7 @@ public class CarrierLabel extends TextView {
             setText(str);
     }
 
-    private void updateSettings() {
-        boolean showCarrier = (Settings.System.getInt(getContext().getContentResolver(),
-                Settings.System.STATUS_BAR_CARRIER, 0) == 1);
-        if (showCarrier) {
-            setVisibility(View.VISIBLE);
-        } else {
-            setVisibility(View.GONE);
-        }
+    private void updateColor() {
         int newColor = 0;
 
         mCarrierColor = Settings.System.getInt(mContext.getContentResolver(),
