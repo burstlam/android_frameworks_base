@@ -95,6 +95,7 @@ import com.android.systemui.statusbar.policy.LocationController;
 import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.NotificationRowLayout;
 import com.android.systemui.statusbar.policy.MSimNetworkController;
+import com.android.systemui.statusbar.policy.SbBatteryController;
 import com.android.systemui.statusbar.policy.Prefs;
 
 import java.io.FileDescriptor;
@@ -579,21 +580,35 @@ public class TabletStatusBar extends BaseStatusBar implements
         mBluetoothController.addIconView((ImageView)sb.findViewById(R.id.bluetooth));
 
         mBatteryController = new BatteryController(mContext);
+        mSbBatteryController = (SbBatteryController)sb.findViewById(R.id.battery_cluster);
+        mBluetoothController = new BluetoothController(mContext);
+        mBluetoothController.addIconView((ImageView)sb.findViewById(R.id.bluetooth));
+
 
         if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
-            final MSimSignalClusterView mSimSignalCluster =
-                    (MSimSignalClusterView)sb.findViewById(R.id.msim_signal_cluster);
-
             mMSimNetworkController = new MSimNetworkController(mContext);
-            for(int i=0; i < MSimTelephonyManager.getDefault().getPhoneCount(); i++) {
+
+            mSimSignalCluster = (MSimSignalClusterView)mStatusBarView.findViewById(R.id.msim_signal_cluster);
+            for (int i=0; i < MSimTelephonyManager.getDefault().getPhoneCount(); i++) {
                 mMSimNetworkController.addSignalCluster(mSimSignalCluster, i);
             }
-        } else {
-            final SignalClusterView signalCluster =
-                    (SignalClusterView)sb.findViewById(R.id.signal_cluster);
+            mSimSignalCluster.setNetworkController(mMSimNetworkController);
 
+            mSimSignalCluster = (MSimSignalClusterView)mStatusBarView.findViewById(R.id.msim_signal_cluster_alt);
+            for (int i=0; i < MSimTelephonyManager.getDefault().getPhoneCount(); i++) {
+                mMSimNetworkController.addSignalCluster(mSimSignalCluster, i);
+            }
+            mSimSignalCluster.setNetworkController(mMSimNetworkController);
+        } else {
             mNetworkController = new NetworkController(mContext);
-            mNetworkController.addSignalCluster(signalCluster);
+
+            mSignalCluster = (SignalClusterView)mStatusBarView.findViewById(R.id.signal_cluster);
+            mNetworkController.addSignalCluster(mSignalCluster);
+            mSignalCluster.setNetworkController(mNetworkController);
+
+            mSignalCluster = (SignalClusterView)mStatusBarView.findViewById(R.id.signal_cluster_alt);
+            mNetworkController.addSignalCluster(mSignalCluster);
+            mSignalCluster.setNetworkController(mNetworkController);
         }
 
         mNavigationArea = (ViewGroup) sb.findViewById(R.id.navigationArea);

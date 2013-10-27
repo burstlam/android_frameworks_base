@@ -30,7 +30,10 @@ import com.android.systemui.recent.RecentTasksLoader;
 import com.android.systemui.recent.RecentsActivity;
 import com.android.systemui.recent.TaskDescription;
 import com.android.systemui.statusbar.AppSidebar;
+import com.android.systemui.statusbar.SignalClusterView;
+import com.android.systemui.statusbar.policy.BatteryController;
 import com.android.systemui.statusbar.policy.NotificationRowLayout;
+import com.android.systemui.statusbar.policy.SbBatteryController;
 import com.android.systemui.statusbar.policy.activedisplay.ActiveDisplayView;
 import com.android.systemui.statusbar.tablet.StatusBarPanel;
 import com.android.systemui.statusbar.WidgetView;
@@ -142,6 +145,11 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     protected int mLayoutDirection;
     private Locale mLocale;
+
+    public BatteryController mBatteryController;
+    public SbBatteryController mSbBatteryController;
+    public SignalClusterView mSignalCluster;
+    public MSimSignalClusterView mSimSignalCluster;
 
     // UI-specific methods
 

@@ -103,8 +103,8 @@ public class SignalClusterView
         mMobileActivity = (ImageView) findViewById(R.id.mobile_inout);
         mMobileType     = (ImageView) findViewById(R.id.mobile_type);
         mNoSimSlot      = (ImageView) findViewById(R.id.no_sim);
-        mMobileText    = (TextView)  findViewById(R.id.signal_text);
-        mWiFiText    = (TextView)  findViewById(R.id.wifi_signal_text);
+        mMobileText     = (TextView)  findViewById(R.id.signal_text);
+        mWiFiText       = (TextView)  findViewById(R.id.wifi_signal_text);
         mSpacer         =             findViewById(R.id.spacer);
         mAirplane       = (ImageView) findViewById(R.id.airplane);
 
@@ -244,7 +244,7 @@ public class SignalClusterView
             mMobileGroup.setContentDescription(mMobileTypeDescription + " " + mMobileDescription);
             mMobileGroup.setVisibility(View.VISIBLE);
             mNoSimSlot.setImageResource(mNoSimIconId);
-            if (showingSignalText && !mIsAirplaneMode) {
+            if (showingSignalText && !mIsAirplaneMode && !showingAltCluster) {
                 mMobile.setVisibility(View.GONE);
                 mMobileText.setVisibility(View.VISIBLE);
             } else{
