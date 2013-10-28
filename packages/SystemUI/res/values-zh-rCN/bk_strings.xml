@@ -29,4 +29,28 @@
 
     <!--ScreenShot Trash-->
     <string name="trash">放弃</string>
+
+    <!-- HALO -->
+    <string name="accessibility_halo">打开HALO</string>
+    <string name="halo_dismiss">取消通知</string>
+    <string name="halo_hide">隐藏HALO</string>
+    <string name="halo_clear_all">清空通知</string>
+    <string name="halo_silence">隐藏并静音直到唤醒</string>
+    <string name="halo_tutorial1">这是HALO</string>
+    <string name="halo_tutorial2">移动方法：双击并拖拽</string>
+    <string name="halo_tutorial3">浏览任务：横向拖动</string>
+    <string name="halo_battery_plugged">充电</string>
+    <string name="halo_battery_unplugged">剩馀</string>
+    <string name="halo_battery_full">充满</string>
+    <string name="halo_aeroplane1">飞行</string>
+    <string name="halo_aeroplane2">模式</string>
+    <string name="halo_wifi_on">WI-FI 打开</string>
+    <string name="halo_wifi_off">WI-FI 关闭</string>
+    <string name="halo_signal_bars_4">满</string>
+    <string name="halo_signal_bars_3">三格</string>
+    <string name="halo_signal_bars_2">两格</string>
+    <string name="halo_signal_bars_1">一格</string>
+    <string name="halo_signal_bars_none">无</string>
+
+    <string name="pie_date_format">yyyy MMM dd日, ccc</string>
 </resources>

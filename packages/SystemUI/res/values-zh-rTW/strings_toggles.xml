@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2013 AOKP
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="toggle_USER">當前用戶</string>
+    <string name="toggle_BRIGHTNESS">亮度</string>
+    <string name="toggle_SETTINGS">設置</string>
+    <string name="toggle_WIFI">WiFi</string>
+    <string name="toggle_SIGNAL">信號</string>
+    <string name="toggle_ROTATE">自動旋轉</string>
+    <string name="toggle_CLOCK">時鐘</string>
+    <string name="toggle_GPS">GPS 定位</string>
+    <string name="toggle_IME">輸入法選擇器</string>
+    <string name="toggle_BATTERY">手機電量</string>
+    <string name="toggle_AIRPLANE_MODE">飛行模式</string>
+    <string name="toggle_BLUETOOTH">藍牙</string>
+    <string name="toggle_SWAGGER">屌爆</string>
+    <string name="toggle_VIBRATE">振動</string>
+    <string name="toggle_SILENT">靜音</string>
+    <string name="toggle_FCHARGE">快速充電</string>
+    <string name="toggle_SYNC">自動同步</string>
+    <string name="toggle_NFC">NFC 近場通訊</string>
+    <string name="toggle_TORCH">LED 燈光</string>
+    <string name="toggle_WIFITETHER">WiFi 熱點</string>
+    <string name="toggle_USBTETHER">USB 網絡共享</string>
+    <string name="toggle_2G">僅使用 2G 網絡</string>
+    <string name="toggle_LTE">僅使用 LTE 網絡</string>
+    <string name="toggle_FAVCONTACT">收藏的聯系人</string>
+    <string name="toggle_SOUNDSTATE">聲音狀態切換</string>
+    <string name="toggle_NAVBARHIDE">導航欄自動隱藏</string>
+    <string name="toggle_QUICKRECORD">快捷錄音</string>
+    <string name="toggle_QUIETHOURS">靜音時段</string>
+    <string name="toggle_SLEEP">休眠</string>
+    <string name="toggle_STATUSBAR">狀態欄</string>
+    <string name="toggle_SCREENSHOT">屏幕截圖</string>
+    <string name="toggle_REBOOT">重新啟動</string>
+    <string name="toggle_CUSTOM">自定義開關</string>
+    <string name="toggle_STAYAWAKE">保持喚醒</string>
+    <string name="toggle_WIRELESSADB">無線 ADB</string>
+</resources>

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/* //device/apps/common/assets/res/any/strings.xml
+**
+** Copyright 2006, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- App sidebar -->
+    <string name="default_folder_text">文件夾</string>
+    <string name="title_activity_sidebar_configuration">側邊欄內容設置</string>
+    <string name="action_save">保存</string>
+    <string name="toast_items_saved">側邊欄項目已保存.</string>
+    <string name="content_setup_instructions">長按右邊的項目并拖拽到側邊欄以添加項目.\n\n將項目拖拽到任何已有的項目之上，可以建立文件夾.\n\n要刪除，只需簡單的將項目拖拽出側邊欄即可.</string>
+    <string name="content_setup_dismiss">繼續</string>
+
+    <!--ScreenShot Trash-->
+    <string name="trash">放棄</string>
+
+    <!--  AOKP 文本 -->
+
+    <!--  App window Strings -->
+    <string name="close">關閉</string>
+    <string name="app_window">應用程序</string>
+    <string name="toggles">快捷開關</string>
+    <string name="ribbon">操作區</string>
+
+    <!-- Target/Action Strings -->
+    <string name="shortcut_label">AOKP動作</string>
+    <string name="action_home">主屏幕</string>
+    <string name="action_back">返回</string>
+    <string name="action_recents">近期任務</string>
+    <string name="action_screenshot">屏幕截圖</string>
+    <string name="action_menu">菜單</string>
+    <string name="action_ime">輸入法選擇</string>
+    <string name="action_kill">結束進程</string>
+    <string name="action_power">電源</string>
+    <string name="action_search">搜索</string>
+    <string name="action_notifications">通知</string>
+    <string name="action_lastapp">上次運行程序</string>
+    <string name="action_none">空</string>
+
+    <string name="widgets">小部件</string>
+    <string name="toggle_quiethours">靜音時段 - 開關</string>
+    <string name="toggle_navbar">導航欄 - 開關</string>
+    <string name="toggle_statusbar">狀態欄 - 開關</string>
+    <string name="toggle_widgets">小部件 - 開關</string>
+    <string name="toggle_ring_vib">鈴聲/振動 - 開關</string>
+    <string name="toggle_ring_silent">鈴聲/靜音 - 開關</string>
+    <string name="toggle_ring_vib_silent">鈴聲/振動/靜音 - 開關</string>
+    <string name="app_killed_message">應用程序已結束</string>
+    <string name="recents_kill_all_button_text">全部結束</string>
+    <string name="screenshot_toast">在%1$d秒后截圖</string>
+
+    <!--  Quick Settings -->
+    <string name="quick_settings_vibrate_on_label">振動已打開</string>
+    <string name="quick_settings_vibrate_off_label">振動已關閉</string>
+    <string name="quick_settings_silent_on_label">靜音已打開</string>
+    <string name="quick_settings_silent_off_label">靜音已關閉</string>
+    <string name="quick_settings_fcharge_on_label">快速充電已打開</string>
+    <string name="quick_settings_fcharge_off_label">快速充電已關閉</string>
+    <string name="quick_settings_torch_on_label">燈光已打開</string>
+    <string name="quick_settings_torch_off_label">燈光已關閉</string>
+    <string name="quick_settings_nfc_on_label">NFC已打開</string>
+    <string name="quick_settings_nfc_off_label">NFC已關閉</string>
+    <string name="quick_settings_wifi_tether_on_label">Wifi共享網絡已打開</string>
+    <string name="quick_settings_wifi_tether_off_label">Wifi共享網絡已關閉</string>
+    <string name="quick_settings_bt_tether_on_label">藍牙共享網絡已打開</string>
+    <string name="quick_settings_bt_tether_off_label">藍牙共享網絡已關閉</string>
+    <string name="quick_settings_usb_tether_on_label">USB共享網絡已打開</string>
+    <string name="quick_settings_usb_tether_off_label">USB共享網絡已關閉</string>
+    <string name="quick_settings_sync_on_label">數據同步已打開</string>
+    <string name="quick_settings_sync_off_label">數據同步已關閉</string>
+    <string name="quick_settings_twog_on_label">僅使用2G網絡已打開</string>
+    <string name="quick_settings_twog_off_label">僅使用2G網絡已關閉</string>
+    <string name="quick_settings_lte_on_label">LTE網絡已打開</string>
+    <string name="quick_settings_lte_off_label">LTE網絡已關閉</string>
+    <string name="quick_settings_gps_on_label">GPS已打開</string>
+    <string name="quick_settings_gps_off_label">GPS已關閉</string>
+    <string name="quick_settings_data_on_label">數據網絡已打開</string>
+    <string name="quick_settings_data_off_label">數據網絡已關閉</string>
+    <string name="quick_settings_navbar_hide_on_label">隱藏導航欄已打開</string>
+    <string name="quick_settings_navbar_hide_off_label">隱藏導航欄已關閉</string>
+    <string name="quick_settings_quiet_hours_on_label">靜音時段已打開</string>
+    <string name="quick_settings_quiet_hours_off_label">靜音時段已關閉</string>
+    <string name="quick_settings_sound_on">聲音已打開</string>
+    <string name="quick_settings_statusbar_on_label">狀態欄已打開</string>
+    <string name="quick_settings_statusbar_off_label">狀態欄已關閉</string>
+    <string name="quick_settings_swaggersuntoast">星期天真是屌爆了！</string>
+    <string name="quick_settings_screenshot">屏幕截圖</string>
+
+    <!--  RamBar -->
+    <string name="memory">RAM</string>
+    <string name="service_background_processes"><xliff:g id="memory">%1$s</xliff:g> 空閑</string>
+    <string name="service_foreground_processes"><xliff:g id="memory">%1$s</xliff:g> 使用</string>
+    <string name="service_process_name"><xliff:g id="process">%1$s</xliff:g></string>
+    <string name="service_client_name"><xliff:g id="client_name">%1$s</xliff:g></string>
+    <string name="service_started_by_app">已運行應用程序</string>
+    <string name="running_processes_item_description_s_s"><xliff:g id="numprocess">%1$d</xliff:g> 進程和 <xliff:g id="numservices">%2$d</xliff:g> 服務</string>
+    <string name="running_processes_item_description_s_p"><xliff:g id="numprocess">%1$d</xliff:g> 進程和 <xliff:g id="numservices">%2$d</xliff:g> 服務</string>
+    <string name="running_processes_item_description_p_s"><xliff:g id="numprocess">%1$d</xliff:g> 進程和 <xliff:g id="numservices">%2$d</xliff:g> 服務</string>
+    <string name="running_processes_item_description_p_p"><xliff:g id="numprocess">%1$d</xliff:g> 進程和 <xliff:g id="numservices">%2$d</xliff:g> 服務</string>
+    <string name="running_process_item_user_label">用戶： <xliff:g id="user_name">%1$s</xliff:g></string>
+
+   <!-- HALO -->
+    <string name="accessibility_halo">打開HALO</string>
+    <string name="halo_dismiss">取消通知</string>
+    <string name="halo_hide">隱藏HALO</string>
+    <string name="halo_clear_all">清空通知</string>
+    <string name="halo_silence">隱藏并靜音直到喚醒</string>
+    <string name="halo_tutorial1">這是HALO</string>
+    <string name="halo_tutorial2">移動方法：雙擊并拖拽</string>
+    <string name="halo_tutorial3">瀏覽任務：橫向拖動</string>
+    <string name="halo_battery_plugged">充電</string>
+    <string name="halo_battery_unplugged">剩余</string>
+    <string name="halo_battery_full">充滿</string>
+    <string name="halo_aeroplane1">飛行</string>
+    <string name="halo_aeroplane2">模式</string>
+    <string name="halo_wifi_on">WI-FI 打開</string>
+    <string name="halo_wifi_off">WI-FI 關閉</string>
+    <string name="halo_signal_bars_4">滿</string>
+    <string name="halo_signal_bars_3">三格</string>
+    <string name="halo_signal_bars_2">兩格</string>
+    <string name="halo_signal_bars_1">一格</string>
+    <string name="halo_signal_bars_none">無</string>
+
+
+    <string name="pie_date_format">yyyy MMM dd日, ccc</string>
+</resources>

@@ -1550,7 +1550,6 @@
     <string name="animation_grow_shrink_left">缩放（左侧）</string>
     <string name="animation_grow_shrink_right">缩放（右侧）</string>
 
-
     <!-- Awesome Action Stuff-->
     <string name="action_home">主屏幕</string>
     <string name="action_back">返回</string>
@@ -1584,5 +1583,49 @@
 
     <string name="permlab_interceptSmsSent">拦截外发短信</string>
     <string name="permdesc_interceptSmsSent">允许应用程序拦截外发的短信。恶意程序可能会利用它阻止发出短信。</string>
+
+    <!-- Names of default profiles. -->
+    <string name="profileNameDefault">默认</string>
+    <string name="profileNameWork">工作</string>
+    <string name="profileNameHome">家中</string>
+    <string name="profileNameSilent">静音</string>
+    <string name="profileNameNight">夜间</string>
+    <!-- Names of application groups. -->
+    <string name="profileGroupPhone">电话</string>
+    <string name="profileGroupCalendar">日历</string>
+    <string name="profileGroupGmail">Gmail</string>
+    <string name="profileGroupEmail">电邮</string>
+    <string name="profileGroupSMS">短信</string>
+
+    <!-- The title of the profile picker dialog. -->
+    <string name="profile_picker_title">情景模式</string>
+    <!-- The item label for the no profile selection item. -->
+    <string name="profile_none">没有</string>
+
+    <string name="reboot">重启</string>
+    <string name="reboot_recovery">恢复模式</string>
+    <string name="reboot_bootloader">引导程序</string>
+    <string name="reboot_bootmenu">启动菜单</string>
+    <string name="reboot_fastboot">线刷模式</string>
+    <string name="reboot_download">下载模式</string>
+    <string name="hot_reboot">热重启</string>
+    <string name="reboot_progress">正在重启\u2026</string>
+    <string name="reboot_confirm">你的设备将重启.</string>
+    <string name="reboot_system" product="tablet">重启平板</string>
+    <string name="reboot_system" product="default">重启手机</string>
+    <string name="global_actions_toggle_navbar_hide">导航栏控制台</string>
+    <string name="global_action_screenshot">屏幕截图</string>
+    <string name="global_action_torch">手电筒</string>
+    <string name="global_action_choose_profile">情景模式</string>
+    <string name="global_action_reboot">重启</string>
+    <string name="global_actions_toggle_expanded_desktop_mode">全屏模式</string>
+    <string name="global_actions_expanded_desktop_mode_on_status">开启</string>
+    <string name="global_actions_expanded_desktop_mode_off_status">关闭</string>
+    <string name="shutdown_confirm_reboot" product="tablet">你的平板将要重启.</string>
+    <string name="shutdown_confirm_reboot" product="default">你的手机将要重启.</string>
+    <string name="shutdown_confirm_reboot_question">你是否确定要重新启动状置?</string>
+
+    <!-- Long-press back kill application -->
+    <string name="app_killed_message">应用程序已清除</string>
 
 </resources>

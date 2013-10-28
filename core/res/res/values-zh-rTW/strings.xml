@@ -1507,4 +1507,106 @@
     <string name="status_sanshi"  translatable="false">三十</string>
     <string name="status_format1"  translatable="false">yyyy年MM月dd日</string>
     <string name="status_format2"  translatable="false">1900年1月31日</string>
+
+    <string name="vibration_picker_title">選擇振動效果</string>
+    <string name="vibration_picker_del_title">刪除振動效果</string>
+    <string name="notify_turn_wifi_off_title">關閉 Wi-Fi</string>
+    <string name="notify_turn_wifi_ap_off_title">關閉 Wi-Fi 共享網絡</string>
+    <string name="toast_rotation_unlocked">屏幕方向自動旋轉</string>
+    <string name="toast_rotation_locked">屏幕方向已鎖定</string>
+
+    <!-- Animation Strings -->
+    <string name="animation_fade">淡入淡出</string>
+    <string name="animation_slide_right">右側滑動</string>
+    <string name="animation_slide_left">左側滑動</string>
+    <string name="animation_slide_right_no_fade">右側滑動（無淡入淡出）</string>
+    <string name="animation_slide_left_no_fade">左側滑動（無淡入淡出）</string>
+    <string name="animation_slide_up">底部滑動</string>
+    <string name="animation_slide_down">頂部滑動</string>
+    <string name="animation_default">默認</string>
+    <string name="animation_translucent">透明</string>
+    <string name="animation_grow_shrink">縮放（頂部）</string>
+    <string name="animation_grow_shrink_center">縮放（中間）</string>
+    <string name="animation_grow_shrink_bottom">縮放（底部）</string>
+    <string name="animation_grow_shrink_left">縮放（左側）</string>
+    <string name="animation_grow_shrink_right">縮放（右側）</string>
+
+    <!-- Awesome Action Stuff-->
+    <string name="action_home">主屏幕</string>
+    <string name="action_back">返回</string>
+    <string name="action_recents">近期任務</string>
+    <string name="action_recents_gb">近期任務（姜餅風格）</string>
+    <string name="action_search">搜索</string>
+    <string name="action_screenshot">屏幕截圖</string>
+    <string name="action_menu">菜單</string>
+    <string name="action_ime">輸入法選擇器</string>
+    <string name="action_kill">結束程序</string>
+    <string name="action_lastapp">上次運行程序</string>
+    <string name="action_power">電源</string>
+    <string name="action_notifications">通知欄</string>
+    <string name="action_assist">搜索（Google Now）</string>
+    <string name="action_clockoptions">時間和日期設置</string>
+    <string name="action_voiceassist">語音搜索</string>
+    <string name="action_torch">燈光</string>
+    <string name="action_silent">鈴聲/靜音</string>
+    <string name="action_vib">鈴聲/振動</string>
+    <string name="action_silent_vib">鈴聲/振動/靜音</string>
+    <string name="action_event">新建日程活動</string>
+    <string name="action_today">今天日程活動</string>
+    <string name="action_alarm">鬧鐘</string>
+    <string name="action_unlock">解鎖</string>
+    <string name="action_camera">相機</string>
+    <string name="action_null">空</string>
+    <string name="action_widgets">導航欄小工具</string>
+    <string name="action_app_window">應用窗口</string>
+    <string name="action_ribbon">AOKP操作區</string>
+    <string name="action_app">自定義程序/快捷方式</string>
+
+    <string name="permlab_interceptSmsSent">攔截外發短信</string>
+    <string name="permdesc_interceptSmsSent">允許應用程序攔截外發的短信。惡意程序可能會利用它阻止發出短信。</string>
+
+    <!-- Names of default profiles. -->
+    <string name="profileNameDefault">默認</string>
+    <string name="profileNameWork">工作</string>
+    <string name="profileNameHome">家中</string>
+    <string name="profileNameSilent">靜音</string>
+    <string name="profileNameNight">夜間</string>
+    <!-- Names of application groups. -->
+    <string name="profileGroupPhone">電話</string>
+    <string name="profileGroupCalendar">日曆</string>
+    <string name="profileGroupGmail">Gmail</string>
+    <string name="profileGroupEmail">電郵</string>
+    <string name="profileGroupSMS">短信</string>
+
+    <!-- The title of the profile picker dialog. -->
+    <string name="profile_picker_title">情景模式</string>
+    <!-- The item label for the no profile selection item. -->
+    <string name="profile_none">沒有</string>
+
+    <string name="reboot">重啟</string>
+    <string name="reboot_recovery">恢復模式</string>
+    <string name="reboot_bootloader">引導程序</string>
+    <string name="reboot_bootmenu">啟動菜單</string>
+    <string name="reboot_fastboot">線刷模式</string>
+    <string name="reboot_download">下載模式</string>
+    <string name="hot_reboot">熱重啟</string>
+    <string name="reboot_progress">正在重啟\u2026</string>
+    <string name="reboot_confirm">你的設備將重啟.</string>
+    <string name="reboot_system" product="tablet">重啟平板</string>
+    <string name="reboot_system" product="default">重啟手機</string>
+    <string name="global_actions_toggle_navbar_hide">導航欄控制台</string>
+    <string name="global_action_screenshot">屏幕截圖</string>
+    <string name="global_action_torch">手電筒</string>
+    <string name="global_action_choose_profile">情景模式</string>
+    <string name="global_action_reboot">重啟</string>
+    <string name="global_actions_toggle_expanded_desktop_mode">全屏模式</string>
+    <string name="global_actions_expanded_desktop_mode_on_status">開啟</string>
+    <string name="global_actions_expanded_desktop_mode_off_status">關閉</string>
+    <string name="shutdown_confirm_reboot" product="tablet">你的平板將要重啟.</string>
+    <string name="shutdown_confirm_reboot" product="default">你的手機將要重啟.</string>
+    <string name="shutdown_confirm_reboot_question">你是否確定要重新啟動狀置?</string>
+
+    <!-- Long-press back kill application -->
+    <string name="app_killed_message">應用程序已清除</string>
+
 </resources>
