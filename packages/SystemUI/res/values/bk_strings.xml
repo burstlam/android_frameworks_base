@@ -29,4 +29,7 @@
 
     <!--ScreenShot Trash-->
     <string name="trash">Trash</string>
+
+    <!--Awesomeactions-->
+    <string name="action_quicksettings">QuickSettings</string>
 </resources>
