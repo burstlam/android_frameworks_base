@@ -52,6 +52,7 @@ public class AwesomeConstants {
         ACTION_APP_WINDOW    { @Override public String value() { return "**app_window**";}},
         ACTION_NOTIFICATIONS { @Override public String value() { return "**notifications**";}},
         ACTION_QUICKSETTINGS { @Override public String value() { return "**quicksettings**";}},
+        ACTION_SCREENSHOT    { @Override public String value() { return "**screenshot**";}},
         ACTION_CLOCKOPTIONS  { @Override public String value() { return "**clockoptions**";}},
         ACTION_VOICEASSIST   { @Override public String value() { return "**voiceassist**";}},
         ACTION_LAST_APP      { @Override public String value() { return "**lastapp**";}},
@@ -148,9 +149,9 @@ public class AwesomeConstants {
             case ACTION_SEARCH:
                 value = res.getString(com.android.internal.R.string.action_search);
                 break;
-            /*case ACTION_SCREENSHOT:
+            case ACTION_SCREENSHOT:
                 value = res.getString(com.android.internal.R.string.action_screenshot);
-                break;*/
+                break;
             case ACTION_MENU:
                 value = res.getString(com.android.internal.R.string.action_menu);
                 break;
@@ -246,9 +247,9 @@ public class AwesomeConstants {
             case ACTION_SEARCH:
                 value = getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_search");
                 break;
-            /*case ACTION_SCREENSHOT:
+            case ACTION_SCREENSHOT:
                 value = getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_screenshot");
-                break;*/
+                break;
             case ACTION_MENU:
                 value = getSystemUIDrawable(context, "com.android.systemui:drawable/ic_sysbar_menu_big");
                 break;
