@@ -51,6 +51,7 @@
     <string name="action_notifications">通知</string>
     <string name="action_lastapp">上次運行程序</string>
     <string name="action_none">空</string>
+    <string name="action_quicksettings">快速設置</string>
 
     <string name="widgets">小部件</string>
     <string name="toggle_quiethours">靜音時段 - 開關</string>

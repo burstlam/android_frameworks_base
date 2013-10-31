@@ -1561,6 +1561,7 @@
     <string name="action_app_window">應用窗口</string>
     <string name="action_ribbon">AOKP操作區</string>
     <string name="action_app">自定義程序/快捷方式</string>
+    <string name="action_quicksettings">快速設置</string>
 
     <string name="permlab_interceptSmsSent">攔截外發短信</string>
     <string name="permdesc_interceptSmsSent">允許應用程序攔截外發的短信。惡意程序可能會利用它阻止發出短信。</string>

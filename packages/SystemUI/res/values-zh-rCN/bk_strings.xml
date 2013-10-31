@@ -53,4 +53,6 @@
     <string name="halo_signal_bars_none">无</string>
 
     <string name="pie_date_format">yyyy MMM dd日, ccc</string>
+
+    <string name="action_quicksettings">快速设置</string>
 </resources>
