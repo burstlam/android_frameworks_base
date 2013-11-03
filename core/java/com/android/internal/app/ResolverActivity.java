@@ -46,7 +46,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.RadioButton;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -75,8 +74,8 @@ public class ResolverActivity extends AlertActivity implements AdapterView.OnIte
     private boolean mAlwaysUseOption;
     private boolean mShowExtended;
     private GridView mGrid;
-    private Button mAlwaysButton;
-    private Button mOnceButton;
+    private RadioButton mAlwaysButton;
+    private RadioButton mOnceButton;
     private int mIconDpi;
     private int mIconSize;
     private int mMaxColumns;
@@ -269,9 +268,8 @@ public class ResolverActivity extends AlertActivity implements AdapterView.OnIte
         final int checkedPos = mGrid.getCheckedItemPosition();
         final boolean hasValidSelection = checkedPos != GridView.INVALID_POSITION;
         if (mAlwaysUseOption && (!hasValidSelection || mLastSelected != checkedPos)) {
-
            if (hasValidSelection) {
-            tartSelected(position, mAlwaysButton.isChecked());
+               startSelected(position, mAlwaysButton.isChecked());
             }
             mLastSelected = checkedPos;
         } else {
