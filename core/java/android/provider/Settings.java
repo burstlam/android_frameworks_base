@@ -4279,7 +4279,12 @@ public final class Settings {
          * @hide
          */
         public static final String POWER_UI_LOW_BATTERY_WARNING_POLICY = "power_ui_low_battery_warning_policy";
-        
+
+        /**
+         * Use alternative application resolver
+         */
+        public static final String ACTIVITY_RESOLVER_USE_ALT = "activity_resolver_use_alt";
+
         /**
          * Swap volume buttons when the screen is rotated by 90 or 180 degrees
          * @hide
