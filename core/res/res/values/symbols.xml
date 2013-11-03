@@ -1773,11 +1773,9 @@
   <java-symbol type="string" name="notify_turn_wifi_ap_off_title" />
 
   <java-symbol type="layout" name="resolver_grid" />
-  <java-symbol type="layout" name="resolver_grid_alt" />
   <java-symbol type="id" name="resolver_grid" />
   <java-symbol type="id" name="button_once" />
   <java-symbol type="id" name="button_always" />
-  <java-symbol type="id" name="checkbox_always" />
   <java-symbol type="integer" name="config_maxResolverActivityColumns" />
 
   <!-- From SystemUI -->
