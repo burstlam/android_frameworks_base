@@ -102,6 +102,7 @@
     <string name="quick_settings_swaggersuntoast">星期天真是屌爆了！</string>
     <string name="quick_settings_screenshot">屏幕截圖</string>
     <string name="quick_settings_powermenu">電源鍵</string>
+    <string name="quick_settings_profile_label">情景模式</string>
 
     <!--  RamBar -->
     <string name="memory">RAM</string>
