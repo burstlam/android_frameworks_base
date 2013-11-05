@@ -352,7 +352,6 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     protected void onPieConfigurationChanged(Configuration newConfig) {
         if (mPieControlPanel != null) mPieControlPanel.bumpConfiguration();
-        attachPie();
     }
 
     public QuickSettingsContainerView getQuickSettingsPanel() {
@@ -2260,7 +2259,7 @@ public abstract class BaseStatusBar extends SystemUI implements
         boolean expanded = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
         int slimpie = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.PIE_CONTROLS, 0);
+                Settings.System.SPIE_CONTROLS, 0);
 
         return (slimpie == 1 && expanded) || slimpie == 2;
     }
