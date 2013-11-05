@@ -98,7 +98,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     private ImageView mRecentsKillAllButtonBL;
     private ImageView mRecentsKillAllButtonTR;
     private ImageView mRecentsKillAllButtonTL;
-    private Button mGoogleNowButton;
+    private ImageView mGoogleNowButton;
     private LinearColorBar mRamUsageBar;
 
     private RecentTasksLoader mRecentTasksLoader;
@@ -436,7 +436,6 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                     && (mRecentTaskDescriptions.size() == 0);
             mRecentsNoApps.setAlpha(1f);
             mRecentsNoApps.setVisibility(noApps ? View.VISIBLE : View.INVISIBLE);
-
             onAnimationEnd(null);
             setFocusable(true);
             setFocusableInTouchMode(true);
@@ -564,7 +563,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
         mForegroundProcessText = (TextView) findViewById(R.id.foregroundText);
         mBackgroundProcessText = (TextView) findViewById(R.id.backgroundText);
 
-        mGoogleNowButton = (Button) findViewById(R.id.recents_google_now_button);
+        mGoogleNowButton = (ImageView) findViewById(R.id.recents_google_assist);
         mGoogleNowButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1034,6 +1033,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
         if (mGoogleNowButton != null) {
             mGoogleNowButton.setVisibility(mRecentsGoogEnabled ? View.VISIBLE : View.GONE);
         }
+
         switch (mRecentClear) {
             case CLEAR_DISABLE:
             mRecentsKillAllButtonBR.setVisibility(View.GONE);
