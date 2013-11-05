@@ -731,8 +731,10 @@ public abstract class BaseStatusBar extends SystemUI implements
                              Settings.System.NAV_HIDE_ENABLE, false) == true;
         boolean navbarOff = Settings.System.getInt(mContext.getContentResolver(),
                              Settings.System.NAVIGATION_BAR_SHOW, 0) == 0;
+        boolean slimpieOff = Settings.System.getInt(mContext.getContentResolver(),
+                            Settings.System.SPIE_CONTROLS, 0) == 0;
 
-        return ((pie && (autoHide || navbarOff)) || expandedOn);
+        return ((pie && (autoHide || navbarOff )) || (expandedOn && slimpieOff));
     }
 
     public void updatePieControls() {
