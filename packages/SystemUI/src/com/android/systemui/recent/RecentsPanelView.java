@@ -94,7 +94,10 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     private long mWindowAnimationStartTime;
     private boolean mCallUiHiddenBeforeNextReload;
 
-    private Button mRecentsKillAllButton;
+    private ImageView mRecentsKillAllButtonBR;
+    private ImageView mRecentsKillAllButtonBL;
+    private ImageView mRecentsKillAllButtonTR;
+    private ImageView mRecentsKillAllButtonTL;
     private Button mGoogleNowButton;
     private LinearColorBar mRamUsageBar;
 
@@ -102,12 +105,24 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     private ArrayList<TaskDescription> mRecentTaskDescriptions;
     private TaskDescriptionAdapter mListAdapter;
     private int mThumbnailWidth;
+    private int mThumbnailHeight;
     private boolean mFitThumbnailToXY;
     private int mRecentItemLayoutId;
     private boolean mHighEndGfx;
     boolean ramBarEnabled;
     boolean mRecentsKillAllEnabled;
     boolean mRecentsGoogEnabled;
+
+    private static int mRecentClear;
+    private static final int CLEAR_DISABLE = 0;
+    private static final int CLEAR_BOTTOM_RIGHT = 1;
+    private static final int CLEAR_BOTTOM_LEFT = 2;
+    private static final int CLEAR_TOP_RIGHT = 3;
+    private static final int CLEAR_TOP_LEFT = 4;
+
+    private static int mRecentStyle;
+    private static final int RECENTS_STOCK = 0;
+    private static final int RECENTS_RB = 1;
 
     TextView mBackgroundProcessText;
     TextView mForegroundProcessText;
@@ -175,22 +190,49 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
         }
 
         public View createView(ViewGroup parent) {
-            View convertView = mInflater.inflate(mRecentItemLayoutId, parent, false);
-            ViewHolder holder = new ViewHolder();
-            holder.thumbnailView = convertView.findViewById(R.id.app_thumbnail);
-            holder.thumbnailViewImage =
-                    (ImageView) convertView.findViewById(R.id.app_thumbnail_image);
-            // If we set the default thumbnail now, we avoid an onLayout when we update
-            // the thumbnail later (if they both have the same dimensions)
-            updateThumbnail(holder, mRecentTasksLoader.getDefaultThumbnail(), false, false);
-            holder.iconView = (ImageView) convertView.findViewById(R.id.app_icon);
-            holder.iconView.setImageBitmap(mRecentTasksLoader.getDefaultIcon());
-            holder.labelView = (TextView) convertView.findViewById(R.id.app_label);
-            holder.calloutLine = convertView.findViewById(R.id.recents_callout_line);
-            holder.descriptionView = (TextView) convertView.findViewById(R.id.app_description);
+           mRecentStyle = Settings.System.getInt(mContext.getContentResolver(),
+                 Settings.System.RECENTS_STYLE, 0);
+           View convertView = mInflater.inflate(mRecentItemLayoutId, parent, false);
+           ViewHolder holder = new ViewHolder();
+           switch (mRecentStyle) {
+              case RECENTS_STOCK:
+                    holder.thumbnailView = convertView.findViewById(R.id.app_thumbnail);
+                    holder.thumbnailViewImage =
+                            (ImageView) convertView.findViewById(R.id.app_thumbnail_image);
 
-            convertView.setTag(holder);
-            return convertView;
+                    holder.thumbnailViewImage.getLayoutParams().width = mThumbnailWidth;
+                    holder.thumbnailViewImage.getLayoutParams().height = mThumbnailHeight;
+
+                    // If we set the default thumbnail now, we avoid an onLayout when we update
+                    // the thumbnail later (if they both have the same dimensions)
+                    updateThumbnail(holder, mRecentTasksLoader.getDefaultThumbnail(), false, false);
+                    holder.iconView = (ImageView) convertView.findViewById(R.id.app_icon);
+                    holder.iconView.setImageBitmap(mRecentTasksLoader.getDefaultIcon());
+                    holder.labelView = (TextView) convertView.findViewById(R.id.app_label);
+                    holder.calloutLine = convertView.findViewById(R.id.recents_callout_line);
+                    holder.descriptionView = (TextView) convertView.findViewById(R.id.app_description);
+                break;
+              case RECENTS_RB:
+                    holder.thumbnailView = convertView.findViewById(R.id.app_thumbnail_alt);
+                    holder.thumbnailViewImage =
+                            (ImageView) convertView.findViewById(R.id.app_thumbnail_image_alt);
+
+                    holder.thumbnailViewImage.getLayoutParams().width = mThumbnailWidth;
+                    holder.thumbnailViewImage.getLayoutParams().height = mThumbnailHeight;
+
+                    // If we set the default thumbnail now, we avoid an onLayout when we update
+                    // the thumbnail later (if they both have the same dimensions)
+                    updateThumbnail(holder, mRecentTasksLoader.getDefaultThumbnail(), false, false);
+                    holder.iconView = (ImageView) convertView.findViewById(R.id.app_icon_alt);
+                    holder.iconView.setImageBitmap(mRecentTasksLoader.getDefaultIcon());
+                    holder.labelView = (TextView) convertView.findViewById(R.id.app_label_alt);
+                    holder.calloutLine = convertView.findViewById(R.id.recents_callout_line);
+                    holder.calloutLine.setVisibility(View.GONE);
+                    holder.descriptionView = (TextView) convertView.findViewById(R.id.app_description);
+                break;
+           }
+           convertView.setTag(holder);
+           return convertView;
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -487,6 +529,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     public void updateValuesFromResources() {
         final Resources res = mContext.getResources();
         mThumbnailWidth = Math.round(res.getDimension(R.dimen.status_bar_recents_thumbnail_width));
+        mThumbnailHeight = Math.round(res.getDimension(R.dimen.status_bar_recents_thumbnail_height));
         mFitThumbnailToXY = res.getBoolean(R.bool.config_recents_thumbnail_image_fits_to_xy);
     }
 
@@ -517,22 +560,44 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                 ((BitmapDrawable) mRecentsScrim.getBackground()).setTileModeY(TileMode.REPEAT);
             }
         }
-
         mRamUsageBar = (LinearColorBar) findViewById(R.id.ram_usage_bar);
         mForegroundProcessText = (TextView) findViewById(R.id.foregroundText);
         mBackgroundProcessText = (TextView) findViewById(R.id.backgroundText);
-        mRecentsKillAllButton = (Button) findViewById(R.id.recents_kill_all_button);
-        mRecentsKillAllButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                killAllRecentApps();
-            }
-        });
+
         mGoogleNowButton = (Button) findViewById(R.id.recents_google_now_button);
         mGoogleNowButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 AwesomeAction.launchAction(v.getContext(), AwesomeConstant.ACTION_ASSIST.value());
+            }
+        });
+
+        mRecentsKillAllButtonBR = (ImageView) findViewById(R.id.recents_kill_all_buttonBR);
+        mRecentsKillAllButtonBR.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                killAllRecentApps();
+            }
+        });
+        mRecentsKillAllButtonBL = (ImageView) findViewById(R.id.recents_kill_all_buttonBL);
+        mRecentsKillAllButtonBL.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                killAllRecentApps();
+            }
+        });
+        mRecentsKillAllButtonTR = (ImageView) findViewById(R.id.recents_kill_all_buttonTR);
+        mRecentsKillAllButtonTR.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                killAllRecentApps();
+            }
+        });
+        mRecentsKillAllButtonTL = (ImageView) findViewById(R.id.recents_kill_all_buttonTL);
+        mRecentsKillAllButtonTL.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                killAllRecentApps();
             }
         });
     }
@@ -937,7 +1002,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                     .getUriFor(Settings.System.RAM_USAGE_BAR),
                     false, this);
             resolver.registerContentObserver(Settings.System
-                    .getUriFor(Settings.System.RECENT_KILL_ALL_BUTTON),
+                    .getUriFor(Settings.System.RECENTS_CLEAR),
                     false, this);
             resolver.registerContentObserver(Settings.System
                     .getUriFor(Settings.System.RECENT_GOOGLE_ASSIST),
@@ -955,9 +1020,8 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
         ramBarEnabled = Settings.System.getBoolean(mContext.getContentResolver(),
                 Settings.System.RAM_USAGE_BAR, false);
 
-        mRecentsKillAllEnabled = Settings.System.getBoolean(
-                mContext.getContentResolver(),
-                Settings.System.RECENT_KILL_ALL_BUTTON, false);
+        mRecentClear = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.RECENTS_CLEAR, 0);
 
         mRecentsGoogEnabled = Settings.System.getBoolean(
                 mContext.getContentResolver(),
@@ -967,12 +1031,40 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             mRamUsageBar.setVisibility(ramBarEnabled ? View.VISIBLE : View.GONE);
         }
 
-        if (mRecentsKillAllButton != null) {
-            mRecentsKillAllButton.setVisibility(mRecentsKillAllEnabled ? View.VISIBLE : View.GONE);
-        }
-
         if (mGoogleNowButton != null) {
             mGoogleNowButton.setVisibility(mRecentsGoogEnabled ? View.VISIBLE : View.GONE);
+        }
+        switch (mRecentClear) {
+            case CLEAR_DISABLE:
+            mRecentsKillAllButtonBR.setVisibility(View.GONE);
+            mRecentsKillAllButtonBL.setVisibility(View.GONE);
+            mRecentsKillAllButtonTR.setVisibility(View.GONE);
+            mRecentsKillAllButtonTL.setVisibility(View.GONE);
+                 break;
+            case CLEAR_BOTTOM_RIGHT:
+            mRecentsKillAllButtonBR.setVisibility(View.VISIBLE);
+            mRecentsKillAllButtonBL.setVisibility(View.GONE);
+            mRecentsKillAllButtonTR.setVisibility(View.GONE);
+            mRecentsKillAllButtonTL.setVisibility(View.GONE);
+                 break;
+            case CLEAR_BOTTOM_LEFT:
+            mRecentsKillAllButtonBR.setVisibility(View.GONE);
+            mRecentsKillAllButtonBL.setVisibility(View.VISIBLE);
+            mRecentsKillAllButtonTR.setVisibility(View.GONE);
+            mRecentsKillAllButtonTL.setVisibility(View.GONE);
+                 break;
+            case CLEAR_TOP_RIGHT:
+            mRecentsKillAllButtonBR.setVisibility(View.GONE);
+            mRecentsKillAllButtonBL.setVisibility(View.GONE);
+            mRecentsKillAllButtonTR.setVisibility(View.VISIBLE);
+            mRecentsKillAllButtonTL.setVisibility(View.GONE);
+                 break;
+            case CLEAR_TOP_LEFT:
+            mRecentsKillAllButtonBR.setVisibility(View.GONE);
+            mRecentsKillAllButtonBL.setVisibility(View.GONE);
+            mRecentsKillAllButtonTR.setVisibility(View.GONE);
+            mRecentsKillAllButtonTL.setVisibility(View.VISIBLE);
+                 break;
         }
     }
 }

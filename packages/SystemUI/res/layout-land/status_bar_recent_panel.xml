@@ -54,17 +54,41 @@
 
         </com.android.systemui.recent.RecentsHorizontalScrollView>
 
+    <ImageView android:id="@+id/recents_kill_all_buttonBR"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="30dp"
+            android:layout_marginRight="20dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:src="@drawable/ic_recents_clear" />
+    <ImageView android:id="@+id/recents_kill_all_buttonTR"
+            android:layout_gravity="top|right"
+            android:layout_marginTop="50dp"
+            android:layout_marginRight="20dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:src="@drawable/ic_recents_clear" />
+    <ImageView android:id="@+id/recents_kill_all_buttonTL"
+            android:layout_gravity="top|left"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:src="@drawable/ic_recents_clear" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_gravity="bottom|left"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="5dp">
-        <Button android:id="@+id/recents_kill_all_button"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="20dp"
+        android:scaleType="center">
+        <ImageView android:id="@+id/recents_kill_all_buttonBL"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="@string/recents_kill_all_button_text"/>
+            android:paddingBottom="20dip"
+            android:src="@drawable/ic_recents_clear" />
         <Button android:id="@+id/recents_google_now_button"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
