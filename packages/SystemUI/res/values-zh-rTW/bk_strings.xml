@@ -139,6 +139,17 @@
     <string name="halo_signal_bars_1">一格</string>
     <string name="halo_signal_bars_none">無</string>
 
-
+    <!-- PA PIE -->
     <string name="pie_date_format">yyyy MMM dd日, ccc</string>
+
+    <!-- PIE - SLIM version -->
+    <!-- Battery status in pie controls -->
+    <string name="pie_battery_status_charging">充電中(<xliff:g id="percent">%d</xliff:g>%%)</string>
+    <string name="pie_battery_status_full">充電完成</string>
+    <string name="pie_battery_status_discharging">剩餘電量<xliff:g id="percent">%d</xliff:g>%% </string>
+
+    <!-- Phone status in pie controls -->
+    <string name="pie_phone_status_no_service">沒有信號</string>
+    <string name="pie_phone_status_airplane_mode">飛行模式</string>
+    <string name="pie_phone_status_emergency_only">只可呼叫緊急號碼</string>
 </resources>
