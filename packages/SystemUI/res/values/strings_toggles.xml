@@ -52,4 +52,6 @@
     <string name="toggle_WIRELESSADB">Wireless ADB</string>
     <string name="toggle_POWERMENU">Power Button</string>
     <string name="toggle_PROFILE">Profile</string>
+    <string name="toggle_PIE">Pie</string>
+    <string name="toggle_SLIMPIE">Slim Pie</string>
 </resources>

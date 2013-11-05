@@ -103,6 +103,10 @@
     <string name="quick_settings_screenshot">屏幕截圖</string>
     <string name="quick_settings_powermenu">電源鍵</string>
     <string name="quick_settings_profile_label">情景模式</string>
+    <string name="quick_settings_pie_on_label">Pie 已打開</string>
+    <string name="quick_settings_pie_off_label">Pie 已關閉</string>
+    <string name="quick_settings_slim_pie_on_label">SlimPie 已打開</string>
+    <string name="quick_settings_slim_pie_off_label">SlimPie 已關閉</string>
 
     <!--  RamBar -->
     <string name="memory">RAM</string>

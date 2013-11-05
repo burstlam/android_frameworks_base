@@ -24,26 +24,26 @@
         android:text="@string/global_actions_toggle_navbar_hide"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:textAppearance="@style/TextAppearance.Small" />
 
    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:orientation="horizontal" >
     <LinearLayout
         android:id="@+id/navbartoggle"
-        android:layout_width="64dp"
+        android:layout_width="48dp"
         android:layout_height="match_parent"
         android:focusable="true"
         android:background="@drawable/silent_mode_indicator"
         >
         <ImageView
-            android:layout_width="48dp"
+            android:layout_width="36dp"
             android:layout_height="match_parent"
             android:layout_gravity="top"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
             android:layout_marginTop="6dp"
             android:layout_marginBottom="16dp"
             android:src="@drawable/ic_lock_power_off"
@@ -60,17 +60,17 @@
 
     <LinearLayout
         android:id="@+id/navbarstatus"
-        android:layout_width="64dp"
+        android:layout_width="48dp"
         android:layout_height="match_parent"
         android:focusable="true"
         android:background="@drawable/silent_mode_indicator"
         >
         <ImageView
-            android:layout_width="48dp"
+            android:layout_width="36dp"
             android:layout_height="match_parent"
             android:layout_gravity="top"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
             android:layout_marginTop="6dp"
             android:layout_marginBottom="16dp"
             android:src="@drawable/ic_lock_statusbar_toggle"
@@ -87,19 +87,19 @@
 
     <LinearLayout
         android:id="@+id/navbarhide"
-        android:layout_width="64dp"
+        android:layout_width="48dp"
         android:layout_height="match_parent"
         android:background="?android:attr/actionBarItemBackground"
         android:focusable="true"
         >
         <ImageView
-            android:layout_width="48dp"
+            android:layout_width="36dp"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_gravity="top"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
             android:layout_marginTop="6dp"
-            android:layout_marginBottom="6dp"
+            android:layout_marginBottom="16dp"
             android:src="@drawable/ic_navbarhide"
             android:scaleType="center"
             android:duplicateParentState="true"
@@ -115,19 +115,46 @@
 
     <LinearLayout
         android:id="@+id/piecontrol"
-        android:layout_width="64dp"
+        android:layout_width="48dp"
         android:layout_height="match_parent"
         android:background="?android:attr/actionBarItemBackground"
         android:focusable="true"
         >
         <ImageView
-            android:layout_width="48dp"
+            android:layout_width="36dp"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_gravity="top"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
             android:layout_marginTop="6dp"
-            android:layout_marginBottom="6dp"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/ic_papie_control"
+            android:scaleType="center"
+            android:duplicateParentState="true"
+            android:background="@drawable/silent_mode_indicator"
+            />
+    </LinearLayout>
+    <!-- Spacer -->
+    <View android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:visibility="invisible"/>
+
+    <LinearLayout
+        android:id="@+id/spiecontrol"
+        android:layout_width="48dp"
+        android:layout_height="match_parent"
+        android:background="?android:attr/actionBarItemBackground"
+        android:focusable="true"
+        >
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="top"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="16dp"
             android:src="@drawable/ic_pie_control"
             android:scaleType="center"
             android:duplicateParentState="true"
@@ -142,19 +169,19 @@
 
     <LinearLayout
         android:id="@+id/navbarback"
-        android:layout_width="64dp"
+        android:layout_width="48dp"
         android:layout_height="match_parent"
         android:background="?android:attr/actionBarItemBackground"
         android:focusable="true"
         >
         <ImageView
-            android:layout_width="48dp"
+            android:layout_width="36dp"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_gravity="top"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
             android:layout_marginTop="6dp"
-            android:layout_marginBottom="6dp"
+            android:layout_marginBottom="16dp"
             android:src="@drawable/ic_menu_back"
             android:scaleType="center"
             android:duplicateParentState="true"

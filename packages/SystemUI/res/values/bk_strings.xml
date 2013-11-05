@@ -34,6 +34,10 @@
     <string name="action_quicksettings">QuickSettings</string>
     <string name="quick_settings_powermenu">Power Button</string>
     <string name="quick_settings_profile_label">Profile</string>
+    <string name="quick_settings_pie_on_label">Pie On</string>
+    <string name="quick_settings_pie_off_label">Pie Off</string>
+    <string name="quick_settings_slim_pie_on_label">SlimPie On</string>
+    <string name="quick_settings_slim_pie_off_label">SlimPie Off</string>
 
     <!-- SlimPie -->
     <!-- Battery status in pie controls -->

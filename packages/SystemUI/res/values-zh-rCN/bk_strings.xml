@@ -69,4 +69,8 @@
     <string name="action_quicksettings">快速设置</string>
     <string name="quick_settings_powermenu">电源键</string>
     <string name="quick_settings_profile_label">情景模式</string>
+    <string name="quick_settings_pie_on_label">Pie 已打开</string>
+    <string name="quick_settings_pie_off_label">Pie 已关闭</string>
+    <string name="quick_settings_slim_pie_on_label">SlimPie 已打开</string>
+    <string name="quick_settings_slim_pie_off_label">SlimPie 已关闭</string>
 </resources>

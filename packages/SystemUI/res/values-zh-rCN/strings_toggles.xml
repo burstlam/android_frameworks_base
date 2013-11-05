@@ -52,4 +52,6 @@
     <string name="toggle_WIRELESSADB">无线 ADB</string>
     <string name="toggle_POWERMENU">电源键</string>
     <string name="toggle_PROFILE">情景模式</string>
+    <string name="toggle_PIE">Pie</string>
+    <string name="toggle_SLIMPIE">Slim Pie</string>
 </resources>
