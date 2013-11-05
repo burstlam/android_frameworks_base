@@ -3299,6 +3299,8 @@ public class PhoneStatusBar extends BaseStatusBar {
                 repositionNavigationBar();
                 notifyNavigationBarScreenOn(true);
             }
+            // recreate pie navigation
+            recreatePie()
         }
     };
 
