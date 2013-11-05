@@ -32,4 +32,5 @@
 
     <!--Awesomeactions-->
     <string name="action_quicksettings">QuickSettings</string>
+    <string name="quick_settings_powermenu">Power Button</string>
 </resources>

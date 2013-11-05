@@ -344,8 +344,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             final String action = intent.getAction();
             if (action.equals(Intent.ACTION_SCREENSHOT)) {
                 takeScreenshot();
-            } else if (action.equals(Intent.ACTION_REBOOTMENU)) {
+            }
+            if (action.equals(Intent.ACTION_REBOOTMENU)) {
                 showRebootDialog();
+            }
+            if (action.equals(Intent.ACTION_POWERMENU_REBOOT)) {
+                mWindowManagerFuncs.rebootTile();
             }
         }
 
@@ -356,6 +360,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 IntentFilter filter = new IntentFilter();
                 filter.addAction(Intent.ACTION_SCREENSHOT);
                 filter.addAction(Intent.ACTION_REBOOTMENU);
+                filter.addAction(Intent.ACTION_POWERMENU_REBOOT);
                 mContext.registerReceiver(mPowerMenuReceiver, filter);
             }
         }

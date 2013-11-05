@@ -50,4 +50,5 @@
     <string name="toggle_CUSTOM">自定义开关</string>
     <string name="toggle_STAYAWAKE">保持唤醒</string>
     <string name="toggle_WIRELESSADB">无线 ADB</string>
+    <string name="toggle_POWERMENU">电源键</string>
 </resources>
