@@ -603,7 +603,7 @@ public abstract class BaseStatusBar extends SystemUI implements
         boolean navbarOff = Settings.System.getInt(mContext.getContentResolver(),
                              Settings.System.NAVIGATION_BAR_SHOW, 0) == 0;
 
-        return (pie || autoHide || navbarOff || expandedOn);
+        return ((pie && (autoHide || navbarOff)) || expandedOn);
     }
 
     public void updatePieControls() {
