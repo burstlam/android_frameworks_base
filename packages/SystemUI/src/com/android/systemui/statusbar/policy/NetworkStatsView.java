@@ -26,12 +26,15 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.TrafficStats;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.android.systemui.R;
+
+import java.lang.Math;
 
 public class NetworkStatsView extends LinearLayout {
 
@@ -67,10 +70,6 @@ public class NetworkStatsView extends LinearLayout {
         mLastTx = TrafficStats.getTotalTxBytes();
         mHandler = new Handler();
         mSettingsObserver = new SettingsObserver(mHandler);
-        mSettingsObserver.observe();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        context.registerReceiver(mConnectivityReceiver, filter);
     }
 
     // runnable to invalidate view via mHandler.postDelayed() call
@@ -90,7 +89,7 @@ public class NetworkStatsView extends LinearLayout {
         }
 
         public void observe() {
-            ContentResolver resolver = mContext.getContentResolver();
+            final ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_NETWORK_STATS), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -98,6 +97,10 @@ public class NetworkStatsView extends LinearLayout {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_NETWORK_STATS_TEXT_COLOR), false, this);
             onChange(true);
+        }
+
+        public void unobserver() {
+            mContext.getContentResolver().unregisterContentObserver(this);
         }
 
         @Override
@@ -109,8 +112,13 @@ public class NetworkStatsView extends LinearLayout {
 
             NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
             boolean networkAvailable = activeNetwork != null ? activeNetwork.isConnected() : false;
+
+            PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+            boolean isScreenOn = pm.isScreenOn();
+
             mActivated = (Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.STATUS_BAR_NETWORK_STATS, 0)) == 1 && networkAvailable;
+                    Settings.System.STATUS_BAR_NETWORK_STATS, 0)) == 1
+                    && networkAvailable;
 
             mRefreshInterval = Settings.System.getLong(mContext.getContentResolver(),
                     Settings.System.STATUS_BAR_NETWORK_STATS_UPDATE_INTERVAL, 500);
@@ -127,20 +135,17 @@ public class NetworkStatsView extends LinearLayout {
 
             setVisibility(mActivated ? View.VISIBLE : View.GONE);
 
-            if (mActivated && mAttached) {
+            if (mActivated && mAttached && isScreenOn) {
                 updateStats();
             }
         }
     }
 
-    private BroadcastReceiver mConnectivityReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (ConnectivityManager.CONNECTIVITY_ACTION.equals(action)) {
-                mSettingsObserver.onChange(true);
-            }
+            mSettingsObserver.onChange(true);
         }
     };
 
@@ -159,6 +164,16 @@ public class NetworkStatsView extends LinearLayout {
             mNetStatsColor = mTextViewTx.getTextColors().getDefaultColor();
             mHandler.postDelayed(mUpdateRunnable, mRefreshInterval);
         }
+
+        // register the broadcast receiver
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        filter.addAction(Intent.ACTION_SCREEN_ON);
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        mContext.registerReceiver(mBroadcastReceiver, filter);
+
+        // start observing our settings
+        mSettingsObserver.observe();
     }
 
     @Override
@@ -167,6 +182,12 @@ public class NetworkStatsView extends LinearLayout {
         if (mAttached) {
             mAttached = false;
         }
+
+        // unregister the broadcast receiver
+        mContext.unregisterReceiver(mBroadcastReceiver);
+
+        // stop listening for settings changes
+        mSettingsObserver.unobserver();
     }
 
     private void updateStats() {
@@ -198,18 +219,31 @@ public class NetworkStatsView extends LinearLayout {
     }
 
     private void setTextViewSpeed(TextView tv, long speed, float deltaT) {
-        String units = "B";
-        float fSpeed = speed / deltaT;
-        if (fSpeed >= TrafficStats.MB_IN_BYTES) {
-            units = "MB";
-            fSpeed = fSpeed / TrafficStats.MB_IN_BYTES;
-        } else if (fSpeed >= TrafficStats.KB_IN_BYTES) {
-            units = "KB";
-            fSpeed = fSpeed / TrafficStats.KB_IN_BYTES;
-        }
+        long lSpeed = Math.round(speed / deltaT);
 
-        tv.setText(fSpeed == (int) fSpeed ?
-                String.format("%d %s", (int)fSpeed, units) :
-                String.format("%.1f %s", fSpeed, units));
+        tv.setText(formatTraffic(lSpeed));
+    }
+
+    private String formatTraffic(long number) {
+        float result = number;
+        int suffix = com.android.internal.R.string.byteShort;
+        if (result >= 1024) {
+            suffix = com.android.internal.R.string.kilobyteShort;
+            result = result / 1024;
+        }
+        if (result >= 1024) {
+            suffix = com.android.internal.R.string.megabyteShort;
+            result = result / 1024;
+        }
+        String value;
+        // if we just have bytes show no decimal places
+        if (number < 1024) {
+            value = String.format("%.0f", result);
+        } else {
+            value = String.format("%.1f", result);
+        }
+        return mContext.getResources().
+            getString(com.android.internal.R.string.fileSizeSuffix,
+                      value, mContext.getString(suffix));
     }
 }
