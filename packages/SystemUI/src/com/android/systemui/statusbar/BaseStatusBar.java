@@ -730,8 +730,16 @@ public abstract class BaseStatusBar extends SystemUI implements
     private boolean showPie() {
         boolean pie = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PIE_CONTROLS, 0) == 1;
+        boolean expandedOn = Settings.System.getInt(mContext.getContentResolver(),
+                             Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1 &&
+                             (Settings.System.getInt(mContext.getContentResolver(),
+                             Settings.System.EXPANDED_DESKTOP_MODE, 0) == 1 ||
+                             Settings.System.getInt(mContext.getContentResolver(),
+                             Settings.System.EXPANDED_DESKTOP_MODE, 0) == 3);
+        boolean slimpieOff = Settings.System.getInt(mContext.getContentResolver(),
+                             Settings.System.SPIE_CONTROLS, 0) == 0;
 
-        return (pie);
+        return (pie || (expandedOn && slimpieOff));
     }
 
     public void updatePieControls() {
