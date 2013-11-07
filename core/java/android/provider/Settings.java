@@ -4051,6 +4051,12 @@ public final class Settings {
         public static final String POWER_MENU_SOUND_ENABLED = "power_menu_silent_enabled";
 
         /**
+         * Show the NavBar dialog in Power menu
+         * @hide
+         */
+        public static final String POWER_MENU_SYSBAR_ENABLED = "power_menu_sysbar_enabled";
+
+        /**
          * Whether to display high end graphics effects disabled on older devices
          * @hide
          */
