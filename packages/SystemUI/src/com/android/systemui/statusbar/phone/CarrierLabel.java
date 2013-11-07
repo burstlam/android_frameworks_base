@@ -24,6 +24,7 @@ import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.os.Handler;
 import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Slog;
@@ -32,11 +33,13 @@ import android.widget.TextView;
 
 import com.android.internal.telephony.TelephonyIntents;
 
+import com.android.systemui.statusbar.util.SpnOverride;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import com.android.internal.R;
+import com.android.systemui.R;
 
 /**
  * This widget display an analogic clock with two hands for hours and
@@ -44,9 +47,9 @@ import com.android.internal.R;
  */
 public class CarrierLabel extends TextView {
     private boolean mAttached;
+    private static boolean isCN;
     protected int mCarrierColor = com.android.internal.R.color.holo_blue_light;
     Handler mHandler;
-    String mLastCarrier;
 
     class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
@@ -115,11 +118,11 @@ public class CarrierLabel extends TextView {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (TelephonyIntents.SPN_STRINGS_UPDATED_ACTION.equals(action) || "com.android.settings.LABEL_CHANGED".equals(action)) {
-                mLastCarrier = intent.getStringExtra(TelephonyIntents.EXTRA_SPN);
                 updateNetworkName(intent.getBooleanExtra(TelephonyIntents.EXTRA_SHOW_SPN, false),
                         intent.getStringExtra(TelephonyIntents.EXTRA_SPN),
                         intent.getBooleanExtra(TelephonyIntents.EXTRA_SHOW_PLMN, false),
                         intent.getStringExtra(TelephonyIntents.EXTRA_PLMN));
+                isCN = getContext().getResources().getConfiguration().locale.getCountry().equals("CN") || getContext().getResources().getConfiguration().locale.getCountry().equals("TW");
             } 
         }
     };
@@ -146,10 +149,31 @@ public class CarrierLabel extends TextView {
                 Settings.System.CUSTOM_CARRIER_LABEL);
         if(!TextUtils.isEmpty(customLabel))
             setText(customLabel);
-        else if (TextUtils.isEmpty(str.trim()))
-            setText(mLastCarrier);
         else
-            setText(str);
+            setText(TextUtils.isEmpty(str) ? getOperatorName() : str);
+    }
+
+    private String getOperatorName() {
+        String operatorName = getContext().getString(R.string.quick_settings_wifi_no_network);
+        TelephonyManager telephonyManager = (TelephonyManager) getContext().getSystemService(Context.TELEPHONY_SERVICE);
+        if(isCN) {
+            String operator = telephonyManager.getNetworkOperator();
+            if(TextUtils.isEmpty(operator)) {
+                 operator = telephonyManager.getSimOperator();
+            }
+            SpnOverride mSpnOverride = new SpnOverride();
+            operatorName = mSpnOverride.getSpn(operator);
+            if(TextUtils.isEmpty(operatorName)) {
+                 operatorName = telephonyManager.getSimOperatorName();
+            }
+        } else {
+            operatorName = telephonyManager.getNetworkOperatorName();
+            if(TextUtils.isEmpty(operatorName)) {
+                 operatorName = telephonyManager.getSimOperatorName();
+            }
+        }
+
+        return operatorName.toUpperCase();
     }
 
     private void updateSettings() {

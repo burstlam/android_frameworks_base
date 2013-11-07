@@ -107,25 +107,27 @@ public class PiePolicy {
     }
 
     public static String getNetworkProvider() {
-        String operatorName = Settings.System.getString(mContext.getContentResolver(), Settings.System.CUSTOM_CARRIER_LABEL);
+        String operatorName = Settings.System.getString(mContext.getContentResolver(),
+                                    Settings.System.CUSTOM_CARRIER_LABEL);
         if(TextUtils.isEmpty(operatorName)) {
-        operatorName = mContext.getString(R.string.quick_settings_wifi_no_network);
-        TelephonyManager telephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
-            if(isCN) {
-                String operator = telephonyManager.getNetworkOperator();
-                if(TextUtils.isEmpty(operator))
-                    operator = telephonyManager.getSimOperator();
-                SpnOverride mSpnOverride = new SpnOverride();
-                operatorName = mSpnOverride.getSpn(operator);
-                if(operatorName == null) {
-                    operatorName = telephonyManager.getSimOperatorName();
-                }
-            } else {
-                operatorName = telephonyManager.getNetworkOperatorName();
-                if(operatorName == null) {
-                    operatorName = telephonyManager.getSimOperatorName();
-                }
-            }
+           operatorName = mContext.getString(R.string.quick_settings_wifi_no_network);
+           TelephonyManager telephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
+           if(isCN) {
+              String operator = telephonyManager.getNetworkOperator();
+              if(TextUtils.isEmpty(operator)) {
+                 operator = telephonyManager.getSimOperator();
+              }
+              SpnOverride mSpnOverride = new SpnOverride();
+              operatorName = mSpnOverride.getSpn(operator);
+              if(TextUtils.isEmpty(operatorName)) {
+                 operatorName = telephonyManager.getSimOperatorName();
+              }
+           } else {
+              operatorName = telephonyManager.getNetworkOperatorName();
+              if(TextUtils.isEmpty(operatorName)) {
+                 operatorName = telephonyManager.getSimOperatorName();
+              }
+           }
         }
         return operatorName.toUpperCase();
     }

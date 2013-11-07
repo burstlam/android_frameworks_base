@@ -77,7 +77,7 @@ public class CarrierText extends TextView {
         CharSequence text = getCarrierTextForSimState(simState, plmn, spn);
         String customLabel = Settings.System.getString(getContext().getContentResolver(),
                 Settings.System.CUSTOM_CARRIER_LABEL);
-        if (customLabel == null || customLabel.length() == 0) {
+        if (TextUtils.isEmpty(customLabel)) {
             if (KeyguardViewManager.USE_UPPER_CASE) {
                 setText(text != null ? text.toString().toUpperCase() : null);
             } else {
