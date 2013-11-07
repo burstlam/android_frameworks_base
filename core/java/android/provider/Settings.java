@@ -3032,6 +3032,12 @@ public final class Settings {
         public static final String QUIET_HOURS_DIM = "quiet_hours_dim";
 
         /**
+         * direct call by the dialer. The value is
+         * boolean (1 or 0).
+         */
+        public static final String DIALER_DIRECT_CALL = "dialer_direct_call";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
