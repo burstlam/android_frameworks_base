@@ -17,13 +17,13 @@
 package com.android.systemui.statusbar.halo;
 
 import android.os.Handler;
-import android.content.ContentResolver;
-import android.database.ContentObserver;
-import android.graphics.ColorFilterMaker;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
+import android.graphics.ColorFilterMaker;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.ColorFilter;
@@ -44,6 +44,7 @@ import android.animation.PropertyValuesHolder;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.util.TypedValue;
+import android.os.UserHandle;
 import android.provider.Settings;
 
 import com.android.systemui.R;
@@ -178,12 +179,17 @@ public class HaloProperties extends FrameLayout implements BatteryStateChangeCal
         mHaloIcon = (ImageView) mHaloBubble.findViewById(R.id.app_icon);
         mHaloOverlay = (ImageView) mHaloBubble.findViewById(R.id.halo_overlay);
 
+        final float scale = getResources().getDisplayMetrics().density;
+        int l = (int) (20 * scale + 0.5f);
+        int t = (int) (17 * scale + 0.5f);
+        int r = (int) (20 * scale + 0.5f);
+        int b = (int) (30 * scale + 0.5f);
+
         mHaloContentView = mInflater.inflate(R.layout.halo_speech, null);
         mHaloTickerWrapper = mHaloContentView.findViewById(R.id.ticker_wrapper);
         mHaloTickerContent = mHaloContentView.findViewById(R.id.ticker);
         mHaloTextView = (TextView) mHaloContentView.findViewById(R.id.bubble);
         mHaloTextView.setAlpha(1f);
-
         updateColorView();
 
         mHaloNumberView = mInflater.inflate(R.layout.halo_number, null);
@@ -194,8 +200,8 @@ public class HaloProperties extends FrameLayout implements BatteryStateChangeCal
 
         mHaloContentHeight = mContext.getResources().getDimensionPixelSize(R.dimen.notification_min_height);
 
-        mFraction = Settings.System.getFloat(mContext.getContentResolver(),
-                Settings.System.HALO_SIZE, 1.0f);
+        mFraction = Settings.System.getFloatForUser(mContext.getContentResolver(),
+                Settings.System.HALO_SIZE, 1.0f, UserHandle.USER_CURRENT);
         setHaloSize(mFraction);
 
         mHaloOverlayAnimator = new CustomObjectAnimator(this);
@@ -203,14 +209,13 @@ public class HaloProperties extends FrameLayout implements BatteryStateChangeCal
         mContext.registerReceiver(mBatteryReceiver,
                 new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
-        mHandler = new Handler();
-        SettingsObserver settingsObserver = new SettingsObserver(mHandler);
-        settingsObserver.observe();
-
         NetworkController controller = new NetworkController(mContext);
         controller.addNetworkSignalChangedCallback(this);
 
         mCm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        mHandler = new Handler();
+        SettingsObserver settingsObserver = new SettingsObserver(mHandler);
+        settingsObserver.observe();
     }
 
     int newPaddingHShort;
@@ -249,7 +254,6 @@ public class HaloProperties extends FrameLayout implements BatteryStateChangeCal
         mHaloNumberIcon.setLayoutParams(layoutParams4);
 
         updateResources(mLastContentStateLeft);
-        updateColorView();
     }
 
     public void setHaloX(int value) {
@@ -479,71 +483,6 @@ public class HaloProperties extends FrameLayout implements BatteryStateChangeCal
         mLastContentStateLeft = contentLeft;
     }
 
-    class SettingsObserver extends ContentObserver {
-        SettingsObserver(Handler handler) {
-            super(handler);
-        }
-
-        void observe() {
-            ContentResolver resolver = mContext.getContentResolver();
-
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.HALO_COLORS), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.HALO_CIRCLE_COLOR), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.HALO_BUBBLE_COLOR), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.HALO_BUBBLE_TEXT_COLOR), false, this);
-            updateColorView();
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            updateColorView();
-        }
-    }
-
-    private void updateColorView() {
-        ContentResolver cr = mContext.getContentResolver();
-        mEnableColor = Settings.System.getInt(cr,
-               Settings.System.HALO_COLORS, 0) == 1;
-        mCircleColor = Settings.System.getInt(cr,
-               Settings.System.HALO_CIRCLE_COLOR, 0xFF33B5E5);
-        mSpeechColor = Settings.System.getInt(cr,
-               Settings.System.HALO_BUBBLE_COLOR, 0xFF33B5E5);
-        mSpeechTextColor = Settings.System.getInt(cr, 
-               Settings.System.HALO_BUBBLE_TEXT_COLOR, 0xFFFFFFFF);
-
-        if (mEnableColor) {
-           // Ring
-           mHaloBg.setColorFilter(mCircleColor, PorterDuff.Mode.SRC_IN);
-
-           // Speech bubbles
-           mHaloSpeechL.setColorFilter(mSpeechColor, PorterDuff.Mode.SRC_IN);
-           mHaloSpeechR.setColorFilter(mSpeechColor, PorterDuff.Mode.SRC_IN);
-           mHaloSpeechLD.setColorFilter(mSpeechColor, PorterDuff.Mode.SRC_IN);
-           mHaloSpeechRD.setColorFilter(mSpeechColor, PorterDuff.Mode.SRC_IN);
-
-           // Speech text color
-           mHaloTextView.setTextColor(mSpeechTextColor);
-        } else {
-           // Clear that color away! Just in case.
-
-           // Ring
-           mHaloBg.clearColorFilter();
-
-           // Speech bubbles
-           mHaloSpeechL.clearColorFilter();
-           mHaloSpeechR.clearColorFilter();
-           mHaloSpeechLD.clearColorFilter();
-           mHaloSpeechRD.clearColorFilter();
-
-           // Return back to default color
-           mHaloTextView.setTextColor(getResources().getColor(R.color.halo_text_color));
-        }
-    }
-
     public interface OnClockChangedListener {
         public abstract void onChange(String s);
     }
@@ -632,7 +571,6 @@ public class HaloProperties extends FrameLayout implements BatteryStateChangeCal
         mSignalStrenghtId = enabled && (mobileSignalIconId > 0)
                 ? mobileSignalIconId
                 : R.drawable.ic_qs_signal_no_signal;
-
         // temp fix
         //dataContentDescription = enabled && (dataTypeContentDescriptionId != null) && mCm.getMobileDataEnabled()
         dataContentDescription = enabled && (dataTypeContentDescriptionId != null)
@@ -721,5 +659,67 @@ public class HaloProperties extends FrameLayout implements BatteryStateChangeCal
             string = string.substring(0, length - 1);
         }
         return string;
+    }
+    class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HALO_CIRCLE_COLOR), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HALO_BUBBLE_COLOR), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HALO_BUBBLE_TEXT_COLOR), false, this);
+            updateColorView();
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            updateColorView();
+        }
+    }
+
+    private void updateColorView() {
+        ContentResolver cr = mContext.getContentResolver();
+        mEnableColor = Settings.System.getInt(cr,
+               Settings.System.HALO_COLORS, 0) == 1;
+        mCircleColor = Settings.System.getInt(cr,
+               Settings.System.HALO_CIRCLE_COLOR, 0xFF33B5E5);
+        mSpeechColor = Settings.System.getInt(cr,
+               Settings.System.HALO_BUBBLE_COLOR, 0xFF33B5E5);
+        mSpeechTextColor = Settings.System.getInt(cr, 
+               Settings.System.HALO_BUBBLE_TEXT_COLOR, 0xFFFFFFFF);
+
+        if (mEnableColor) {
+           // Ring
+           mHaloBg.setColorFilter(mCircleColor, PorterDuff.Mode.SRC_IN);
+
+           // Speech bubbles
+           mHaloSpeechL.setColorFilter(mSpeechColor, PorterDuff.Mode.SRC_IN);
+           mHaloSpeechR.setColorFilter(mSpeechColor, PorterDuff.Mode.SRC_IN);
+           mHaloSpeechLD.setColorFilter(mSpeechColor, PorterDuff.Mode.SRC_IN);
+           mHaloSpeechRD.setColorFilter(mSpeechColor, PorterDuff.Mode.SRC_IN);
+
+           // Speech text color
+           mHaloTextView.setTextColor(mSpeechTextColor);
+        } else {
+           // Clear that color away! Just in case.
+
+           // Ring
+           mHaloBg.clearColorFilter();
+
+           // Speech bubbles
+           mHaloSpeechL.clearColorFilter();
+           mHaloSpeechR.clearColorFilter();
+           mHaloSpeechLD.clearColorFilter();
+           mHaloSpeechRD.clearColorFilter();
+
+           // Return back to default color
+           mHaloTextView.setTextColor(getResources().getColor(R.color.halo_text_color));
+        }
     }
 }
