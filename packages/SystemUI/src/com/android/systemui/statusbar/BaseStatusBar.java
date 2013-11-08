@@ -126,6 +126,7 @@ import com.android.systemui.statusbar.phone.Ticker;
 import com.android.systemui.statusbar.pie.PieLayout;
 import com.android.systemui.statusbar.policy.PieController;
 import com.android.systemui.statusbar.policy.PieController.Position;
+import com.android.systemui.statusbar.WidgetView;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -146,6 +147,7 @@ public abstract class BaseStatusBar extends SystemUI implements
     protected static final int MSG_SHOW_INTRUDER = 1026;
     protected static final int MSG_HIDE_INTRUDER = 1027;
     protected static final int MSG_TOGGLE_SCREENSHOT = 1028;
+    protected static final int MSG_TOGGLE_WIDGETS = 1029;
 
     protected int mCurrentUIMode;
 
@@ -1047,6 +1049,13 @@ public abstract class BaseStatusBar extends SystemUI implements
     }
 
     @Override
+    public void toggleWidgets() {
+        int msg = MSG_TOGGLE_WIDGETS;
+        mHandler.removeMessages(msg);
+        mHandler.sendEmptyMessage(msg);
+    }
+
+    @Override
     public void preloadRecentApps() {
         int msg = MSG_PRELOAD_RECENT_APPS;
         mHandler.removeMessages(msg);
@@ -1346,6 +1355,12 @@ public abstract class BaseStatusBar extends SystemUI implements
                  if (mSearchPanelView != null && mSearchPanelView.isAssistantAvailable()) {
                      mSearchPanelView.show(true, true);
                  }
+                 break;
+            case MSG_TOGGLE_WIDGETS:
+                 if (DEBUG) Slog.d(TAG, "toggle navbar widgets");
+                 Intent toggleWidgets = new Intent(
+                 WidgetView.WidgetReceiver.ACTION_TOGGLE_WIDGETS);
+                 mContext.sendBroadcast(toggleWidgets);
                  break;
              case MSG_CLOSE_SEARCH_PANEL:
                  if (DEBUG) Slog.d(TAG, "closing search panel");

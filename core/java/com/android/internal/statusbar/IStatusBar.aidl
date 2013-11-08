@@ -42,6 +42,7 @@ oneway interface IStatusBar
     void toggleStatusBar(boolean enable);
     void toggleRecentApps();
     void toggleScreenshot();
+    void toggleWidgets();
     void preloadRecentApps();
     void cancelPreloadRecentApps();
 }

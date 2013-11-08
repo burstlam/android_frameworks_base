@@ -412,6 +412,15 @@ public class StatusBarManagerService extends IStatusBarService.Stub
     }
 
     @Override
+    public void toggleWidgets() {
+        if (mBar != null) {
+            try {
+                mBar.toggleWidgets();
+            } catch (RemoteException ex) {}
+        }
+    }
+
+    @Override
     public void toggleRecentApps() {
         if (mBar != null) {
             try {

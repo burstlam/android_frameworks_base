@@ -54,6 +54,7 @@ interface IStatusBarService
     void toggleQSShade();
     void toggleScreenshot();
     void toggleStatusBar(boolean enable);
+    void toggleWidgets();
     void toggleRecentApps();
     void preloadRecentApps();
     void cancelPreloadRecentApps();

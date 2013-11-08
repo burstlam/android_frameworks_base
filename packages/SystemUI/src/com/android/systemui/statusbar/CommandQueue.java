@@ -62,6 +62,7 @@ public class CommandQueue extends IStatusBar.Stub {
     private static final int MSG_TOGGLE_SCREENSHOT          = 20 << MSG_SHIFT;
     private static final int MSG_SET_IME_STATUS             = 21 << MSG_SHIFT;
     private static final int MSG_SET_AUTOROTATE_STATUS      = 22 << MSG_SHIFT;
+    private static final int MSG_TOGGLE_WIDGETS             = 23 << MSG_SHIFT;
 
     public static final int FLAG_EXCLUDE_NONE = 0;
     public static final int FLAG_EXCLUDE_SEARCH_PANEL = 1 << 0;
@@ -107,6 +108,7 @@ public class CommandQueue extends IStatusBar.Stub {
         public void toggleStatusBar(boolean enable);
         public void toggleRecentApps();
         public void toggleScreenshot();
+        public void toggleWidgets();
         public void preloadRecentApps();
         public void showSearchPanel();
         public void hideSearchPanel();
@@ -270,6 +272,13 @@ public class CommandQueue extends IStatusBar.Stub {
         }
     }
 
+    public void toggleWidgets() {
+        synchronized (mList) {
+            mHandler.removeMessages(MSG_TOGGLE_WIDGETS);
+            mHandler.obtainMessage(MSG_TOGGLE_WIDGETS, 0, 0, null).sendToTarget();
+        }
+    }
+
     public void preloadRecentApps() {
         synchronized (mList) {
             mHandler.removeMessages(MSG_PRELOAD_RECENT_APPS);
@@ -373,6 +382,9 @@ public class CommandQueue extends IStatusBar.Stub {
                     break;
                 case MSG_TOGGLE_STATUS_BAR:
                     mCallbacks.toggleStatusBar(msg.arg1 != 0);
+                    break;
+                case MSG_TOGGLE_WIDGETS:
+                    mCallbacks.toggleWidgets();
                     break;
                 case MSG_TOGGLE_RECENT_APPS:
                     mCallbacks.toggleRecentApps();
