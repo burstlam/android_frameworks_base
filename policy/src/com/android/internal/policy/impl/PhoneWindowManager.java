@@ -343,6 +343,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
+            if (action.equals(Intent.ACTION_POWERMENU)) {
+                showGlobalActionsDialog();
+            }
             if (action.equals(Intent.ACTION_SCREENSHOT)) {
                 takeScreenshot();
             }
@@ -362,6 +365,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 mIsRegistered = true;
 
                 IntentFilter filter = new IntentFilter();
+                filter.addAction(Intent.ACTION_POWERMENU);
                 filter.addAction(Intent.ACTION_SCREENSHOT);
                 filter.addAction(Intent.ACTION_REBOOTMENU);
                 filter.addAction(Intent.ACTION_POWERMENU_REBOOT);

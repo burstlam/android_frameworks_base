@@ -19,10 +19,9 @@ public class PowerMenuToggle extends BaseToggle {
 
     @Override
     public void onClick(View v) {
+        collapseStatusBar();
         Intent intent=new Intent(Intent.ACTION_POWERMENU);
         mContext.sendBroadcast(intent);
-
-        collapseStatusBar();
         dismissKeyguard();
     }
 
@@ -30,7 +29,6 @@ public class PowerMenuToggle extends BaseToggle {
     public boolean onLongClick(View v) {
         Intent intent=new Intent(Intent.ACTION_POWERMENU_REBOOT);
         mContext.sendBroadcast(intent);
-
         collapseStatusBar();
         dismissKeyguard();
         return super.onLongClick(v);
