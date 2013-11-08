@@ -2092,4 +2092,8 @@
   <java-symbol type="drawable" name="shadow_left" />
   <java-symbol type="drawable" name="shadow_right" />
   <java-symbol type="drawable" name="shadow_bottom" />
+
+  <!-- Expanded desktop default set -->
+  <java-symbol type="string" name="expanded_mode_default_set" />
+  <java-symbol type="string" name="expanded_mode_default_with_navbar_set" />
 </resources>

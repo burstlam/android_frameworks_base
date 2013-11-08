@@ -4337,6 +4337,9 @@
     <!-- status message in phone options dialog for when expand desktop mode is off -->
     <string name="global_actions_expanded_desktop_mode_off_status">Disabled</string>
 
+    <string name="expanded_mode_default_set">Expanded desktop set to hide statusbar only. Configure in Power menu settings</string>
+    <string name="expanded_mode_default_with_navbar_set">Expanded desktop set to hide status and navigation bar. Configure in Power menu settings</string>
+
     <!-- label for item that opens the profile choosing dialog -->
     <string name="global_action_choose_profile">Profile</string>
 

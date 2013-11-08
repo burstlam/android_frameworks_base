@@ -69,6 +69,7 @@ import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.view.WindowManagerGlobal;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -113,6 +114,7 @@ public class PieController implements BaseStatusBar.NavigationBarCallback,
     private final static String ACTION_KILL = "**kill**";
     private final static String ACTION_TORCH = "**torch**";
     private final static String ACTION_WIDGETS = "**widgets**";
+    private final static String ACTION_EXPANDED_DESKTOP = "**expanded_desktop**";
     private final static String ACTION_NULL = "**null**";
 
     private String[] mClickActions = new String[7];
@@ -713,6 +715,8 @@ public class PieController implements BaseStatusBar.NavigationBarCallback,
                 return mContext.getResources().getDrawable(R.drawable.ic_sysbar_qs);
             } else if (uri.equals(ACTION_TORCH)) {
                 return mContext.getResources().getDrawable(R.drawable.ic_sysbar_torch);
+            } else if (uri.equals(ACTION_EXPANDED_DESKTOP)) {
+                return mContext.getResources().getDrawable(R.drawable.ic_sysbar_expanded_desktop);
             }
         }
         return mContext.getResources().getDrawable(R.drawable.ic_sysbar_null);
@@ -980,6 +984,31 @@ public class PieController implements BaseStatusBar.NavigationBarCallback,
             } catch (RemoteException e) {
                 // wtf is this
             }
+            return;
+        } else if (type.equals(ACTION_EXPANDED_DESKTOP)) {
+            if (Settings.System.getInt(mContext.getContentResolver(),
+                            Settings.System.EXPANDED_DESKTOP_MODE, 0) == 0) {
+                        boolean hasNavBar = false;
+                        try {
+                            if (WindowManagerGlobal.getWindowManagerService().hasNavigationBar()) {
+                                hasNavBar = true;
+                            }
+                        } catch (RemoteException e) {
+                        }
+                        // Expanded desktop is going to turn on, default to 2 or 3 since
+                        // EXPANDED_DESKTOP_MODE has not been set
+                        Settings.System.putInt(mContext.getContentResolver(),
+                            Settings.System.EXPANDED_DESKTOP_MODE, hasNavBar ? 3 : 2);
+                        Toast.makeText(mContext,
+                            hasNavBar ? com.android.internal.R.string.expanded_mode_default_with_navbar_set
+                            : com.android.internal.R.string.expanded_mode_default_set,
+                            Toast.LENGTH_LONG).show();
+                    }
+                    Settings.System.putInt(
+                            mContext.getContentResolver(),
+                            Settings.System.EXPANDED_DESKTOP_STATE,
+                            Settings.System.getInt(mContext.getContentResolver(),
+                            Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1 ? 0 : 1);
             return;
         } else if (type.equals(ACTION_TORCH)) {
             Intent intentTorch = new Intent("android.intent.action.MAIN");

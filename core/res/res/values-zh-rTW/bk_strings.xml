@@ -18,6 +18,6 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-
-
+    <string name="expanded_mode_default_set">全屏模式設定為隱藏狀態欄模式，您可以利用電源鍵菜單啟動</string>
+    <string name="expanded_mode_default_with_navbar_set">全屏模式設定為導航欄狀態欄全部隱藏模式，您可以利用電源鍵菜單啟動</string>
 </resources>
