@@ -201,7 +201,7 @@ public class VibratorService extends IVibratorService.Stub
         // either a timeout of > 0 or a non-null pattern.
         if (milliseconds <= 0 || (mCurrentVibration != null
                 && mCurrentVibration.hasLongerTimeout(milliseconds))
-                || QuietHoursUtils.inQuietHours(mContext, Settings.System.QUIET_HOURS_HAPTIC)) {
+                || QuietHoursUtils.inQuietHours(mContext, Settings.System.QUIET_HOURS_STILL)) {
             // Ignore this vibration since the current vibration will play for
             // longer than milliseconds.
             return;
@@ -238,7 +238,7 @@ public class VibratorService extends IVibratorService.Stub
                 != PackageManager.PERMISSION_GRANTED) {
             throw new SecurityException("Requires VIBRATE permission");
         }
-        if (QuietHoursUtils.inQuietHours(mContext, Settings.System.QUIET_HOURS_HAPTIC)) {
+        if (QuietHoursUtils.inQuietHours(mContext, Settings.System.QUIET_HOURS_STILL)) {
             return;
         }
         verifyIncomingUid(uid);
