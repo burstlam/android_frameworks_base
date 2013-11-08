@@ -81,6 +81,8 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.Toast;
 
+import com.android.internal.util.cm.QuietHoursUtils;
+
 import com.android.internal.util.FastXmlSerializer;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -1929,7 +1931,6 @@ public class NotificationManagerService extends INotificationManager.Stub
         final boolean canInterrupt = (score >= SCORE_INTERRUPTION_THRESHOLD);
 
         synchronized (mNotificationList) {
-            final boolean inQuietHours = inQuietHours();
             final StatusBarNotification n = new StatusBarNotification(
                     pkg, id, tag, callingUid, callingPid, score, notification, user);
             NotificationRecord r = new NotificationRecord(n);
@@ -2040,7 +2041,7 @@ public class NotificationManagerService extends INotificationManager.Stub
                 Uri soundUri = null;
                 boolean hasValidSound = false;
 
-                if (!(inQuietHours && mQuietHoursMute)
+                if (!(QuietHoursUtils.inQuietHours(mContext, Settings.System.QUIET_HOURS_NOTIFICATIONS))
                         && (useDefaultSound)) {
                     soundUri = Settings.System.DEFAULT_NOTIFICATION_URI;
 
@@ -2048,7 +2049,8 @@ public class NotificationManagerService extends INotificationManager.Stub
                     ContentResolver resolver = mContext.getContentResolver();
                     hasValidSound = Settings.System.getString(resolver,
                            Settings.System.NOTIFICATION_SOUND) != null;
-                } else if (!(inQuietHours && mQuietHoursMute) && notification.sound != null) {
+                } else if (!(QuietHoursUtils.inQuietHours(mContext,
+                           Settings.System.QUIET_HOURS_NOTIFICATIONS)) && notification.sound != null) {
                     soundUri = notification.sound;
                     hasValidSound = (soundUri != null);
                 }
@@ -2095,7 +2097,8 @@ public class NotificationManagerService extends INotificationManager.Stub
                 final boolean useDefaultVibrate =
                         (notification.defaults & Notification.DEFAULT_VIBRATE) != 0;
 
-                if ((useDefaultVibrate || convertSoundToVibration || hasCustomVibrate)
+                if (!(QuietHoursUtils.inQuietHours(mContext, Settings.System.QUIET_HOURS_STILL))
+                        && (useDefaultVibrate || convertSoundToVibration || hasCustomVibrate)
                         && !(audioManager.getRingerMode() == AudioManager.RINGER_MODE_SILENT)) {
                     mVibrateNotification = r;
 
@@ -2158,24 +2161,6 @@ public class NotificationManagerService extends INotificationManager.Stub
             mAnnoyingNotifications.put(pkg, currentTime);
             return false;
         }
-    }
-
-    private boolean inQuietHours() {
-        if (mQuietHoursEnabled) {
-            if (mQuietHoursStart == mQuietHoursEnd) {
-                return true;
-            }
-            // Get the date in "quiet hours" format.
-            Calendar calendar = Calendar.getInstance();
-            int minutes = calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE);
-            if (mQuietHoursEnd < mQuietHoursStart) {
-                // Starts at night, ends in the morning.
-                return (minutes > mQuietHoursStart) || (minutes < mQuietHoursEnd);
-            } else {
-                return (minutes > mQuietHoursStart) && (minutes < mQuietHoursEnd);
-            }
-        }
-        return false;
     }
 
     private void sendAccessibilityEvent(Notification notification, CharSequence packageName) {
@@ -2442,7 +2427,7 @@ public class NotificationManagerService extends INotificationManager.Stub
 
         // Don't flash while we are in a call or screen is on
         if (mLedNotification == null || mInCall || (mScreenOn && !ledScreenOn)
-                || (inQuietHours() && mQuietHoursDim)) {
+                || (QuietHoursUtils.inQuietHours(mContext, Settings.System.QUIET_HOURS_DIM))) {
             mNotificationLight.turnOff();
         } else {
             int ledARGB;
@@ -2629,16 +2614,6 @@ public class NotificationManagerService extends INotificationManager.Stub
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.QUIET_HOURS_ENABLED), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.QUIET_HOURS_START), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.QUIET_HOURS_END), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.QUIET_HOURS_NOTIFICATIONS), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.QUIET_HOURS_DIM), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD), false, this);
             update();
         }
@@ -2651,16 +2626,6 @@ public class NotificationManagerService extends INotificationManager.Stub
 
         public void update() {
             ContentResolver resolver = mContext.getContentResolver();
-            mQuietHoursEnabled = Settings.System.getInt(resolver,
-                    Settings.System.QUIET_HOURS_ENABLED, 0) != 0;
-            mQuietHoursStart = Settings.System.getInt(resolver,
-                    Settings.System.QUIET_HOURS_START, 0);
-            mQuietHoursEnd = Settings.System.getInt(resolver,
-                    Settings.System.QUIET_HOURS_END, 0);
-            mQuietHoursMute = Settings.System.getInt(resolver,
-                    Settings.System.QUIET_HOURS_NOTIFICATIONS, 0) != 0;
-            mQuietHoursDim = Settings.System.getInt(resolver,
-                    Settings.System.QUIET_HOURS_DIM, 0) != 0;
             mAnnoyingNotificationThreshold = Settings.System.getLong(resolver,
                     Settings.System.MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD, 0);
         }

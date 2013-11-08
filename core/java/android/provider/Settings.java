@@ -3133,6 +3133,12 @@ public final class Settings {
         public static final String QUIET_HOURS_STILL = "quiet_hours_still";
 
         /**
+         * Whether to remove the system sounds during quiet hours.
+         * @hide
+         */
+        public static final String QUIET_HOURS_SYSTEM = "quiet_hours_system";
+
+        /**
          * Whether to attempt to dim the LED color during quiet hours.
          * @hide
          */
@@ -4925,6 +4931,15 @@ public final class Settings {
             SIP_RECEIVE_CALLS,
             POINTER_SPEED,
             VIBRATE_WHEN_RINGING,
+            QUIET_HOURS_ENABLED,
+            QUIET_HOURS_START,
+            QUIET_HOURS_END,
+            QUIET_HOURS_NOTIFICATIONS,
+            QUIET_HOURS_RINGER,
+            QUIET_HOURS_SYSTEM,
+            QUIET_HOURS_STILL,
+            QUIET_HOURS_DIM,
+            SYSTEM_PROFILES_ENABLED,
             PHONE_BLACKLIST_ENABLED,
             PHONE_BLACKLIST_NOTIFY_ENABLED,
             PHONE_BLACKLIST_PRIVATE_NUMBER_MODE,

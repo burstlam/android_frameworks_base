@@ -43,9 +43,9 @@ import android.view.InputDevice;
 
 import com.android.internal.app.IAppOpsService;
 import com.android.internal.app.IBatteryStats;
+import com.android.internal.util.cm.QuietHoursUtils;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
@@ -200,7 +200,8 @@ public class VibratorService extends IVibratorService.Stub
         // timeout of 0 or negative. This will ensure that a vibration has
         // either a timeout of > 0 or a non-null pattern.
         if (milliseconds <= 0 || (mCurrentVibration != null
-                && mCurrentVibration.hasLongerTimeout(milliseconds)) || inQuietHours()) {
+                && mCurrentVibration.hasLongerTimeout(milliseconds))
+                || QuietHoursUtils.inQuietHours(mContext, Settings.System.QUIET_HOURS_STILL)) {
             // Ignore this vibration since the current vibration will play for
             // longer than milliseconds.
             return;
@@ -249,7 +250,7 @@ public class VibratorService extends IVibratorService.Stub
                 != PackageManager.PERMISSION_GRANTED) {
             throw new SecurityException("Requires VIBRATE permission");
         }
-        if (inQuietHours()) {
+        if (QuietHoursUtils.inQuietHours(mContext, Settings.System.QUIET_HOURS_STILL)) {
             return;
         }
         verifyIncomingUid(uid);
@@ -624,30 +625,4 @@ public class VibratorService extends IVibratorService.Stub
             }
         }
     };
-
-    private boolean inQuietHours() {
-        boolean quietHoursEnabled = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.QUIET_HOURS_ENABLED, 0) != 0;
-        int quietHoursStart = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.QUIET_HOURS_START, 0);
-        int quietHoursEnd = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.QUIET_HOURS_END, 0);
-        boolean quietHoursVibrate = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.QUIET_HOURS_STILL, 0) != 0;
-        if (quietHoursEnabled && quietHoursVibrate) {
-            if (quietHoursStart == quietHoursEnd) {
-                return true;
-            }
-            // Get the date in "quiet hours" format.
-            Calendar calendar = Calendar.getInstance();
-            int minutes = calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE);
-            if (quietHoursEnd < quietHoursStart) {
-                // Starts at night, ends in the morning.
-                return (minutes > quietHoursStart) || (minutes < quietHoursEnd);
-            } else {
-                return (minutes > quietHoursStart) && (minutes < quietHoursEnd);
-            }
-        }
-        return false;
-    }
 }
