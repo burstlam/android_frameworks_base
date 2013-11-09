@@ -107,6 +107,7 @@
     <string name="quick_settings_pie_off_label">Pie 已關閉</string>
     <string name="quick_settings_slim_pie_on_label">SlimPie 已打開</string>
     <string name="quick_settings_slim_pie_off_label">SlimPie 已關閉</string>
+    <string name="quick_settings_volume">音量</string>
 
     <!--  RamBar -->
     <string name="memory">RAM</string>
