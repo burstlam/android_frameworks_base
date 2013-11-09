@@ -421,6 +421,8 @@ public abstract class BaseStatusBar extends SystemUI implements
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.PIE_TRIGGER), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.PIE_GRAVITY), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.EXPANDED_DESKTOP_STATE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAV_HIDE_ENABLE), false, this);
@@ -431,6 +433,10 @@ public abstract class BaseStatusBar extends SystemUI implements
         @Override
         public void onChange(boolean selfChange) {
             updatePieControls();
+            if (Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PIE_STICK, 1) == 0) {
+                updatePieControls();
+            }
         }
     };
 
