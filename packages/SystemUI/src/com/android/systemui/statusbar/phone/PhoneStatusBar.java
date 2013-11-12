@@ -674,8 +674,16 @@ public class PhoneStatusBar extends BaseStatusBar {
         mLocationController = new LocationController(mContext); // will post a notification
         mBatteryController = new BatteryController(mContext);
         mSbBatteryController = (SbBatteryController)mStatusBarView.findViewById(R.id.battery_cluster);
-
+        mNetworkController = new NetworkController(mContext);
         mBluetoothController = new BluetoothController(mContext);
+
+        SignalClusterView signalCluster = (SignalClusterView)mStatusBarView.findViewById(R.id.signal_cluster);
+        mNetworkController.addSignalCluster(signalCluster);
+        signalCluster.setNetworkController(mNetworkController);
+
+        signalCluster = (SignalClusterView)mStatusBarView.findViewById(R.id.signal_cluster_alt);
+        mNetworkController.addSignalCluster(signalCluster);
+        signalCluster.setNetworkController(mNetworkController);
 
         if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
             mMSimNetworkController = new MSimNetworkController(mContext);
@@ -768,13 +776,13 @@ public class PhoneStatusBar extends BaseStatusBar {
         } else {
             mNetworkController = new NetworkController(mContext);
             if (!showingAltCluster) {
-                mSignalCluster = (SignalClusterView)mStatusBarView.findViewById(R.id.signal_cluster);
-                mNetworkController.addSignalCluster(mSignalCluster);
-                mSignalCluster.setNetworkController(mNetworkController);
+                signalCluster = (SignalClusterView)mStatusBarView.findViewById(R.id.signal_cluster);
+                mNetworkController.addSignalCluster(signalCluster);
+                signalCluster.setNetworkController(mNetworkController);
             } else {
-                mSignalCluster = (SignalClusterView)mStatusBarView.findViewById(R.id.signal_cluster_alt);
-                mNetworkController.addSignalCluster(mSignalCluster);
-                mSignalCluster.setNetworkController(mNetworkController);
+                signalCluster = (SignalClusterView)mStatusBarView.findViewById(R.id.signal_cluster_alt);
+                mNetworkController.addSignalCluster(signalCluster);
+                signalCluster.setNetworkController(mNetworkController);
             }
 
             final boolean isAPhone = mNetworkController.hasVoiceCallingFeature();
@@ -2777,7 +2785,6 @@ public class PhoneStatusBar extends BaseStatusBar {
             } else {
                 signal = mStatusBarView.findViewById(R.id.signal_cluster);
             }
-            final View signal2 = mStatusBarView.findViewById(R.id.signal_cluster);
             final View battery = mStatusBarView.findViewById(R.id.battery);
             final View clock = mStatusBarView.findViewById(R.id.clock);
             final View statusCarrierLabel = mStatusBarView.findViewById(R.id.status_carrier_label);
