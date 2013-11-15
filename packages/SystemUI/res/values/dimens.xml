@@ -384,4 +384,7 @@
     <dimen name="pies_sysinfo_radius">165dp</dimen>
     <dimen name="pies_sysinfo_second_layer_radius">255dp</dimen>
     <dimen name="pies_sysinfo_height">85sp</dimen>
+
+    <!-- Height of carrier label + close handle -->
+    <dimen name="weather_text_margin">56dp</dimen>
 </resources>

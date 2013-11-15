@@ -4947,6 +4947,34 @@ public final class Settings {
          */
         public static final String QUICK_SETTINGS_BACKGROUND_PRESSED_COLOR = "quick_settings_background_pressed_color";
 
+
+        /**
+         * @hide
+         */
+        public static final String WEATHER_PANEL_LONGCLICK = "weather_panel_longclick";
+
+        /**
+         * @hide
+         */
+        public static final String WEATHER_PANEL_SHORTCLICK = "weather_panel_shortclick";
+
+        /**
+         * How to show weather on the statusbar
+         *
+         * @hide
+         */
+        public static final String STATUSBAR_WEATHER_STYLE = "statusbar_weather_style";
+
+        /**
+         * @hide
+         */
+        public static final String USE_WEATHER = "use_weather";
+
+        /**
+         * @hide
+         */
+        public static final String WEATHER_SHOW_LOCATION = "weather_show_location";
+
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
