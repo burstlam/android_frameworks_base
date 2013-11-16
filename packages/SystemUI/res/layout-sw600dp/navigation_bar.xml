@@ -227,7 +227,7 @@
         <LinearLayout
             android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:id="@+id/nav_buttons"
@@ -246,11 +246,11 @@
                 android:layout_width="48dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="2dp"
-                android:src="@drawable/ic_sysbar_menu"
+                android:src="@drawable/ic_sysbar_menu_land"
                 systemui:keyCode="82"
                 android:layout_weight="0"
                 android:contentDescription="@string/accessibility_menu"
-                systemui:glowBackground="@drawable/ic_sysbar_highlight"
+                systemui:glowBackground="@drawable/ic_sysbar_highlight_land"
                 />
             <Space
                 android:layout_width="match_parent"
@@ -260,28 +260,28 @@
             <com.android.systemui.statusbar.policy.KeyButtonView android:id="@+id/back"
                 android:layout_width="162dp" android:paddingStart="42dp" android:paddingEnd="42dp"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_sysbar_back"
+                android:src="@drawable/ic_sysbar_back_land"
                 systemui:keyCode="4"
                 android:layout_weight="0"
-                systemui:glowBackground="@drawable/ic_sysbar_highlight"
+                systemui:glowBackground="@drawable/ic_sysbar_highlight_land"
                 android:contentDescription="@string/accessibility_back"
                 />
             <com.android.systemui.statusbar.policy.KeyButtonView android:id="@+id/home"
                 android:layout_width="162dp" android:paddingStart="42dp" android:paddingEnd="42dp"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_sysbar_home"
+                android:src="@drawable/ic_sysbar_home_land"
                 systemui:keyCode="3"
                 systemui:keyRepeat="true"
                 android:layout_weight="0"
-                systemui:glowBackground="@drawable/ic_sysbar_highlight"
+                systemui:glowBackground="@drawable/ic_sysbar_highlight_land"
                 android:contentDescription="@string/accessibility_home"
                 />
             <com.android.systemui.statusbar.policy.KeyButtonView android:id="@+id/recent_apps"
                 android:layout_width="162dp" android:paddingStart="42dp" android:paddingEnd="42dp"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_sysbar_recent"
+                android:src="@drawable/ic_sysbar_recent_land"
                 android:layout_weight="0"
-                systemui:glowBackground="@drawable/ic_sysbar_highlight"
+                systemui:glowBackground="@drawable/ic_sysbar_highlight_land"
                 android:contentDescription="@string/accessibility_recent"
                 />
             <Space
@@ -293,12 +293,12 @@
                 android:layout_width="48dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="2dp"
-                android:src="@drawable/ic_sysbar_menu"
+                android:src="@drawable/ic_sysbar_menu_land"
                 systemui:keyCode="82"
                 android:layout_weight="0"
                 android:visibility="invisible"
                 android:contentDescription="@string/accessibility_menu"
-                systemui:glowBackground="@drawable/ic_sysbar_highlight"
+                systemui:glowBackground="@drawable/ic_sysbar_highlight_land"
                 />
         </LinearLayout>
 
@@ -306,7 +306,7 @@
         <LinearLayout
             android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:id="@+id/lights_out"
             android:visibility="gone"
             >
