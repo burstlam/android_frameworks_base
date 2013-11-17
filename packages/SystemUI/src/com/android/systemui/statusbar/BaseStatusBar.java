@@ -741,10 +741,13 @@ public abstract class BaseStatusBar extends SystemUI implements
                              Settings.System.getInt(mContext.getContentResolver(),
                              Settings.System.EXPANDED_DESKTOP_MODE, 0) == 3);
 
+        boolean tabletMode = Settings.System.getInt(mContext.getContentResolver(),
+                            Settings.System.USER_UI_MODE, 0) == 1;
+
         boolean slimpieOff = Settings.System.getInt(mContext.getContentResolver(),
                             Settings.System.SPIE_CONTROLS, 0) == 0;
 
-        return (pie || (expandedOn && slimpieOff));
+        return ((pie || expandedOn && slimpieOff) && !tabletMode);
     }
 
     public void updatePieControls() {

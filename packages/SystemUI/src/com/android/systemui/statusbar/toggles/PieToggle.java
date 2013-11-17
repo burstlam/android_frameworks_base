@@ -28,11 +28,11 @@ public class PieToggle extends StatefulToggle {
     @Override
     protected void doEnable() {
         Settings.System.putInt(mContext.getContentResolver(),
-                Settings.System.PIE_CONTROLS, 1);
+                Settings.System.USER_UI_MODE, 0);
         Settings.System.putBoolean(mContext.getContentResolver(),
                 Settings.System.NAV_HIDE_ENABLE, true);
-        Settings.System.putBoolean(mContext.getContentResolver(),
-                Settings.System.NAVIGATION_BAR_SHOW_NOW, false);
+        Settings.System.putInt(mContext.getContentResolver(),
+                Settings.System.PIE_CONTROLS, 1);
     }
 
     @Override
@@ -41,8 +41,8 @@ public class PieToggle extends StatefulToggle {
                 Settings.System.PIE_CONTROLS, 0);
         Settings.System.putBoolean(mContext.getContentResolver(),
                 Settings.System.NAV_HIDE_ENABLE, false);
-        Settings.System.putBoolean(mContext.getContentResolver(),
-                Settings.System.NAVIGATION_BAR_SHOW_NOW, true);
+        Settings.System.putInt(mContext.getContentResolver(),
+                Settings.System.USER_UI_MODE, 0);
     }
 
     @Override
@@ -70,6 +70,9 @@ public class PieToggle extends StatefulToggle {
                     this);
             resolver.registerContentObserver(Settings.System
                     .getUriFor(Settings.System.NAV_HIDE_ENABLE), false,
+                    this);
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.USER_UI_MODE), false,
                     this);
         }
 

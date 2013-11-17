@@ -94,9 +94,7 @@ public class PieStatusPanel {
         mNotificationPanel = mPanel.getBar().getNotificationRowLayout();
         mNotificationPanel.setTag(NOTIFICATIONS_PANEL);
         mQS = mPanel.getBar().getQuickSettingsPanel();
-        if (mQS != null) {
         mQS.setTag(QUICK_SETTINGS_PANEL);
-        }
 
         mPanelParents[NOTIFICATIONS_PANEL] = (ViewGroup) mNotificationPanel.getParent();
         mPanelParents[QUICK_SETTINGS_PANEL] = (ViewGroup) mQS.getParent();

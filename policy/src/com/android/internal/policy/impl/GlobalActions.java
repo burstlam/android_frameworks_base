@@ -1295,6 +1295,8 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             case 3:
                 mPieControl = !mPieControl;
                 Settings.System.putBoolean(mContext.getContentResolver(),
+                    Settings.System.USER_UI_MODE, false );
+                Settings.System.putBoolean(mContext.getContentResolver(),
                     Settings.System.PIE_CONTROLS,
                          mPieControl );
                     Settings.System.putBoolean(mContext.getContentResolver(),
