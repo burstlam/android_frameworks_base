@@ -232,7 +232,6 @@ public class PieMenu extends FrameLayout {
     private boolean mUsePower;
     private boolean mHapticFeedback;
     private boolean mIsProtected;
-    private boolean mNavbarOff;
 
     // Animations
     private int mGlowOffsetLeft = 150;
@@ -286,12 +285,9 @@ public class PieMenu extends FrameLayout {
         mPanelOrientation = mPanel.getOrientation();
 
         // Fetch modes
-        boolean expanded = Settings.System.getInt(mContext.getContentResolver(),
-                             Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1 && 
-                            (Settings.System.getInt(mContext.getContentResolver(),
-                             Settings.System.EXPANDED_DESKTOP_MODE, 0) == 1 ||
-                             Settings.System.getInt(mContext.getContentResolver(),
-                             Settings.System.EXPANDED_DESKTOP_MODE, 0) == 3);
+        boolean sbexpanded = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.EXPANDED_DESKTOP_MODE, 0) == 2;
+        
         mUseMenuAlways = Settings.System.getInt(mContext.getContentResolver(), Settings.System.PIE_MENU, 1) == 1;
         mUseLastApp = Settings.System.getInt(mContext.getContentResolver(), Settings.System.PIE_LAST_APP, 0) == 1;
         mUseKillTask = Settings.System.getInt(mContext.getContentResolver(), Settings.System.PIE_KILL_TASK, 0) == 1;

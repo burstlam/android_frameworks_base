@@ -65,24 +65,26 @@ public class PieStatusPanel {
     public static final int NOTIFICATIONS_PANEL = 0;
     public static final int QUICK_SETTINGS_PANEL = 1;
 
-    private Context mContext;
-    private View mContentHeader;
-    private ScrollView mScrollView;
+    private static Context mContext;
+    private static View mContentHeader;
+    private static ScrollView mScrollView;
     private View mClearButton;
     private View mContentFrame;
     private View mHaloButton;
-    private QuickSettingsContainerView mQS;
-    private NotificationRowLayout mNotificationPanel;
-    private PieControlPanel mPanel;
-    private ViewGroup[] mPanelParents = new ViewGroup[2];
+    private View mQuickSettingsButton;
+    private View mNotificationButton;
+    private static QuickSettingsContainerView mQS;
+    private static NotificationRowLayout mNotificationPanel;
+    private static PieControlPanel mPanel;
+    private static ViewGroup[] mPanelParents = new ViewGroup[2];
 
     private Handler mHandler = new Handler();
     private NotificationData mNotificationData;
     private Runnable mPostCollapseCleanup = null;
 
-    private boolean mHaloActive;
+    private boolean mHaloActive, mHaloEnabled;
 
-    private int mCurrentViewState = -1;
+    private static int mCurrentViewState = -1;
     private int mFlipViewState = -1;
 
     public PieStatusPanel(Context context, PieControlPanel panel) {
@@ -92,7 +94,9 @@ public class PieStatusPanel {
         mNotificationPanel = mPanel.getBar().getNotificationRowLayout();
         mNotificationPanel.setTag(NOTIFICATIONS_PANEL);
         mQS = mPanel.getBar().getQuickSettingsPanel();
+        if (mQS != null) {
         mQS.setTag(QUICK_SETTINGS_PANEL);
+        }
 
         mPanelParents[NOTIFICATIONS_PANEL] = (ViewGroup) mNotificationPanel.getParent();
         mPanelParents[QUICK_SETTINGS_PANEL] = (ViewGroup) mQS.getParent();
@@ -111,6 +115,16 @@ public class PieStatusPanel {
         mHaloButton = (ImageView) mPanel.getBar().mContainer.findViewById(R.id.halo_button);
         if (mHaloButton != null) {
             mHaloButton.setOnClickListener(mHaloButtonListener);
+        }
+
+        mQuickSettingsButton = (ImageView) mPanel.getBar().mContainer.findViewById(R.id.quicksettings_button);
+        if (mQuickSettingsButton != null) {
+            mQuickSettingsButton.setOnClickListener(mQuickSettingsButtonListener);
+        }
+
+        mNotificationButton = (ImageView) mPanel.getBar().mContainer.findViewById(R.id.notification_button);
+        if (mNotificationButton != null) {
+            mNotificationButton.setOnClickListener(mNotificationButtonListener);
         }
 
         // Listen for HALO state for PIE
@@ -133,15 +147,51 @@ public class PieStatusPanel {
         }
     };
 
+    private View.OnClickListener mQuickSettingsButtonListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            setCurrentViewState(PieStatusPanel.QUICK_SETTINGS_PANEL);
+            showTilesPanel();
+            mNotificationButton.setVisibility(View.VISIBLE);
+        }
+    };
+
+    private View.OnClickListener mNotificationButtonListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            setCurrentViewState(PieStatusPanel.NOTIFICATIONS_PANEL);
+            showNotificationsPanel();
+            mQuickSettingsButton.setVisibility(View.VISIBLE);
+        }
+    };
+
     protected void showHaloButton(boolean show) {
         if (mHaloButton != null) {
             if(show) {
                 mHaloActive = Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.HALO_ACTIVE, 0) == 1;
+                mHaloEnabled = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.HALO_ENABLED, 0) == 1;
                 mHaloButton.setVisibility(!mHaloActive ? View.VISIBLE : View.GONE);
             } else {
                 mHaloButton.setVisibility(View.GONE);
             }
+        }
+    }
+
+    protected void showQuickSettingsButton(boolean show) {
+        if (mQuickSettingsButton != null) {
+            mQuickSettingsButton.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
+        if (mNotificationButton != null) {
+            mNotificationButton.setVisibility(!show ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    protected void showNotificationButton(boolean show) {
+        if (mNotificationButton != null) {
+            mNotificationButton.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
+        if (mQuickSettingsButton != null) {
+            mQuickSettingsButton.setVisibility(!show ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -169,7 +219,7 @@ public class PieStatusPanel {
                         break;
                     case MotionEvent.ACTION_UP:
                         if(!hasScrolled) {
-                            hidePanels(true);
+                            ResetPanels(true);
                         }
                         break;
                 }
@@ -276,6 +326,14 @@ public class PieStatusPanel {
         if (reset) mCurrentViewState = -1;
     }
 
+    public static void ResetPanels(boolean reset) {
+        if (mNotificationPanel != null && mQS != null) {
+            hidePanel(mNotificationPanel);
+            hidePanel(mQS);
+        }
+        if (reset) mCurrentViewState = -1;
+    }
+
     public void swapPanels() {
         hidePanels(false);
         if (mCurrentViewState == NOTIFICATIONS_PANEL) {
@@ -287,7 +345,7 @@ public class PieStatusPanel {
         }
     }
 
-    private ViewGroup getPanelParent(View panel) {
+    private static ViewGroup getPanelParent(View panel) {
         if (((Integer)panel.getTag()).intValue() == NOTIFICATIONS_PANEL) {
             return mPanelParents[NOTIFICATIONS_PANEL];
         } else {
@@ -299,6 +357,7 @@ public class PieStatusPanel {
         showPanel(mQS);
         ShowClearAll(false);
         showHaloButton(false);
+        showNotificationButton(true);
     }
 
     public void showNotificationsPanel() {
@@ -308,6 +367,7 @@ public class PieStatusPanel {
         boolean clearable = any && mNotificationData.hasClearableItems();
         ShowClearAll(clearable);
         showHaloButton(true);
+        showQuickSettingsButton(true);
     }
 
     public void hideTilesPanel() {
@@ -345,7 +405,7 @@ public class PieStatusPanel {
         updateContainer(true);
     }
 
-    private void hidePanel(View panel) {
+    public static void hidePanel(View panel) {
         ViewGroup parent = getPanelParent(panel);
         mScrollView.removeAllViews();
         parent.removeAllViews();
@@ -353,12 +413,12 @@ public class PieStatusPanel {
         updateContainer(false);
     }
 
-    private void updateContainer(boolean visible) {
+    private static void updateContainer(boolean visible) {
         mPanel.getBar().mContainer.setVisibility(visible ? View.VISIBLE : View.GONE);
         updatePanelConfiguration();
     }
 
-    public void updatePanelConfiguration() {
+    public static void updatePanelConfiguration() {
         int padding = mContext.getResources().getDimensionPixelSize(R.dimen.pie_panel_padding);
         mScrollView.setPadding(padding,0,padding,0);
         mContentHeader.setPadding(padding,0,padding,0);
