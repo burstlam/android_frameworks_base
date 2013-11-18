@@ -3639,6 +3639,8 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.WEATHER_PANEL_SHORTCLICK), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.WEATHER_PANEL_LONGCLICK), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUSBAR_WEATHER_STYLE), false, this);
             setNotificationRowHelper();
             updateStatusBar();
         }
