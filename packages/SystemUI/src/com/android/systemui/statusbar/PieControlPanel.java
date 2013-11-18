@@ -330,6 +330,13 @@ public class PieControlPanel extends FrameLayout implements StatusBarPanel, OnNa
             Intent appWindow = new Intent();
             appWindow.setAction("com.android.systemui.ACTION_SHOW_APP_WINDOW");
             mContext.sendBroadcast(appWindow);
+        } else if (buttonName.equals(PieControl.ACT_QS_BUTTON)) {
+            try {
+                IStatusBarService.Stub.asInterface(                
+                        ServiceManager.getService(mContext.STATUS_BAR_SERVICE)).toggleQSShade();
+            } catch (RemoteException e) {
+                // wtf is this
+            }
         } else if (buttonName.equals(PieControl.ACT_NOTIF_BUTTON)) {
             try {
                 IStatusBarService.Stub.asInterface(

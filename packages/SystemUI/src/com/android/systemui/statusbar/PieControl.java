@@ -57,6 +57,7 @@ public class PieControl implements OnClickListener {
     public static final String ACT_NOTIF_BUTTON = "##actnotif##";
     public static final String SCREENSHOT_BUTTON = "##screenshot##";
     public static final String POWER_BUTTON = "##power##";
+    public static final String ACT_QS_BUTTON = "##actqs##";
 
     protected Context mContext;
     protected PieMenu mPie;
@@ -73,6 +74,7 @@ public class PieControl implements OnClickListener {
     private PieItem mSearch;
     private PieItem mScreenShot;
     private PieItem mPower;
+    private PieItem mActQs;
     private OnNavButtonPressedListener mListener;
     private PieControlPanel mPanel;
 
@@ -134,6 +136,7 @@ public class PieControl implements OnClickListener {
         mKillTask = makeItem(R.drawable.ic_sysbar_killtask_pie, 1, KILL_TASK_BUTTON, true);
         mAppWindow = makeItem(R.drawable.ic_sysbar_appwindow_pie, 1, APP_WINDOW_BUTTON, true);
         mActNotif = makeItem(R.drawable.ic_sysbar_notifications_pie, 1, ACT_NOTIF_BUTTON, true);
+        mActQs = makeItem(R.drawable.ic_sysbar_quicksettings, 1, ACT_QS_BUTTON, true);
         mScreenShot = makeItem(R.drawable.ic_sysbar_screenshot_pie, 1, SCREENSHOT_BUTTON, true);
         mPower = makeItem(R.drawable.ic_sysbar_power, 1, POWER_BUTTON, true);
         mMenu = makeItem(R.drawable.ic_sysbar_menu, 1, MENU_BUTTON, true);
@@ -144,6 +147,7 @@ public class PieControl implements OnClickListener {
         mPie.addItem(mLastApp);
         mPie.addItem(mAppWindow);
         mPie.addItem(mActNotif);
+        mPie.addItem(mActQs);
 
         if(mIsAssistantAvailable) {
             mSearch = makeItem(R.drawable.ic_sysbar_search_side, 1, SEARCH_BUTTON, true);
