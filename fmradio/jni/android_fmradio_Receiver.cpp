@@ -621,7 +621,7 @@ static jint androidFmRadioRxGetState(JNIEnv * env, jobject obj)
 {
     FmRadioState_t state;
 
-    ALOGI("androidFmRadioRxGetState, state\n");
+    //ALOGI("androidFmRadioRxGetState, state\n");
 
     pthread_mutex_lock(fmReceiverSession.dataMutex_p);
     state = fmReceiverSession.state;
