@@ -25,7 +25,6 @@ import android.view.accessibility.IAccessibilityInteractionConnectionCallback;
 /**
  * Interface given to an AccessibilitySerivce to talk to the AccessibilityManagerService.
  *
- * @hide
  */
 interface IAccessibilityServiceConnection {
 

@@ -74,6 +74,7 @@ import android.service.dreams.DreamService;
 import android.service.dreams.IDreamManager;
 import android.util.DisplayMetrics;
 import android.util.EventLog;
+import android.util.ExtendedPropertiesUtils;
 import android.util.Log;
 import android.util.Slog;
 import android.util.SparseArray;
@@ -575,6 +576,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private long mPowerKeyTime;
     private KeyguardManager mKeyguardManager;
 
+    private int mSystemDpi = 0;
+    private int mSystemUiDpi = 0;
+    private int mSystemUiLayout = 0;
+    private int mNavBarDpi = 0;
+    private int mStatusBarDpi = 0;
+
     SettingsObserver mSettingsObserver;
     ShortcutManager mShortcutManager;
     PowerManager.WakeLock mBroadcastWakeLock;
@@ -722,9 +729,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             updateSettings();
         }
 
-        @Override public void onChange(boolean selfChange) {
-            updateSettings();
-            updateRotation(false);
+        @Override
+        public void onChange(boolean selfChange) {
+            update(false);
         }
     }
     
@@ -1257,8 +1264,29 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         try {
             mOrientationListener.setCurrentRotation(windowManager.getRotation());
         } catch (RemoteException ex) { }
+
+        updateHybridLayout();
+
         mSettingsObserver = new SettingsObserver(mHandler);
         mSettingsObserver.observe();
+
+        // SystemUI reboot
+        mContext.getContentResolver().registerContentObserver(
+                Settings.System.getUriFor(Settings.System.USER_INTERFACE_STATE), false, new ContentObserver(new Handler()) {
+            @Override
+            public void onChange(boolean selfChange) {
+                // Return for reset triggers
+                if (Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.USER_INTERFACE_STATE, 0) == 0) {
+                    return;
+                }
+
+                // Update layout
+                update(true);
+
+                // Reset trigger
+                Settings.System.putInt(mContext.getContentResolver(), Settings.System.USER_INTERFACE_STATE, 0);
+            }});
 
         // Expanded desktop
         mContext.getContentResolver().registerContentObserver(
@@ -1266,6 +1294,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     false, new ContentObserver(new Handler()) {
             @Override
             public void onChange(boolean selfChange) {
+
+                updateHybridLayout();
+                update(false);
 
                 if (Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.EXPANDED_DESKTOP_RESTART_LAUNCHER, 1) == 1) {
@@ -1564,6 +1595,34 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
     }
 
+    private void update(boolean updateUi) {
+        if (updateUi) {
+            updateHybridLayout();
+        }
+
+        updateSettings();
+        updateRotation(false);
+
+        if (updateUi) closeApplication("com.android.systemui");
+    }
+    
+    private int updateHybridLayout() {
+        boolean expDesktop = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1;
+        int oldSystemUILayout = mSystemUiLayout == 0 ?
+                ExtendedPropertiesUtils.getActualProperty("com.android.systemui.layout") : mSystemUiLayout;
+        ExtendedPropertiesUtils.refreshProperties();
+        mSystemDpi = ExtendedPropertiesUtils.getActualProperty("android.dpi");
+        mSystemUiDpi = ExtendedPropertiesUtils.getActualProperty("com.android.systemui.dpi");
+        mSystemUiLayout = ExtendedPropertiesUtils.getActualProperty("com.android.systemui.layout");
+        android.util.Log.d("*********************************************", "UPDATE mSystemUiLayout=" + mSystemUiLayout);
+        int mNavigationBarPercent = expDesktop ? 0 : Integer.parseInt(ExtendedPropertiesUtils.getProperty("com.android.systemui.navbar.dpi", "100"));
+        mNavBarDpi = mNavigationBarPercent * mSystemUiDpi / 100;
+        int mStatusBarPercent = Integer.parseInt(ExtendedPropertiesUtils.getProperty("com.android.systemui.statusbar.dpi", "100"));
+        mStatusBarDpi = mStatusBarPercent * mSystemUiDpi / 100;
+        return oldSystemUILayout;
+    }
+
     public void updateSettings() {
         DisplayMetrics metrics = new DisplayMetrics();
         WindowManager wm = (WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE);
@@ -1756,8 +1815,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                                 mContext.getResources()
                                         .getDimensionPixelSize(
                                                 com.android.internal.R.dimen.navigation_bar_width));
-                updateDisplayMetrics = true;
+            updateDisplayMetrics = true;
             }
+            getDimensions();
 
             // Configure rotation lock.
             int userRotation = Settings.System.getIntForUser(resolver,
@@ -1805,6 +1865,35 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             updateRotation(true);
         } else if (updateDisplayMetrics) {
             updateDisplayMetrics();
+        }
+    }
+
+    public void getDimensions(){
+        float statusBarHeight = ((float)mContext.getResources().getDimensionPixelSize(
+                com.android.internal.R.dimen.status_bar_height) *
+                DisplayMetrics.DENSITY_DEVICE / mSystemDpi) /
+                DisplayMetrics.DENSITY_DEVICE * mStatusBarDpi;
+
+        mStatusBarHeight = Math.round(statusBarHeight);
+
+        if (mSystemUiLayout < 600) {
+            // 0-599dp: "phone" UI with a separate status & navigation bar
+            mHasSystemNavBar = false;
+            mNavigationBarCanMove = true;
+            Settings.System.putInt(mContext.getContentResolver(),
+                Settings.System.TABLET_UI, 0);
+        } else if (mSystemUiLayout < 720) {
+            // 600+dp: "phone" UI with modifications for larger screens
+            mHasSystemNavBar = false;
+            mNavigationBarCanMove = false;
+            Settings.System.putInt(mContext.getContentResolver(),
+                Settings.System.TABLET_UI, 2);
+        } else if (mSystemUiLayout == 1000) {
+            // 1000dp: "tablet" UI with a single combined status & navigation bar
+            mHasSystemNavBar = true;
+            mNavigationBarCanMove = false;
+            Settings.System.putInt(mContext.getContentResolver(),
+                Settings.System.TABLET_UI, 1);
         }
     }
 
@@ -4203,6 +4292,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     && !mHideStatusBar
                     && (mExpandedState == 0
                     || mExpandedState == 1 && mExpandedMode < 2))) {
+            updateDisplayMetrics();
                 if (DEBUG_LAYOUT) Log.v(TAG, "Showing status bar: forced");
                 if (mStatusBar.showLw(true)) changes |= FINISH_LAYOUT_REDO_LAYOUT;
             } else if (mTopFullscreenOpaqueWindowState != null) {
@@ -5021,7 +5111,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 // observing the relevant settings for the newly-active user,
                 // and then updates our own bookkeeping based on the now-
                 // current user.
-                mSettingsObserver.onChange(false);
+                // mSettingsObserver.onChange(false);
 
                 // force a re-application of focused window sysui visibility.
                 // the window may never have been shown for this user
