@@ -431,12 +431,23 @@ public abstract class BaseStatusBar extends SystemUI implements
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.PIE_TRIGGER), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.PIE_GRAVITY), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.PIE_STICK), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.EXPANDED_DESKTOP_STATE), false, this);
         }
 
         @Override
         public void onChange(boolean selfChange) {
             updatePieControls();
+            if (Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PIE_CONTROLS, 0) == 0) {
+                    PieStatusPanel.ResetPanels(true);
+            } else if (Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.PIE_STICK, 1) == 0) {
+                updatePieControls();
+            }
         }
     };
 
@@ -736,10 +747,13 @@ public abstract class BaseStatusBar extends SystemUI implements
                              Settings.System.EXPANDED_DESKTOP_MODE, 0) == 1 ||
                              Settings.System.getInt(mContext.getContentResolver(),
                              Settings.System.EXPANDED_DESKTOP_MODE, 0) == 3);
+        boolean tabletMode = Settings.System.getInt(mContext.getContentResolver(),
+                             Settings.System.TABLET_UI, 0) == 1;
+
         boolean slimpieOff = Settings.System.getInt(mContext.getContentResolver(),
                              Settings.System.SPIE_CONTROLS, 0) == 0;
 
-        return (pie || (expandedOn && slimpieOff));
+        return ((pie || expandedOn && slimpieOff) && !tabletMode);
     }
 
     public void updatePieControls() {
