@@ -3131,6 +3131,21 @@ public final class Settings {
         public static final String DIALER_DIRECT_CALL = "dialer_direct_call";
 
         /**
+         * Whether to enable Swipe Back Layout Gesture
+         * Default: 0
+         *
+         * @hide
+         */
+        public static final String SWIPE_BACK_GESTURE_ENABLED = "swipe_back_gesture_enabled";
+
+        /**
+         * Swipe edge of the swipe back layout gesture
+         *
+         * @hide
+         */
+        public static final String SWIPE_BACK_GESTURE_EDGE = "swipe_back_gesture_edge";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
