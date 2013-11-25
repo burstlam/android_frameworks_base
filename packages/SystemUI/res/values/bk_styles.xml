@@ -30,7 +30,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
         <item name="android:textSize">@dimen/network_stats_text_size</item>
-        <item name="android:textColor">#ff3a3b39</item>
+        <item name="android:textColor">#ffffffff</item>
     </style>
 
 </resources>
