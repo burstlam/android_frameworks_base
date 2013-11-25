@@ -220,4 +220,5 @@
 
     <!-- used by DessertCase -->
     <dimen name="dessert_case_cell_size">192dp</dimen>
+
 </resources>
