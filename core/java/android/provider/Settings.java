@@ -2571,7 +2571,6 @@ public final class Settings {
         public static final String LOCKSCREEN_DISABLED = "lockscreen.disabled";
 
         /**
-<<<<<<< HEAD
          * Whether to display notifications on screen when screen is off
          * @hide
          */
