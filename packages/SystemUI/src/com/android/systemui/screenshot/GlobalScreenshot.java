@@ -357,6 +357,8 @@ class GlobalScreenshot {
 
     private MediaActionSound mCameraSound;
 
+    private final int mSfHwRotation;
+
 
     /**
      * @param context everything needs a context :(
@@ -410,6 +412,9 @@ class GlobalScreenshot {
         // Setup the Camera shutter sound
         mCameraSound = new MediaActionSound();
         mCameraSound.load(MediaActionSound.SHUTTER_CLICK);
+
+        // Load hardware rotation from prop
+        mSfHwRotation = android.os.SystemProperties.getInt("ro.sf.hwrotation",0) / 90;
     }
 
     /**
@@ -453,7 +458,7 @@ class GlobalScreenshot {
         float[] dims = {mDisplayMetrics.widthPixels, mDisplayMetrics.heightPixels};
         int rot = mDisplay.getRotation();
         // Allow for abnormal hardware orientation
-        rot = (rot + (android.os.SystemProperties.getInt("ro.sf.hwrotation",0) / 90 )) % 4;
+        rot = (rot + mSfHwRotation) % 4;
         float degrees = getDegreesForRotation(rot);
         boolean requiresRotation = (degrees > 0);
         if (requiresRotation) {
