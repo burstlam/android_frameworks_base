@@ -316,8 +316,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
     int mInitialTouchX;
     int mInitialTouchY;
 
-    private boolean mRecreating = false;
-
     // for disabling the status bar
     int mDisabled = 0;
     boolean mDisableHomeLongpress;
