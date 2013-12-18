@@ -43,13 +43,17 @@
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.StatusBar.Expanded.Clock"
             android:layout_centerVertical="true"
+            android:clickable="true"
             />
 
     <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:layout_toEndOf="@id/clock"           
+            android:layout_toEndOf="@id/clock"
+            android:background="@drawable/ic_notify_button_bg"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:layout_centerVertical="true"
             >  
     <com.android.systemui.statusbar.policy.DateView 
         android:id="@+id/date"
