@@ -4734,6 +4734,19 @@ public final class Settings {
          */
         public static final String LARGE_RECENTS = "large_recents";
 
+        /**  
+         * Allows to show the background activity back the lockscreen
+         * @hide
+         */
+        public static final String LOCKSCREEN_SEE_THROUGH = "lockscreen_see_through";
+
+        /**
+         * Allows blurring the lockscreen background
+         * @hide
+         */
+        public static final String LOCKSCREEN_BLUR_BEHIND = "lockscreen_blur_behind";
+        public static final String LOCKSCREEN_BLUR_RADIUS = "lockscreen_blur_radius";
+
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
