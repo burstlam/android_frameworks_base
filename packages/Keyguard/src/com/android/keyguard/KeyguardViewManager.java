@@ -44,6 +44,7 @@ import android.os.IBinder;
 import android.os.Parcelable;
 import android.os.RemoteException;
 import android.os.SystemProperties;
+import android.provider.Settings;
 import android.renderscript.Allocation;
 import android.renderscript.Allocation.MipmapControl;
 import android.renderscript.Element;
