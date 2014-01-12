@@ -4083,6 +4083,13 @@ public final class Settings {
         public static final String SCREEN_STATE_MOBILE_DATA = "screen_state_mobile_data";
 
         /**
+         * Should the non-intrsive incall ui be used
+         *
+         * @hide
+         */
+        public static final String NON_INTRUSIVE_INCALL = "non_intrusive_incall";
+
+        /**
          * Should Flip to Silence be used
          *
          * @hide
