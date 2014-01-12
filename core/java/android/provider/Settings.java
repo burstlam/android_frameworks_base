@@ -4083,13 +4083,6 @@ public final class Settings {
         public static final String SCREEN_STATE_MOBILE_DATA = "screen_state_mobile_data";
 
         /**
-         * Whether incomming call UI stays in background
-         *
-         * @hide
-         */
-        public static final String CALL_UI_IN_BACKGROUND = "call_ui_in_background";
-
-        /**
          * Should Flip to Silence be used
          *
          * @hide
