@@ -1173,7 +1173,7 @@ final class ActivityStack {
                         }
                     }
 
-                    if (r.fullscreen && !isSplitView) {
+                    if (r.fullscreen && !isSplitView && !r.floatingWindow) {
                         // At this point, nothing else needs to be shown
                         if (DEBUG_VISBILITY) Slog.v(TAG, "Fullscreen: at " + r);
                         behindFullscreen = true;
@@ -2582,6 +2582,9 @@ final class ActivityStack {
         if (mResumedActivity == r) {
             mResumedActivity = null;
         }
+        if (mPausingActivity == r) {
+            mPausingActivity = null;
+        }
         final ActivityState prevState = r.state;
         if (DEBUG_STATES) Slog.v(TAG, "Moving to FINISHING: " + r);
         r.state = ActivityState.FINISHING;
@@ -3239,6 +3242,7 @@ final class ActivityStack {
         final TaskRecord task = mResumedActivity != null ? mResumedActivity.task : null;
         if (task == tr && task.mOnTopOfHome || numTasks <= 1) {
             tr.mOnTopOfHome = false;
+
             return mStackSupervisor.resumeHomeActivity(null);
         }
 
