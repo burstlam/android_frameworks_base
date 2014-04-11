@@ -23,7 +23,9 @@ import com.android.keyguard.KeyguardUpdateMonitor.DisplayClientState;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.app.SearchManager;
 import android.app.admin.DevicePolicyManager;
 import android.appwidget.AppWidgetHost;
@@ -82,6 +84,9 @@ import java.util.List;
 public class KeyguardHostView extends KeyguardViewBase {
     private static final String TAG = "KeyguardHostView";
 
+    private static final String SHAKE_SECURE_TIMER =
+        "com.android.keyguard.SHAKE_SECURE_TIMER";
+
     // Transport control states.
     static final int TRANSPORT_GONE = 0;
     static final int TRANSPORT_INVISIBLE = 1;
@@ -114,6 +119,7 @@ public class KeyguardHostView extends KeyguardViewBase {
     private SecurityMode mCurrentSecuritySelection = SecurityMode.Invalid;
     private int mAppWidgetToShow;
     private boolean mDefaultAppWidgetAttached;
+    private long mShakeTimer;
 
     private static boolean mShakeEnabled;
     private static boolean mSecurityBypassed;
@@ -483,6 +489,9 @@ public class KeyguardHostView extends KeyguardViewBase {
                 mContext.getContentResolver(),
                 Settings.Secure.LOCK_SHAKE_TEMP_SECURE, 0, mUserId) == 1;
         if (mShakeEnabled) {
+            mShakeTimer = Settings.Secure.getIntForUser(
+                    mContext.getContentResolver(),
+                    Settings.Secure.LOCK_SHAKE_SECURE_TIMER, 0, mUserId);
             mSecurityBypassed = Settings.Secure.getIntForUser(
                     mContext.getContentResolver(),
                     Settings.Secure.LOCK_TEMP_SECURE_MODE, 0, mUserId) == 0;
@@ -490,6 +499,8 @@ public class KeyguardHostView extends KeyguardViewBase {
                     mContext.getSystemService(Context.POWER_SERVICE);
             if (powerManager.isScreenOn()) {
                 registerShakeListener();
+            } else {
+                initializeShakeTimer();
             }
         }
 
@@ -544,6 +555,37 @@ public class KeyguardHostView extends KeyguardViewBase {
 
     public static boolean shakeInsecure() {
         return mShakeEnabled && mSecurityBypassed;
+    }
+
+    private long shakeTimedSecurity() {
+        if (shakeInsecure() && mShakeTimer > 0
+                && mLockPatternUtils.isSecure()) {
+            return mShakeTimer + SystemClock.elapsedRealtime();
+        }
+        return 0;
+    }
+
+    private void initializeShakeTimer() {
+        final long shakeTimedSecurity = shakeTimedSecurity();
+        if (shakeTimedSecurity > 0) {
+            scheduleShakeSecurity(shakeTimedSecurity);
+        }
+    }
+
+    private void scheduleShakeSecurity(final long timer) {
+        AlarmManager alarmManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(SHAKE_SECURE_TIMER);
+        PendingIntent makeSecure = PendingIntent.getBroadcast(mContext,
+                0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        if (timer <= 0) {
+            alarmManager.cancel(makeSecure);
+        } else {
+            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, timer, makeSecure);
+        }
+    }
+
+    public static void shakeSecureNow() {
+        mSecurityBypassed = false;
     }
 
     private void setLockColor() {
@@ -1267,6 +1309,10 @@ public class KeyguardHostView extends KeyguardViewBase {
 
     @Override
     public void onScreenTurnedOn() {
+        if (shakeInsecure() && mLockPatternUtils.isSecure()
+                && mViewMediatorCallback != null) {
+            scheduleShakeSecurity(0);
+        }
         if (DEBUG) Log.d(TAG, "screen on, instance " + Integer.toHexString(hashCode()));
         showPrimarySecurityScreen(false);
         getSecurityView(mCurrentSecuritySelection).onResume(KeyguardSecurityView.SCREEN_ON);
@@ -1287,6 +1333,7 @@ public class KeyguardHostView extends KeyguardViewBase {
 
     @Override
     public void onScreenTurnedOff() {
+        initializeShakeTimer();
         if (DEBUG) Log.d(TAG, String.format("screen off, instance %s at %s",
                 Integer.toHexString(hashCode()), SystemClock.uptimeMillis()));
         // Once the screen turns off, we no longer consider this to be first boot and we want the
