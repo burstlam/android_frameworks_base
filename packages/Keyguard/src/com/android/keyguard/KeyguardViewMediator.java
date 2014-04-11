@@ -326,6 +326,11 @@ public class KeyguardViewMediator {
          * Report when keyguard is actually gone
          */
         void keyguardGone();
+
+        /**
+         * Set statusbar flags
+         */
+        void adjustStatusBarLocked();
     }
 
     KeyguardUpdateMonitorCallback mUpdateCallback = new KeyguardUpdateMonitorCallback() {
@@ -484,6 +489,11 @@ public class KeyguardViewMediator {
         @Override
         public void keyguardGone() {
             mKeyguardDisplayManager.hide();
+        }
+
+        @Override
+        public void adjustStatusBarLocked() {
+            KeyguardViewMediator.this.adjustStatusBarLocked();
         }
     };
 
@@ -1393,13 +1403,22 @@ public class KeyguardViewMediator {
                 // (like recents). Temporary enable/disable (e.g. the "back" button) are
                 // done in KeyguardHostView.
                 flags |= StatusBarManager.DISABLE_RECENT;
-                if (isSecure() || !ENABLE_INSECURE_STATUS_BAR_EXPAND) {
-                    // showing secure lockscreen; disable expanding.
-                    flags |= StatusBarManager.DISABLE_EXPAND;
+                final boolean isSecure = isSecure();
+                boolean tempDisable = false;
+                if (isSecure && KeyguardHostView.shakeInsecure()) {
+                    tempDisable = true;
                 }
-                if (isSecure()) {
-                    // showing secure lockscreen; disable ticker.
-                    flags |= StatusBarManager.DISABLE_NOTIFICATION_TICKER;
+                if (isSecure || !ENABLE_INSECURE_STATUS_BAR_EXPAND) {
+                    if (!tempDisable) {
+                        // showing secure lockscreen; disable expanding.
+                        flags |= StatusBarManager.DISABLE_EXPAND;
+                    }
+                }
+                if (isSecure) {
+                    if (!tempDisable) {
+                        // showing secure lockscreen; disable ticker.
+                        flags |= StatusBarManager.DISABLE_NOTIFICATION_TICKER;
+                    }
                 }
                 if (!isAssistantAvailable()) {
                     flags |= StatusBarManager.DISABLE_SEARCH;

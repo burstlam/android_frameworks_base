@@ -6542,6 +6542,19 @@ public final class Settings {
         public static final String LOCK_BEFORE_UNLOCK = "lock_before_unlock";
 
         /**
+         *Whether shaking the device enables a secure screen
+         * @hide
+         */
+        public static final String LOCK_SHAKE_TEMP_SECURE = "lock_shake_temp_secure";
+
+        /**
+         *Whether the device will unlock itself or not upon completeion
+         *of the insecure lock challenge
+         * @hide
+         */
+        public static final String LOCK_TEMP_SECURE_MODE = "lock_temp_secure_mode";
+
+        /**
          * Determines the width and height of the LockPatternView widget
          * @hide
          */
