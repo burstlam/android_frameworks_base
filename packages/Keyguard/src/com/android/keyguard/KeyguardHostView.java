@@ -108,12 +108,12 @@ public class KeyguardHostView extends KeyguardViewBase {
     private KeyguardTransportControlView mTransportControl;
     private ChallengeLayout mChallenge;
     private boolean mIsVerifyUnlockOnly;
+    private boolean mLockBeforeUnlock;
+    private View mExpandChallengeView;
     private boolean mEnableFallback; // TODO: This should get the value from KeyguardPatternView
     private SecurityMode mCurrentSecuritySelection = SecurityMode.Invalid;
     private int mAppWidgetToShow;
     private boolean mDefaultAppWidgetAttached;
-
-    private View mExpandChallengeView;
 
     private static boolean mShakeEnabled;
     private static boolean mSecurityBypassed;
@@ -203,7 +203,8 @@ public class KeyguardHostView extends KeyguardViewBase {
         Context userContext = null;
         try {
             final String packageName = "system";
-            userContext = mContext.createPackageContextAsUser(packageName, 0, new UserHandle(mUserId));
+            userContext = mContext.createPackageContextAsUser(packageName, 0,
+                    new UserHandle(mUserId));
 
         } catch (NameNotFoundException e) {
             e.printStackTrace();
@@ -473,13 +474,18 @@ public class KeyguardHostView extends KeyguardViewBase {
             };
         }
 
+        mLockBeforeUnlock = Settings.Secure.getIntForUser(
+                mContext.getContentResolver(),
+                Settings.Secure.LOCK_BEFORE_UNLOCK, 0,
+                UserHandle.USER_CURRENT) == 1;
+
         mShakeEnabled = Settings.Secure.getIntForUser(
                 mContext.getContentResolver(),
                 Settings.Secure.LOCK_SHAKE_TEMP_SECURE, 0, mUserId) == 1;
         if (mShakeEnabled) {
             mSecurityBypassed = Settings.Secure.getIntForUser(
-                            mContext.getContentResolver(),
-                            Settings.Secure.LOCK_TEMP_SECURE_MODE, 0, mUserId) == 0;
+                    mContext.getContentResolver(),
+                    Settings.Secure.LOCK_TEMP_SECURE_MODE, 0, mUserId) == 0;
             PowerManager powerManager = (PowerManager)
                     mContext.getSystemService(Context.POWER_SERVICE);
             if (powerManager.isScreenOn()) {
@@ -654,7 +660,7 @@ public class KeyguardHostView extends KeyguardViewBase {
     }
 
     private SecurityMode getSecurityMode() {
-        if (shakeInsecure() &&
+        if ((shakeInsecure() || mLockBeforeUnlock) &&
                 !isSimOrAccount(mCurrentSecuritySelection, false)) {
             return SecurityMode.None;
         } else {
@@ -938,24 +944,15 @@ public class KeyguardHostView extends KeyguardViewBase {
      * @param turningOff true if the device is being turned off
      */
     void showPrimarySecurityScreen(boolean turningOff) {
-        final boolean lockBeforeUnlock = Settings.Secure.getIntForUser(
-                mContext.getContentResolver(),
-                Settings.Secure.LOCK_BEFORE_UNLOCK, 0,
-                UserHandle.USER_CURRENT) == 1;
-
-        if (lockBeforeUnlock && !isSimOrAccount(mCurrentSecuritySelection, true)) {
-            showSecurityScreen(SecurityMode.None);
-        } else {
-            SecurityMode securityMode = getSecurityMode();
-            if (DEBUG) Log.v(TAG, "showPrimarySecurityScreen(turningOff=" + turningOff + ")");
-            if (!turningOff &&
-                    KeyguardUpdateMonitor.getInstance(mContext).isAlternateUnlockEnabled()) {
-                // If we're not turning off, then allow biometric alternate.
-                // We'll reload it when the device comes back on.
-                securityMode = mSecurityModel.getAlternateFor(securityMode);
-            }
-            showSecurityScreen(securityMode);
-          }
+        SecurityMode securityMode = getSecurityMode();
+        if (DEBUG) Log.v(TAG, "showPrimarySecurityScreen(turningOff=" + turningOff + ")");
+        if (!turningOff &&
+                KeyguardUpdateMonitor.getInstance(mContext).isAlternateUnlockEnabled()) {
+            // If we're not turning off, then allow biometric alternate.
+            // We'll reload it when the device comes back on.
+            securityMode = mSecurityModel.getAlternateFor(securityMode);
+        }
+        showSecurityScreen(securityMode);
     }
 
     /**
@@ -989,7 +986,15 @@ public class KeyguardHostView extends KeyguardViewBase {
             // Allow an alternate, such as biometric unlock
             securityMode = mSecurityModel.getAlternateFor(securityMode);
             if (SecurityMode.None == securityMode) {
-                finish = true; // no security required
+                if (!mLockPatternUtils.isSecure()) {
+                    finish = true; // no security required
+                } else {
+                    if (mShakeEnabled && mSecurityBypassed) {
+                        finish = true;
+                    } else {
+                        showSecurityScreen(mSecurityModel.getSecurityMode());
+                    }
+                }
             } else {
                 showSecurityScreen(securityMode); // switch to the alternate security view
             }
