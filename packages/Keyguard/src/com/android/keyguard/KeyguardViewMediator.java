@@ -1144,9 +1144,6 @@ public class KeyguardViewMediator {
                         doKeyguardLocked(null);
                     }
                 }
-            } else if (DISMISS_KEYGUARD_SECURELY_ACTION.equals(intent.getAction())) {
-                synchronized (KeyguardViewMediator.this) {
-                    dismiss();
             } else if (SHAKE_SECURE_TIMER.equals(intent.getAction())) {
                 if (mLockPatternUtils.isSecure()) {
                     Settings.Secure.putIntForUser(mContext.getContentResolver(),
@@ -1154,6 +1151,10 @@ public class KeyguardViewMediator {
                             mLockPatternUtils.getCurrentUser());
                     KeyguardHostView.shakeSecureNow();
                     adjustStatusBarLocked();
+                }
+            } else if (DISMISS_KEYGUARD_SECURELY_ACTION.equals(intent.getAction())) {
+                synchronized (KeyguardViewMediator.this) {
+                    dismiss();
                 }
             }
         }
