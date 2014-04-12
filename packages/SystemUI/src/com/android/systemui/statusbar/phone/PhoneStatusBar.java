@@ -4157,7 +4157,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             addNotificationViews(createNotificationViews(notifData.first, notifData.second));
         }
 
-        updateSettings();
         setAreThereNotifications();
 
         mStatusBarContainer.addView(mStatusBarWindow);
@@ -4213,10 +4212,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         } else {
             if (mQS != null) {
                 mQS.updateResources();
-            }
-            if (mNavigationBarView != null)  {
-                mNavigationBarView.updateResources();
-                updateSearchPanel();
             }
         }
 
