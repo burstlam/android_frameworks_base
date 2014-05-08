@@ -5683,18 +5683,6 @@ public final class Settings {
         public static final String DIALPAD_STATE = "dialpad_state";
 
         /**
-         * Force translucent status bar
-         * @hide
-         */
-        public static final String FORCE_TRANSLUCENT_STATUS_BAR = "force_translucent_status_bar";
-
-        /**
-         * Force translucent navigation bar
-         * @hide
-         */
-        public static final String FORCE_TRANSLUCENT_NAV_BAR = "force_translucent_nav_bar";
-
-        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
