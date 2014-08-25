@@ -1502,6 +1502,9 @@ public class GlowPadView extends View {
     }
 
     private String getTargetDescription(int index) {
+        if (mTargetDescriptionsResourceId == 0) {
+            return null;
+        }
         if (mTargetDescriptions == null || mTargetDescriptions.isEmpty()
             || index >= mTargetDescriptions.size()) {
             mTargetDescriptions = loadDescriptions(mTargetDescriptionsResourceId);
@@ -1515,6 +1518,9 @@ public class GlowPadView extends View {
     }
 
     private String getDirectionDescription(int index) {
+        if (mDirectionDescriptionsResourceId == 0) {
+            return null;
+        }
         if (mDirectionDescriptions == null || mDirectionDescriptions.isEmpty()
             || index >= mDirectionDescriptions.size()) {
             mDirectionDescriptions = loadDescriptions(mDirectionDescriptionsResourceId);
